@@ -8,7 +8,7 @@
 import UIKit
 
 class MainViewController: UIViewController {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -23,10 +23,13 @@ class MainViewController: UIViewController {
         present(actionController,animated: true)
     }
     @IBAction func shareButtonPressed(_ sender: Any) {
+        print("share pressed")
     }
     @IBAction func clearLastButtonPressed(_ sender: Any) {
+        print("clear last pressed")
     }
     @IBAction func clearAllButtonPressed(_ sender: UIButton) {
+        print("clear all pressed")
     }
 
 }
