@@ -3,15 +3,13 @@ import UIKit
 class MainViewController: UIViewController {
     
 
+    @IBOutlet weak var infoLabel: UILabel!
     var potentialClick: Construction?
     var linkedList: [Construction] = []
     let canvas = Canvas()
     var clickedList: [Construction] = []
     var futureList: [Construction] = []
     var clickedIndex: [Int] = []
-    var unitDistanceSet = false
-    var unitDistanceIndex = -1
-    var unitDistanceUnit = 1.0
     let labelText=["Draw or move POINTS.", "Draw line on two POINTS.", "Draw segment on two POINTS.","Draw ray on two POINTS."]
     let makePoints=0, makeLines=1, makeSegments=2, makeRays=3, makeCircles=4
     let POINT = 1, PTonLINE0 = 2, IntPT = 3
@@ -45,7 +43,6 @@ class MainViewController: UIViewController {
                 linkedList.append(Point(ancestor: [], point: location, number: linkedList.count))
                 setActiveConstruct(linkedList.count-1)
             }
-            print("tB: \(linkedList)")
             break
         case makeLines:
             getPoint(location)
@@ -229,6 +226,17 @@ class MainViewController: UIViewController {
     
     @IBAction func actionButtonPressed(_ sender: UIButton) {
         print("action pressed")
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let actionController = storyboard.instantiateViewController(withIdentifier: "action_VC") as! ActionViewController
+        actionController.view.backgroundColor = .clear
+        //settingsController.modalPresentationStyle = .fullScreen
+        actionController.completionHandler = {tag in
+            self.whatToDo=tag
+            self.infoLabel.text = self.labelText[self.whatToDo]
+        }
+        self.present(actionController, animated: true, completion: nil)
+        clearAllPotentials()
+        drawConstructs()
     }
     @IBAction func measureButtonPressed() {
         print("measure pressed")
@@ -241,5 +249,10 @@ class MainViewController: UIViewController {
     }
     @IBAction func clearAllButtonPressed(_ sender: UIButton) {
         print("clear all pressed")
+        self.linkedList.removeAll()
+        self.whatToDo=self.makePoints
+        clearAllPotentials()
+        canvas.update(constructions: linkedList)
+        canvas.setNeedsDisplay()
     }
 }
