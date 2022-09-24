@@ -1,107 +1,237 @@
-//
-//  ViewController.swift
-//  Mocha
-//
-//  Created by Daniel Heath on 9/22/22.
-//
-
 import UIKit
 
 class MainViewController: UIViewController {
     
+
+    var potentialClick: Construction?
+    var linkedList: [Construction] = []
     let canvas = Canvas()
+    var clickedList: [Construction] = []
+    var futureList: [Construction] = []
+    var clickedIndex: [Int] = []
+    var unitDistanceSet = false
+    var unitDistanceIndex = -1
+    var unitDistanceUnit = 1.0
+    let labelText=["Draw or move POINTS.", "Draw line on two POINTS.", "Draw segment on two POINTS.","Draw ray on two POINTS."]
+    let makePoints=0, makeLines=1, makeSegments=2, makeRays=3, makeCircles=4
+    let POINT = 1, PTonLINE0 = 2, IntPT = 3
+    let CIRCLE = 0
+    let LINE = -1, SEGMENT = -2, RAY = -3
+    private var whatToDo=0
+    var firstTouch: CGPoint?
+    var activeConstruct = false
+    let touchSense=16.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemGray6
         canvas.translatesAutoresizingMaskIntoConstraints = false
         canvas.backgroundColor = .white
+        canvas.isUserInteractionEnabled = true
+        canvas.isMultipleTouchEnabled = false // if we want to add dilation functionality thiw will need to be true
         view.addSubview(canvas)
         NSLayoutConstraint.activate([canvas.centerXAnchor.constraint(equalTo: view.centerXAnchor),canvas.centerYAnchor.constraint(equalTo: view.centerYAnchor),canvas.widthAnchor.constraint(equalTo: view.widthAnchor),canvas.heightAnchor.constraint(equalToConstant: 540)])
     }
-
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         let touch=touches.first!
-        let location=touch.location(in: view)
-        print("tB: \(location)")
+        let location=touch.location(in: canvas)
+        firstTouch=location
+        activeConstruct=false
+        switch whatToDo {
+        case makePoints:
+            getPoint(location)
+            if !activeConstruct {
+                linkedList.append(Point(ancestor: [], point: location, number: linkedList.count))
+                setActiveConstruct(linkedList.count-1)
+            }
+            print("tB: \(linkedList)")
+            break
+        case makeLines:
+            getPoint(location)
+            if !activeConstruct {
+                potentialClick=nil
+            }
+            break
+        default:
+            print("tB default")
+        }
+        canvas.update(constructions: linkedList)
+        canvas.setNeedsDisplay()
     }
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesMoved(touches, with: event)
         let touch=touches.first!
-        let location=touch.location(in: view)
-        print("tM: \(location)")
+        let location=touch.location(in: canvas)
+        switch whatToDo {
+        case makePoints:
+            if activeConstruct {
+                if clickedList[0].type>0                             {  // if the clickedList is
+                    clickedList[0].update(point: location)              // moveable, move it about.
+                    print("tM: \(clickedList[0].coordinates)")
+                }
+            }
+            break
+        case makeLines:
+            if activeConstruct {
+                if let temp = potentialClick as? Point {
+                    if distance(temp,location)>touchSense {
+                        clearLastPotential()
+                    }
+                }
+            }
+            if !activeConstruct {
+                getPoint(location)
+            }
+            break
+        default:
+            print("tM: \(location)")
+        }
+        canvas.update(constructions: linkedList)
+        canvas.setNeedsDisplay()
     }
+    
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
         let touch=touches.first!
-        let location=touch.location(in: view)
-        print("tE: \(location)")
+        let location=touch.location(in: canvas)
+        switch whatToDo {
+        case makePoints:
+            if activeConstruct {
+                if clickedList[0].type>0                             {  // if the clickedList is
+                    clickedList[0].update(point: location)              // moveable, move it about.
+                    print("tM: \(clickedList[0].coordinates)")
+                }
+            }
+            break
+        case makeLines:
+            if activeConstruct {
+                if let temp = potentialClick as? Point {
+                    if distance(temp,location)>touchSense {
+                        clearLastPotential()
+                    }
+                }
+            }
+            if activeConstruct {
+                potentialClick=nil
+                activeConstruct=false
+            }
+            
+            if clickedList.count==2 {
+                if clickedIndex[0]>clickedIndex[1] {
+                    let temp=clickedList[0]
+                    clickedList.removeFirst()
+                    clickedList.append(temp)
+                }
+                var alreadyExists=false
+                for i in 0..<linkedList.count {
+                    if linkedList[i].type==LINE {
+                        if let temp=linkedList[i] as? Line {
+                            if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
+                                alreadyExists=true
+                                linkedList[i].isShown=true
+                                clearAllPotentials()
+                            }
+                        }
+                    }
+                }
+                if !alreadyExists {
+                    linkedList.append(Line(ancestor: clickedList, point: location, number: linkedList.count))
+                    clearAllPotentials()
+                }
+            }
+            break
+        default:
+            print("tE: \(location)")
+        }
+        clearAllPotentials()
+        canvas.update(constructions: linkedList)
+        canvas.setNeedsDisplay()
     }
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesCancelled(touches, with: event)
         let touch=touches.first!
-        let location=touch.location(in: view)
+        let location=touch.location(in: canvas)
         print("tC: \(location)")
+        clearAllPotentials()
+        canvas.update(constructions: linkedList)
+        canvas.setNeedsDisplay()
+    }
+    
+    func distance(_ object: Construction, _ point: CGPoint) -> Double {
+        if let temp = object as? Point {
+            return temp.distance(point)
+        } else if let temp = object as? Line {
+            return temp.distance(point)
+        } else {
+            return 1000.0
+        }
+    }
+    
+    func getPoint(_ location: CGPoint) {
+        for i in 0..<linkedList.count {
+            if distance(linkedList[i],location)<touchSense && !clickedIndex.contains(i) && !activeConstruct && linkedList[i].isShown {
+                setActiveConstruct(i)
+            }
+        }
+    }
+    func getLineOrCircle(_ location: CGPoint) {
+        for i in 0..<linkedList.count {
+            if distance(linkedList[i],location)<touchSense && !clickedIndex.contains(i) && !activeConstruct && linkedList[i].isShown {
+                if linkedList[i].type<=0 {
+                    setActiveConstruct(i)
+                }
+            }
+        }
+    }
+    
+    func clearLastPotential() {
+        activeConstruct=false
+        potentialClick=nil
+        clickedList.removeLast()
+        clickedIndex.removeLast()
+    }
+    
+    func clearAllPotentials() {
+        activeConstruct=false
+        potentialClick=nil
+        clickedIndex.removeAll()
+        clickedList.removeAll()
+    }
+    
+    func setActiveConstruct(_ i: Int) {
+        activeConstruct=true
+        potentialClick=linkedList[i]
+        clickedList.append(linkedList[i])
+        clickedIndex.append(i)
+    }
+    
+    func update(object: Construction, point: CGPoint) {
+        if let temp = object as? Point {
+            temp.update(point: point)
+        } else if let temp = object as? Line {
+            temp.update()
+        }
+    }
+    
+    func drawConstructs() {
+        // some method to clear the canvas
+        for i in 0..<linkedList.count {
+            if linkedList[i].isReal && linkedList[i].isShown {
+                if clickedIndex.contains(i) {
+                    linkedList[i].draw(canvas,true)
+                } else {
+                    linkedList[i].draw(canvas,false)
+                }
+            }
+        }
     }
     
     @IBAction func measureButtonPressed() {
-        let measureController = storyboard?.instantiateViewController(withIdentifier: "measure_VC") as!  MeasureViewController
-        present(measureController,animated: true)
+        
     }
-    @IBAction func actionButtonPressed(_ sender: UIButton) {
-        let actionController = storyboard?.instantiateViewController(withIdentifier: "action_VC") as! ActionViewController
-        present(actionController,animated: true)
-    }
-    @IBAction func shareButtonPressed(_ sender: Any) {
-        print("share pressed")
-    }
-    @IBAction func clearLastButtonPressed(_ sender: Any) {
-        print("clear last pressed")
-    }
+    
     @IBAction func clearAllButtonPressed(_ sender: UIButton) {
         print("clear all pressed")
-    }
-
-}
-
-class Canvas: UIView {
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func draw(_ rect: CGRect) {
-//        guard let context = UIGraphicsGetCurrentContext() else {return}
-//        context.setStrokeColor(UIColor.red.cgColor)
-//        context.setLineWidth(2)
-//        context.move(to: CGPoint(x: 0,y: 150))
-//        context.addLine(to: CGPoint(x: 400,y: 350))
-//        context.strokePath()
-//        context.setStrokeColor(UIColor.green.cgColor)
-//        let rect1 = CGRect(x: 120, y: 200, width: 50, height: 80).insetBy(dx: 5, dy: 5)
-//        let rect2 = CGRect(x: 150, y: 240, width: 90, height: 70).insetBy(dx: 5, dy: 5)
-//        let rect3 = CGRect(x: 22, y: 332, width: 10, height: 10)
-//        context.setFillColor(UIColor.blue.cgColor)
-//        context.setLineWidth(10)
-//        context.addRect(rect1)
-//        context.drawPath(using: .fillStroke)
-//        context.fill(rect1)
-//        context.setStrokeColor(UIColor.yellow.cgColor)
-//        context.setFillColor(UIColor.cyan.cgColor)
-//        context.addEllipse(in: rect2)
-//        context.drawPath(using: .fillStroke)
-//        "this".draw(at: CGPoint(x: 185, y: 267))
-//        let paragraphStyle = NSMutableParagraphStyle()
-//        paragraphStyle.alignment = .center
-//        let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
-//        let string = "d(C0,F0) = 4.700359"
-//        context.setStrokeColor(UIColor.black.cgColor)
-//        context.setFillColor(UIColor.darkGray.cgColor)
-//        context.fillEllipse(in: rect3)
-//        string.draw(with: CGRect(x: 37, y: 328, width: 448, height: 448), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
     }
 }
