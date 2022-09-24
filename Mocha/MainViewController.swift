@@ -227,10 +227,18 @@ class MainViewController: UIViewController {
         }
     }
     
-    @IBAction func measureButtonPressed() {
-        
+    @IBAction func actionButtonPressed(_ sender: UIButton) {
+        print("action pressed")
     }
-    
+    @IBAction func measureButtonPressed() {
+        print("measure pressed")
+    }
+    @IBAction func shareButtonPressed() {
+        print("share pressed")
+    }
+    @IBAction func clearLastButtonPressed() {
+        print("clear last pressed")
+    }
     @IBAction func clearAllButtonPressed(_ sender: UIButton) {
         print("clear all pressed")
     }

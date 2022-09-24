@@ -29,14 +29,14 @@
                                             <action selector="measureButtonPressed" destination="BYZ-38-t0r" eventType="touchUpInside" id="0SZ-lz-Di6"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="W2L-EO-c8C">
+                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XrN-Fu-FLZ">
                                         <rect key="frame" x="137.33333333333334" y="0.0" width="115.33333333333334" height="31.666666666666668"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Share">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                                         </buttonConfiguration>
                                         <connections>
-                                            <action selector="shareButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="thM-Rg-yHj"/>
+                                            <action selector="shareButtonPressed" destination="BYZ-38-t0r" eventType="touchUpInside" id="DFg-Jv-HBF"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kQY-xd-i0m">
@@ -46,7 +46,7 @@
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                                         </buttonConfiguration>
                                         <connections>
-                                            <action selector="actionButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="dOW-BX-DIm"/>
+                                            <action selector="actionButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="qM1-0n-MjL"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -70,14 +70,14 @@
                                             <action selector="clearAllButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="a3X-MW-ZfJ"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WLm-Hz-nkU">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="o4e-ut-YBt">
                                         <rect key="frame" x="254.66666666666663" y="0.0" width="135.33333333333337" height="31.666666666666668"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Clear last">
+                                        <buttonConfiguration key="configuration" style="plain" title="Clear Last">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                                         </buttonConfiguration>
                                         <connections>
-                                            <action selector="clearLastButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="wo7-Et-yEw"/>
+                                            <action selector="clearLastButtonPressed" destination="BYZ-38-t0r" eventType="touchUpInside" id="itb-h4-iCl"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -123,7 +123,7 @@
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5EZ-WS-7tp">
                                         <rect key="frame" x="0.0" y="31.666666666666671" width="390" height="31.666666666666671"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Button">
+                                        <buttonConfiguration key="configuration" style="plain" title="Draw line on two POINTS.">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                                         </buttonConfiguration>
                                     </button>
