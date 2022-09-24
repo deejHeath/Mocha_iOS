@@ -9,9 +9,19 @@ import UIKit
 
 class MeasureViewController: UIViewController {
 
+    @IBOutlet weak var verticalStack: UIStackView!
+    var settingsButton = [UIButton]()
+    public var completionHandler: ((Int)->Void)?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemYellow
+        for case let button as UIButton in verticalStack.arrangedSubviews {
+            settingsButton.append(button)
+        }
+        
     }
-
+    @IBAction func settingsButtonPressed(_ sender: UIButton) {
+        completionHandler?(sender.tag)
+        dismiss(animated: true, completion: nil)
+    }
 }

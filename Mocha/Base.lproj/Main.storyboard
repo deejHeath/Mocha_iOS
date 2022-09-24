@@ -286,12 +286,15 @@
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="16G-Yu-f1c">
                                 <rect key="frame" x="0.0" y="46.999999999999986" width="390" height="221.66666666666663"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sjf-xj-ogT">
+                                    <button opaque="NO" tag="10" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sjf-xj-ogT">
                                         <rect key="frame" x="0.0" y="0.0" width="390" height="31.666666666666668"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Measure distance between POINTS.">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                                         </buttonConfiguration>
+                                        <connections>
+                                            <action selector="settingsButtonPressed:" destination="mZU-iz-2BW" eventType="touchUpInside" id="TQq-Mr-i7J"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="umV-wt-fxt">
                                         <rect key="frame" x="0.0" y="31.666666666666671" width="390" height="31.666666666666671"/>
@@ -372,6 +375,9 @@
                             <constraint firstItem="16G-Yu-f1c" firstAttribute="leading" secondItem="Say-PB-fTQ" secondAttribute="leading" id="wiB-tc-VO6"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="verticalStack" destination="16G-Yu-f1c" id="LXl-fy-iOv"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2fr-MM-o2U" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

@@ -10,8 +10,10 @@ class MainViewController: UIViewController {
     var clickedList: [Construction] = []
     var futureList: [Construction] = []
     var clickedIndex: [Int] = []
-    let labelText=["Draw or move POINTS.", "Draw line on two POINTS.", "Draw segment on two POINTS.","Draw ray on two POINTS."]
+    let actionText=["Draw or move POINTS.", "Draw line on two POINTS.", "Draw segment on two POINTS.","Draw ray on two POINTS."]
+    let measureText=["Measure the distance between POINTS."]
     let makePoints=0, makeLines=1, makeSegments=2, makeRays=3, makeCircles=4
+    let measureDistance=10
     let POINT = 1, PTonLINE0 = 2, IntPT = 3
     let CIRCLE = 0
     let LINE = -1, SEGMENT = -2, RAY = -3
@@ -232,7 +234,7 @@ class MainViewController: UIViewController {
         //settingsController.modalPresentationStyle = .fullScreen
         actionController.completionHandler = {tag in
             self.whatToDo=tag
-            self.infoLabel.text = self.labelText[self.whatToDo]
+            self.infoLabel.text = self.actionText[self.whatToDo]
         }
         self.present(actionController, animated: true, completion: nil)
         clearAllPotentials()
@@ -240,6 +242,18 @@ class MainViewController: UIViewController {
     }
     @IBAction func measureButtonPressed() {
         print("measure pressed")
+        print("action pressed")
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let measureController = storyboard.instantiateViewController(withIdentifier: "measure_VC") as! MeasureViewController
+        measureController.view.backgroundColor = .clear
+        //settingsController.modalPresentationStyle = .fullScreen
+        measureController.completionHandler = {tag in
+            self.whatToDo=tag
+            self.infoLabel.text = self.measureText[self.whatToDo-10]
+        }
+        self.present(measureController, animated: true, completion: nil)
+        clearAllPotentials()
+        drawConstructs()
     }
     @IBAction func shareButtonPressed() {
         print("share pressed")
