@@ -227,7 +227,6 @@ class MainViewController: UIViewController {
     }
     
     @IBAction func actionButtonPressed(_ sender: UIButton) {
-        print("action pressed")
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let actionController = storyboard.instantiateViewController(withIdentifier: "action_VC") as! ActionViewController
         actionController.view.backgroundColor = .clear
@@ -238,11 +237,8 @@ class MainViewController: UIViewController {
         }
         self.present(actionController, animated: true, completion: nil)
         clearAllPotentials()
-        drawConstructs()
     }
     @IBAction func measureButtonPressed() {
-        print("measure pressed")
-        print("action pressed")
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let measureController = storyboard.instantiateViewController(withIdentifier: "measure_VC") as! MeasureViewController
         measureController.view.backgroundColor = .clear
@@ -253,13 +249,15 @@ class MainViewController: UIViewController {
         }
         self.present(measureController, animated: true, completion: nil)
         clearAllPotentials()
-        drawConstructs()
     }
     @IBAction func shareButtonPressed() {
         print("share pressed")
     }
     @IBAction func clearLastButtonPressed() {
-        print("clear last pressed")
+        linkedList.removeLast()
+        clearAllPotentials()
+        canvas.update(constructions: linkedList)
+        canvas.setNeedsDisplay()
     }
     @IBAction func clearAllButtonPressed(_ sender: UIButton) {
         print("clear all pressed")
