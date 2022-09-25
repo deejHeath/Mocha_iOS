@@ -270,10 +270,15 @@ class MainViewController: UIViewController {
             canvas.update(constructions: linkedList, indices: clickedIndex)
             canvas.setNeedsDisplay()
         }
+        if linkedList.count<2 {
+            self.whatToDo=self.makePoints
+            self.infoLabel.text = self.actionText[self.whatToDo]
+        }
     }
     @IBAction func clearAllButtonPressed(_ sender: UIButton) {
         self.linkedList.removeAll()
         self.whatToDo=self.makePoints
+        self.infoLabel.text = self.actionText[self.whatToDo]
         clearAllPotentials()
         canvas.update(constructions: linkedList, indices: clickedIndex)
         canvas.setNeedsDisplay()
