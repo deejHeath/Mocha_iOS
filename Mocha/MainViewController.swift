@@ -53,7 +53,7 @@ class MainViewController: UIViewController {
             }
             break
         default:
-            print("tB default")
+            print("touchesBegan \(location)")
         }
         canvas.update(constructions: linkedList, indices: clickedIndex)
         canvas.setNeedsDisplay()
@@ -95,7 +95,7 @@ class MainViewController: UIViewController {
             }
             break
         default:
-            print("tM: \(location)")
+            print("touchesMoved: \(location)")
         }
         canvas.update(constructions: linkedList, indices: clickedIndex)
         canvas.setNeedsDisplay()
@@ -121,7 +121,6 @@ class MainViewController: UIViewController {
             clearAllPotentials()
             break
         case makeLines:
-            print(clickedList,clickedIndex)
             if activeConstruct {
                 if let temp = potentialClick as? Point {
                     if distance(temp,location)>touchSense {
@@ -133,7 +132,11 @@ class MainViewController: UIViewController {
                 potentialClick=nil
                 activeConstruct=false
             }
-            
+            if clickedList.count==2 {
+                if clickedIndex[0]==clickedIndex[1] {
+                    clearLastPotential()
+                }
+            }
             if clickedList.count==2 {
                 if clickedIndex[0]>clickedIndex[1] {
                     let temp=clickedList[0]
@@ -154,12 +157,13 @@ class MainViewController: UIViewController {
                 }
                 if !alreadyExists {
                     linkedList.append(Line(ancestor: clickedList, point: location, number: linkedList.count))
+                    linkedList[linkedList.count-1].update(width: canvas.frame.width)
                     clearAllPotentials()
                 }
             }
             break
         default:
-            print("tE: \(location)")
+            print("touchesEnded: \(location)")
         }
         canvas.update(constructions: linkedList, indices: clickedIndex)
         canvas.setNeedsDisplay()
@@ -168,7 +172,7 @@ class MainViewController: UIViewController {
         super.touchesCancelled(touches, with: event)
         let touch=touches.first!
         let location=touch.location(in: canvas)
-        print("tC: \(location)")
+        print("touchesCancelled: \(location)")
         clearAllPotentials()
         canvas.update(constructions: linkedList, indices: clickedIndex)
         canvas.setNeedsDisplay()
@@ -258,13 +262,14 @@ class MainViewController: UIViewController {
         print("share pressed")
     }
     @IBAction func clearLastButtonPressed() {
-        linkedList.removeLast()
-        clearAllPotentials()
-        canvas.update(constructions: linkedList, indices: clickedIndex)
-        canvas.setNeedsDisplay()
+        if linkedList.count>0 {
+            linkedList.removeLast()
+            clearAllPotentials()
+            canvas.update(constructions: linkedList, indices: clickedIndex)
+            canvas.setNeedsDisplay()
+        }
     }
     @IBAction func clearAllButtonPressed(_ sender: UIButton) {
-        print("clear all pressed")
         self.linkedList.removeAll()
         self.whatToDo=self.makePoints
         clearAllPotentials()

@@ -8,9 +8,10 @@
 import UIKit
 
 class Construction {
+    var character = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
     var isReal=true
     var isShown=true
-    var showLabel=false
+    var showLabel=true
     var value=0.0
     var coordinates: CGPoint
     var slope=CGPoint(x: 1.0,y: 0.0)
@@ -22,7 +23,8 @@ class Construction {
     let CIRCLE = 0
     let LINE = -1, SEGMENT = -2, RAY = -3
     let epsilon = 0.0000001
-
+    var canvasWidth = 200.0
+    
     init(point: CGPoint, number: Int) {
         coordinates=point
         index=number
@@ -34,6 +36,9 @@ class Construction {
         coordinates=point
         index=number
     }
+    func update(width: CGFloat) {
+        canvasWidth = width
+    }
     func update(point: CGPoint) {
         coordinates=point
     }
@@ -43,6 +48,7 @@ class Construction {
         return coordinates
     }
     func draw(_ context: CGContext, _ isRed: Bool){
+        
     }
     func distance(_ point: CGPoint)->Double {
         return 1000.0
@@ -84,9 +90,13 @@ class Point: Construction {                             // parents: []
                                  height: 10.0)
         context.fillEllipse(in: currentRect)
         context.drawPath(using: .fillStroke)
-//        canvas.draw(in: canvas.bounds, blendMode: .normal, alpha: 1.0)
-//        canvas.image = UIGraphicsGetImageFromCurrentImageContext()
-//        UIGraphicsEndImageContext()
+        if showLabel {
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.alignment = .center
+            let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
+            let string = "\(character[index%26])\(index/26)"
+            string.draw(with: CGRect(x: coordinates.x+8, y: coordinates.y+8, width: 20, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+        }
     }
 }
 
@@ -161,8 +171,24 @@ class Line: Construction {                                                  // p
         context.move(to: CGPoint(x: coordinates.x+65536*slope.x,y: coordinates.y+65536*slope.y))
         context.addLine(to: CGPoint(x: coordinates.x-65536*slope.x,y: coordinates.y-65536*slope.y))
         context.strokePath()
-//        canvas.image?.draw(in: canvas.bounds)
-//        canvas.image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
+        if showLabel {
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.alignment = .center
+            let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
+            let string = "\(character[index%26])\(index/26)"
+            var xx=10.0, yy=10.0
+            if abs(slope.x)>epsilon {
+                if coordinates.y+slope.y/slope.x*(10-coordinates.x)>10 && coordinates.y+slope.y/slope.x*(10-coordinates.x)<520 {
+                    xx=10
+                    yy=coordinates.y+slope.y/slope.x*(10-coordinates.x)
+                } else if coordinates.y+slope.y/slope.x*(canvasWidth-20-coordinates.x)>10 && coordinates.y+slope.y/slope.x*(canvasWidth-20-coordinates.x)<520 {
+                    xx=canvasWidth-20
+                    yy=coordinates.y+slope.y/slope.x*(canvasWidth-20-coordinates.x)
+                } else if abs(slope.y)>epsilon {
+                    xx=coordinates.x-slope.x/slope.y*(coordinates.y-10)
+                }
+                string.draw(with: CGRect(x: xx, y: yy+10, width: 20, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+            }
+        }
     }
 }
