@@ -191,7 +191,9 @@ class MainViewController: UIViewController {
     func getPoint(_ location: CGPoint) {
         for i in 0..<linkedList.count {
             if distance(linkedList[i],location)<touchSense && !clickedIndex.contains(i) && !activeConstruct && linkedList[i].isShown {
-                setActiveConstruct(i)
+                if linkedList[i].type>0 {
+                    setActiveConstruct(i)
+                }
             }
         }
     }
