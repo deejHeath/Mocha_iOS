@@ -9,6 +9,7 @@ import UIKit
 
 class Canvas: UIView {
     var linkedList: [Construction] = []
+    var clickedIndex: [Int] = []
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
@@ -17,23 +18,37 @@ class Canvas: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func update(constructions: [Construction]) {
+    func update(constructions: [Construction], indices: [Int]) {
         linkedList = constructions
+        clickedIndex = indices
     }
 
     override func draw(_ rect: CGRect) {
         guard let context = UIGraphicsGetCurrentContext() else {return}
         context.setStrokeColor(UIColor.black.cgColor)
-        for object in linkedList {
-            if let temp = object as? Point {
-                let currentRect = CGRect(x: temp.coordinates.x-5.0,y:temp.coordinates.y-5.0,
-                                         width: 10.0,
-                                         height: 10.0)
-                context.addEllipse(in: currentRect)
-                context.fillEllipse(in: currentRect)
-                context.drawPath(using: .fillStroke)
+        
+        for i in 0..<linkedList.count {
+            if linkedList[i].isReal && linkedList[i].isShown {
+                if clickedIndex.contains(i) {
+                    linkedList[i].draw(context,true)
+                } else {
+                    linkedList[i].draw(context,false)
+                }
             }
         }
+
+            
+//        for object in linkedList {
+//            object.draw(context,false)
+//            if let temp = object as? Point {
+//                let currentRect = CGRect(x: temp.coordinates.x-5.0,y:temp.coordinates.y-5.0,
+//                                         width: 10.0,
+//                                         height: 10.0)
+//                context.addEllipse(in: currentRect)
+//                context.fillEllipse(in: currentRect)
+//                context.drawPath(using: .fillStroke)
+//            }
+//        }
         //print("draw: \(linkedList)")
 
 //        context.setStrokeColor(UIColor.red.cgColor)

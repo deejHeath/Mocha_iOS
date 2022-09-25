@@ -42,7 +42,7 @@ class Construction {
     func getPoint()->CGPoint {
         return coordinates
     }
-    func draw(_ canvas: UIView, _ isRed: Bool){
+    func draw(_ context: CGContext, _ isRed: Bool){
     }
     func distance(_ point: CGPoint)->Double {
         return 1000.0
@@ -72,8 +72,7 @@ class Point: Construction {                             // parents: []
         return sqrt(pow(coordinates.x-point.x,2)+pow(coordinates.y-point.y,2))
     }
 
-    override func draw(_ canvas: UIView,_ isRed: Bool) {
-        guard let context = UIGraphicsGetCurrentContext() else {return}
+    override func draw(_ context: CGContext,_ isRed: Bool) {
         if isRed {
             context.setFillColor(UIColor.red.cgColor)
         } else {
@@ -152,18 +151,16 @@ class Line: Construction {                                                  // p
 
     }
 
-    override func draw(_ canvas: UIView,_ isRed: Bool) {
-        UIGraphicsBeginImageContext(canvas.frame.size)
-        let context = UIGraphicsGetCurrentContext()
+    override func draw(_ context: CGContext,_ isRed: Bool) {
         if isRed {
-            context?.setStrokeColor(UIColor.red.cgColor)
+            context.setStrokeColor(UIColor.red.cgColor)
         } else {
-                context?.setStrokeColor(UIColor.black.cgColor)
+                context.setStrokeColor(UIColor.black.cgColor)
         }
-        context?.setLineWidth(2.0)
-        context?.move(to: CGPoint(x: coordinates.x+65536*slope.x,y: coordinates.y+65536*slope.y))
-        context?.addLine(to: CGPoint(x: coordinates.x-65536*slope.x,y: coordinates.y-65536*slope.y))
-        context?.strokePath()
+        context.setLineWidth(2.0)
+        context.move(to: CGPoint(x: coordinates.x+65536*slope.x,y: coordinates.y+65536*slope.y))
+        context.addLine(to: CGPoint(x: coordinates.x-65536*slope.x,y: coordinates.y-65536*slope.y))
+        context.strokePath()
 //        canvas.image?.draw(in: canvas.bounds)
 //        canvas.image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
