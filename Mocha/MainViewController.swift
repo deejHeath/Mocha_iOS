@@ -10,12 +10,12 @@ class MainViewController: UIViewController {
     var clickedList: [Construction] = []
     var futureList: [Construction] = []
     var clickedIndex: [Int] = []
-    let actionText=["Draw or move POINTS.", "Draw line on two POINTS.", "Draw segment on two POINTS.","Draw ray on two POINTS."]
+    let actionText=["Draw or move POINTS.", "Draw line on two POINTS.", "Draw segment on two POINTS.","Draw ray on two POINTS.","Draw circle with center POINT and POINT on."]
     let measureText=["Measure the distance between POINTS."]
     let makePoints=0, makeLines=1, makeSegments=2, makeRays=3, makeCircles=4
     let measureDistance=10
     let POINT = 1, PTonLINE0 = 2, IntPT = 3, PTonLINE = 4
-    let DISTANCE = 10
+    let DISTANCE = 20
     let CIRCLE = 0
     let LINE = -1, SEGMENT = -2, RAY = -3
     private var whatToDo=0
@@ -24,6 +24,7 @@ class MainViewController: UIViewController {
     let touchSense=16.0
     var unitChosen=false
     var unitIndex = -1
+    var newPoint=false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,15 +42,27 @@ class MainViewController: UIViewController {
         let location=touch.location(in: canvas)
         firstTouch=location
         activeConstruct=false
+        newPoint=false
         switch whatToDo {
         case makePoints:
-            getPoint(location)
+            getPointOrMeasure(location)
+            if !activeConstruct {
+                newPoint=true
+                getLineOrCircle(location)
+            }
             if !activeConstruct {
                 linkedList.append(Point(ancestor: [], point: location, number: linkedList.count))
                 setActiveConstruct(linkedList.count-1)
+            } else {
+                if clickedList[0].type<0 {
+                    linkedList.append(PointOnLine(ancestor: clickedList, point: location, number: linkedList.count))
+                    setActiveConstruct(linkedList.count-1)
+                } else if clickedList[0].type==0 {
+                    // append line on CIRCLE
+                }
             }
             break
-        case makeLines,measureDistance:
+        case makeLines,measureDistance,makeCircles:
             getPoint(location)
             if !activeConstruct {
                 potentialClick=nil
@@ -67,26 +80,31 @@ class MainViewController: UIViewController {
         let location=touch.location(in: canvas)
         switch whatToDo {
         case makePoints:
-            if activeConstruct {
-                if clickedList[0].type>0  {  // if the clickedList is
-                    update(object: clickedList[0], point: location)     // moveable, move it about.
-                } else {                                                // otherwise it's a line
-                    if distance(clickedList[0],location)>touchSense {   // remove it if too far
-                        clearAllPotentials()                            // from the touchLocation
+            if !newPoint {
+                update(object: clickedList[0], point: location)
+            } else { // otherwise the point is new, and we can do what we like with it.
+                clearAllPotentials()
+                getLineOrCircle(location)
+                if activeConstruct {
+                    if clickedList[0].type<0 {
+                        linkedList.removeLast()
+                        linkedList.append(PointOnLine(ancestor: clickedList, point: location, number: linkedList.count))
+                        setActiveConstruct(linkedList.count-1)
+                    } else {
+                        // its a point on circle
                     }
+                } else {
+                    linkedList.removeLast()
+                    linkedList.append(Point(ancestor: [], point: location, number: linkedList.count))
+                    setActiveConstruct(linkedList.count-1)
                 }
             }
-            for i in 0..<linkedList.count {
-                if distance(linkedList[i],location)<touchSense && !activeConstruct && linkedList[i].type<0 {
-                    activeConstruct=true
-                    clickedList.append(linkedList[i])
-                    clickedIndex.append(i)
-                }
-                update(object: linkedList[i], point: linkedList[i].coordinates)
-                update(object: linkedList[i], point: linkedList[i].coordinates)
+            for object in linkedList {
+                update(object: object, point: object.coordinates)
+                update(object: object, point: object.coordinates)
             }
             break
-        case makeLines, measureDistance:
+        case makeLines, measureDistance, makeCircles:
             if activeConstruct {
                 if let temp = potentialClick as? Point {
                     if distance(temp,location)>touchSense {
@@ -118,7 +136,10 @@ class MainViewController: UIViewController {
                 } else if clickedList[0].type<0 {
                     let temp = PointOnLine(ancestor: clickedList, point: location, number: linkedList.count)
                     update(object: temp, point: location)
+                    linkedList.removeLast()
                     linkedList.append(temp)
+                } else if clickedList[0].type==0 {
+                    // append point on Circle
                 }
             } else {
                 linkedList.append(Point(point: location, number: linkedList.count))
@@ -167,6 +188,43 @@ class MainViewController: UIViewController {
                 }
             }
             break
+        case makeCircles:
+            if activeConstruct {
+                if let temp = potentialClick as? Point {
+                    if distance(temp,location)>touchSense {
+                        clearLastPotential()
+                    }
+                }
+            }
+            if activeConstruct {
+                potentialClick=nil
+                activeConstruct=false
+            }
+            if clickedList.count==2 {
+                if clickedIndex[0]==clickedIndex[1] {
+                    clearLastPotential()
+                }
+            }
+            if clickedList.count==2 {
+                var alreadyExists=false
+                for i in 0..<linkedList.count {
+                    if linkedList[i].type==CIRCLE {
+                        if let temp=linkedList[i] as? Circle {
+                            if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
+                                alreadyExists=true
+                                linkedList[i].isShown=true
+                                clearAllPotentials()
+                            }
+                        }
+                    }
+                }
+                if !alreadyExists {
+                    linkedList.append(Circle(ancestor: clickedList, point: location, number: linkedList.count))
+                    linkedList[linkedList.count-1].update(width: canvas.frame.width)
+                    clearAllPotentials()
+                }
+            }
+            break
         case measureDistance:
             if activeConstruct {
                 if let temp = potentialClick as? Point {
@@ -192,28 +250,22 @@ class MainViewController: UIViewController {
                 }
                 var alreadyExists=false
                 for i in 0..<linkedList.count {
-                    if linkedList[i].type==DISTANCE{
-                        if let temp=linkedList[i] as? Distance {
-                            if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
-                                alreadyExists=true
-                                linkedList[i].isShown=true
-                                clearAllPotentials()
-                            }
+                    if let temp=linkedList[i] as? Distance {
+                        if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
+                            alreadyExists=true
+                            linkedList[i].isShown=true
+                            clearAllPotentials()
                         }
-                    }
+                    } 
                 }
                 if !alreadyExists {
+                    linkedList.append(Distance(ancestor: clickedList, point: location, number: linkedList.count))
                     if !unitChosen {
-                        linkedList.append(Distance(ancestor: clickedList, point: location, number: linkedList.count))
                         unitChosen=true
                         unitIndex=linkedList.count-1
-                        update(object: linkedList[linkedList.count-1], point: CGPoint(x:  (linkedList[linkedList.count-1].parent[0].coordinates.x+linkedList[linkedList.count-1].parent[1].coordinates.x)/2,y:  (linkedList[linkedList.count-1].parent[0].coordinates.y+linkedList[linkedList.count-1].parent[1].coordinates.y)/2))
-                        clearAllPotentials()
-                    } else {
-                        linkedList.append(Distance(ancestor: clickedList, point: location, number: linkedList.count))
-                        update(object: linkedList[linkedList.count-1], point: CGPoint(x:  (linkedList[linkedList.count-1].parent[0].coordinates.x+linkedList[linkedList.count-1].parent[1].coordinates.x)/2,y:  (linkedList[linkedList.count-1].parent[0].coordinates.y+linkedList[linkedList.count-1].parent[1].coordinates.y)/2))
-                        clearAllPotentials()
                     }
+                    update(object: linkedList[linkedList.count-1], point: CGPoint(x:  (linkedList[linkedList.count-1].parent[0].coordinates.x+linkedList[linkedList.count-1].parent[1].coordinates.x)/2,y:  (linkedList[linkedList.count-1].parent[0].coordinates.y+linkedList[linkedList.count-1].parent[1].coordinates.y)/2))
+                    clearAllPotentials()
                 }
             }
             break
@@ -242,11 +294,19 @@ class MainViewController: UIViewController {
             return 1000.0
         }
     }
-    
+    func getPointOrMeasure(_ location: CGPoint) {
+        for i in 0..<linkedList.count {
+            if distance(linkedList[i],location)<touchSense && !clickedIndex.contains(i) && !activeConstruct && linkedList[i].isShown && linkedList[i].isReal {
+                if linkedList[i].type>0 && linkedList[i].type<DISTANCE {
+                    setActiveConstruct(i)
+                }
+            }
+        }
+    }
     func getPoint(_ location: CGPoint) {
         for i in 0..<linkedList.count {
-            if distance(linkedList[i],location)<touchSense && !clickedIndex.contains(i) && !activeConstruct && linkedList[i].isShown {
-                if linkedList[i].type>0 {
+            if distance(linkedList[i],location)<touchSense && !clickedIndex.contains(i) && !activeConstruct && linkedList[i].isShown && linkedList[i].isReal {
+                if linkedList[i].type>0 && linkedList[i].type<DISTANCE {
                     setActiveConstruct(i)
                 }
             }
@@ -254,7 +314,7 @@ class MainViewController: UIViewController {
     }
     func getLineOrCircle(_ location: CGPoint) {
         for i in 0..<linkedList.count {
-            if distance(linkedList[i],location)<touchSense && !clickedIndex.contains(i) && !activeConstruct && linkedList[i].isShown {
+            if distance(linkedList[i],location)<touchSense && !clickedIndex.contains(i) && !activeConstruct && linkedList[i].isShown && linkedList[i].isReal {
                 if linkedList[i].type<=0 {
                     setActiveConstruct(i)
                 }
@@ -323,6 +383,10 @@ class MainViewController: UIViewController {
         print("share pressed")
     }
     @IBAction func clearLastButtonPressed() {
+        if linkedList.count-1 == unitIndex {
+            unitChosen=false
+            unitIndex=0
+        }
         if linkedList.count>0 {
             linkedList.removeLast()
             clearAllPotentials()

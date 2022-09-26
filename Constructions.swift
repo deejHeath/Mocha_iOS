@@ -116,9 +116,9 @@ class Line: Construction {                                                  // p
         type=LINE
         index=number
     }
-    override init(point: CGPoint, number: Int) {
-        super.init(point: point, number: number)
-    }
+//    override init(point: CGPoint, number: Int) {
+//        super.init(point: point, number: number)
+//    }
 
     func normalizeSlope() {
         let ds=sqrt(pow(slope.x,2)+pow(slope.y,2))
@@ -213,34 +213,45 @@ class Distance: Point {
     }
     
     override func update(point: CGPoint, unitValue: Double) {
-        coordinates=point
-        value=sqrt(pow(parent[0].coordinates.x-parent[1].coordinates.x,2)+pow(parent[0].coordinates.y-parent[1].coordinates.y,2))
-        scaleFactor=unitValue
+        var parentsAllReal=true
+        for object in parent {
+            if !object.isReal {
+                parentsAllReal=false
+            }
+        }
+        if parentsAllReal {
+            isReal=true
+            coordinates=point
+            value=sqrt(pow(parent[0].coordinates.x-parent[1].coordinates.x,2)+pow(parent[0].coordinates.y-parent[1].coordinates.y,2))
+            scaleFactor=unitValue
+        } else {
+            isReal=false
+        }
     }
     
     override func draw(_ context: CGContext,_ isRed: Bool) {
-        context.setFillColor(UIColor.systemGray4.cgColor)
+        context.setFillColor(UIColor.white.cgColor)
         if isRed {
             context.setStrokeColor(UIColor.red.cgColor)
         } else {
                 context.setStrokeColor(UIColor.black.cgColor)
         }
         context.setLineWidth(2.0)
-        let currentRect = CGRect(x: coordinates.x-5.0,y:coordinates.y-5.0,
-                                 width: 10.0,
-                                 height: 10.0)
+        let currentRect = CGRect(x: coordinates.x-4.0,y:coordinates.y-4.0,
+                                 width: 8.0,
+                                 height: 8.0)
         context.addEllipse(in: currentRect)
         context.drawPath(using: .fillStroke)
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
         let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
         let string = "d(\(character[parent[0].index%26])\(parent[0].index/26),\(character[parent[1].index%26])\(parent[1].index/26))=\(value/scaleFactor)"
-        string.draw(with: CGRect(x: coordinates.x+8, y: coordinates.y-5, width:120, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+        string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:120, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
         
     }
 }
 
-class PointOnLine: Construction {                                           // parents: line
+class PointOnLine: Point {                                                  // parents: line
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  //
         super.init(point: point,number: number)                             // it needs a location
         for object in ancestor {                                            // to update
@@ -264,3 +275,35 @@ class PointOnLine: Construction {                                           // p
     }
 }
 
+class Circle: Construction {
+    override init(ancestor: [Construction], point: CGPoint, number: Int) {  // parent: point, point
+        let point0=ancestor[0].coordinates                                  // the first must be a
+        let point1=ancestor[1].coordinates                                  // point
+        super.init(point: point0, number: number)
+        coordinates=point0
+        slope=point1                                    // Here we use slope for coordinates of second point
+        for object in ancestor {
+            parent.append(object)
+        }
+        type=CIRCLE
+        index=number
+    }
+    override func update(ancestor: [Construction]) {
+        coordinates=parent[0].coordinates
+        slope=parent[1].coordinates
+    }
+    override func draw(_ context: CGContext, _ isRed: Bool) {
+        context.setFillColor(UIColor.clear.cgColor)
+        if isRed {
+            context.setStrokeColor(UIColor.red.cgColor)
+        } else {
+                context.setStrokeColor(UIColor.black.cgColor)
+        }
+        context.setLineWidth(2.0)
+        let radius = sqrt(pow(coordinates.x-slope.x,2)+pow(coordinates.y-slope.y,2))
+        let rect=CGRect(x: coordinates.x-radius, y: coordinates.y-radius, width: radius*2, height: radius*2)
+        context.addEllipse(in: rect)
+        context.drawPath(using: .fillStroke)
+    }
+    
+}

@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina6_0" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -114,61 +115,70 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="K91-AU-Uls">
-                                <rect key="frame" x="0.0" y="46.999999999999986" width="390" height="221.66666666666663"/>
+                                <rect key="frame" x="0.0" y="47" width="390" height="196"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gxf-x4-XyG">
-                                        <rect key="frame" x="0.0" y="0.0" width="390" height="31.666666666666668"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="390" height="28"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Draw or move POINTS.">
-                                            <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                            <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                         </buttonConfiguration>
                                         <connections>
                                             <action selector="settingsButtonPressed:" destination="3nO-NK-ot4" eventType="touchUpInside" id="nv6-P4-8Jf"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5EZ-WS-7tp">
-                                        <rect key="frame" x="0.0" y="31.666666666666671" width="390" height="31.666666666666671"/>
+                                        <rect key="frame" x="0.0" y="28" width="390" height="28"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Draw line on two POINTS.">
-                                            <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                            <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                         </buttonConfiguration>
                                         <connections>
                                             <action selector="settingsButtonPressed:" destination="3nO-NK-ot4" eventType="touchUpInside" id="2WS-Go-9Lu"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YDY-f1-OmO">
-                                        <rect key="frame" x="0.0" y="63.333333333333321" width="390" height="31.666666666666664"/>
+                                        <rect key="frame" x="0.0" y="56" width="390" height="28"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Button">
-                                            <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Draw segment on two POINTS.">
+                                            <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                         </buttonConfiguration>
+                                        <connections>
+                                            <action selector="settingsButtonPressed:" destination="3nO-NK-ot4" eventType="touchUpInside" id="YCk-FN-luY"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fEW-u8-drH">
-                                        <rect key="frame" x="0.0" y="95" width="390" height="31.666666666666671"/>
+                                        <rect key="frame" x="0.0" y="84" width="390" height="28"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Button">
-                                            <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Draw ray on two POINTS.">
+                                            <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                         </buttonConfiguration>
+                                        <connections>
+                                            <action selector="settingsButtonPressed:" destination="3nO-NK-ot4" eventType="touchUpInside" id="sEG-0L-wIr"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="u6b-7Z-pp2">
-                                        <rect key="frame" x="0.0" y="126.66666666666667" width="390" height="31.666666666666671"/>
+                                        <rect key="frame" x="0.0" y="112" width="390" height="28"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Button">
-                                            <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Draw circle with center POINT and POINT on.">
+                                            <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                         </buttonConfiguration>
+                                        <connections>
+                                            <action selector="settingsButtonPressed:" destination="3nO-NK-ot4" eventType="touchUpInside" id="BD6-2V-ahw"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="V9c-s0-0Xp">
-                                        <rect key="frame" x="0.0" y="158.33333333333334" width="390" height="31.666666666666657"/>
+                                        <rect key="frame" x="0.0" y="140" width="390" height="28"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Button">
-                                            <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                            <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                         </buttonConfiguration>
                                     </button>
                                     <button opaque="NO" tag="6" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TO7-f2-l2G">
-                                        <rect key="frame" x="0.0" y="190" width="390" height="31.666666666666657"/>
+                                        <rect key="frame" x="0.0" y="168" width="390" height="28"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Button">
-                                            <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                            <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                         </buttonConfiguration>
                                     </button>
                                 </subviews>
