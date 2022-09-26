@@ -14,13 +14,16 @@ class MainViewController: UIViewController {
     let measureText=["Measure the distance between POINTS."]
     let makePoints=0, makeLines=1, makeSegments=2, makeRays=3, makeCircles=4
     let measureDistance=10
-    let POINT = 1, PTonLINE0 = 2, IntPT = 3
+    let POINT = 1, PTonLINE0 = 2, IntPT = 3, PTonLINE = 4
+    let DISTANCE = 10
     let CIRCLE = 0
     let LINE = -1, SEGMENT = -2, RAY = -3
     private var whatToDo=0
     var firstTouch: CGPoint?
     var activeConstruct = false
     let touchSense=16.0
+    var unitChosen=false
+    var unitIndex = -1
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,7 +49,7 @@ class MainViewController: UIViewController {
                 setActiveConstruct(linkedList.count-1)
             }
             break
-        case makeLines:
+        case makeLines,measureDistance:
             getPoint(location)
             if !activeConstruct {
                 potentialClick=nil
@@ -80,9 +83,10 @@ class MainViewController: UIViewController {
                     clickedIndex.append(i)
                 }
                 update(object: linkedList[i], point: linkedList[i].coordinates)
+                update(object: linkedList[i], point: linkedList[i].coordinates)
             }
             break
-        case makeLines:
+        case makeLines, measureDistance:
             if activeConstruct {
                 if let temp = potentialClick as? Point {
                     if distance(temp,location)>touchSense {
@@ -109,11 +113,12 @@ class MainViewController: UIViewController {
         case makePoints:
             if activeConstruct {
                 if clickedList[0].type>0 {
-                    clickedList[0].update(point: location)
-                } else {
-//                    let temp = PointOnLine0(ancestor: clickedList, point: location, number: linkedList.count)
-//                    update(object: temp, point: location)
-//                    linkedList.append(temp)
+                    update(object: clickedList[0], point: location)
+                    update(object: clickedList[0], point: location)
+                } else if clickedList[0].type<0 {
+                    let temp = PointOnLine(ancestor: clickedList, point: location, number: linkedList.count)
+                    update(object: temp, point: location)
+                    linkedList.append(temp)
                 }
             } else {
                 linkedList.append(Point(point: location, number: linkedList.count))
@@ -159,6 +164,56 @@ class MainViewController: UIViewController {
                     linkedList.append(Line(ancestor: clickedList, point: location, number: linkedList.count))
                     linkedList[linkedList.count-1].update(width: canvas.frame.width)
                     clearAllPotentials()
+                }
+            }
+            break
+        case measureDistance:
+            if activeConstruct {
+                if let temp = potentialClick as? Point {
+                    if distance(temp,location)>touchSense {
+                        clearLastPotential()
+                    }
+                }
+            }
+            if activeConstruct {
+                potentialClick=nil
+                activeConstruct=false
+            }
+            if clickedList.count==2 {
+                if clickedIndex[0]==clickedIndex[1] {
+                    clearLastPotential()
+                }
+            }
+            if clickedList.count==2 {
+                if clickedIndex[0]>clickedIndex[1] {
+                    let temp=clickedList[0]
+                    clickedList.removeFirst()
+                    clickedList.append(temp)
+                }
+                var alreadyExists=false
+                for i in 0..<linkedList.count {
+                    if linkedList[i].type==DISTANCE{
+                        if let temp=linkedList[i] as? Distance {
+                            if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
+                                alreadyExists=true
+                                linkedList[i].isShown=true
+                                clearAllPotentials()
+                            }
+                        }
+                    }
+                }
+                if !alreadyExists {
+                    if !unitChosen {
+                        linkedList.append(Distance(ancestor: clickedList, point: location, number: linkedList.count))
+                        unitChosen=true
+                        unitIndex=linkedList.count-1
+                        update(object: linkedList[linkedList.count-1], point: CGPoint(x:  (linkedList[linkedList.count-1].parent[0].coordinates.x+linkedList[linkedList.count-1].parent[1].coordinates.x)/2,y:  (linkedList[linkedList.count-1].parent[0].coordinates.y+linkedList[linkedList.count-1].parent[1].coordinates.y)/2))
+                        clearAllPotentials()
+                    } else {
+                        linkedList.append(Distance(ancestor: clickedList, point: location, number: linkedList.count))
+                        update(object: linkedList[linkedList.count-1], point: CGPoint(x:  (linkedList[linkedList.count-1].parent[0].coordinates.x+linkedList[linkedList.count-1].parent[1].coordinates.x)/2,y:  (linkedList[linkedList.count-1].parent[0].coordinates.y+linkedList[linkedList.count-1].parent[1].coordinates.y)/2))
+                        clearAllPotentials()
+                    }
                 }
             }
             break
@@ -229,7 +284,11 @@ class MainViewController: UIViewController {
     }
     
     func update(object: Construction, point: CGPoint) {
-        if let temp = object as? Point {
+        if let temp = object as? Distance {
+            temp.update(point: point, unitValue: linkedList[unitIndex].value)
+        } else if let temp = object as? PointOnLine {
+            temp.update(point: point)
+        } else if let temp = object as? Point {
             temp.update(point: point)
         } else if let temp = object as? Line {
             temp.update()
