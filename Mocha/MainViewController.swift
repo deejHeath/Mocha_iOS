@@ -13,8 +13,8 @@ class MainViewController: UIViewController {
     let actionText=["Draw or move POINTS.", "Draw line on two POINTS.", "Draw segment on two POINTS.","Draw ray on two POINTS.","Draw circle with center POINT and POINT on.","Find intersections of two CONSTRUCTIONS."]
     let measureText=["Measure the distance between POINTS."]
     let makePoints=0, makeLines=1, makeSegments=2, makeRays=3, makeCircles=4, makeIntersections=5
-    let measureDistance=10
-    let POINT = 1, PTonLINE0 = 2, IntPT = 3, PTonLINE = 4
+    let measureDistance=20
+    let POINT = 1, PTonLINE = 2, PTonCIRCLE=3, LINEintLINE=6
     let DISTANCE = 20
     let CIRCLE = 0
     let LINE = -1, SEGMENT = -2, RAY = -3
@@ -248,10 +248,13 @@ class MainViewController: UIViewController {
                 }
                 if !alreadyExists {
                     linkedList.append(Circle(ancestor: clickedList, point: location, number: linkedList.count))
-                    linkedList[linkedList.count-1].update(width: canvas.frame.width)
+                    linkedList[linkedList.count-1].update(ancestor: linkedList[linkedList.count-1].parent)
                     clearAllPotentials()
                 }
             }
+            break
+        case makeIntersections:
+                                    // need to construct InterPt0 & InterPt1.
             break
         case measureDistance:
             if activeConstruct {
@@ -327,7 +330,7 @@ class MainViewController: UIViewController {
     func getPointOrMeasure(_ location: CGPoint) {
         for i in 0..<linkedList.count {
             if distance(linkedList[i],location)<touchSense && !clickedIndex.contains(i) && !activeConstruct && linkedList[i].isShown && linkedList[i].isReal {
-                if linkedList[i].type>0 && linkedList[i].type<DISTANCE {
+                if linkedList[i].type>0 {// && linkedList[i].type<DISTANCE {
                     setActiveConstruct(i)
                 }
             }
@@ -410,7 +413,7 @@ class MainViewController: UIViewController {
         //settingsController.modalPresentationStyle = .fullScreen
         measureController.completionHandler = {tag in
             self.whatToDo=tag
-            self.infoLabel.text = self.measureText[self.whatToDo-10]
+            self.infoLabel.text = self.measureText[self.whatToDo-20]
         }
         self.present(measureController, animated: true, completion: nil)
         clearAllPotentials()

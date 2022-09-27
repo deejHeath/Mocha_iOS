@@ -18,9 +18,10 @@ class Construction {
     var parent: [Construction] = []
     var type = 0
     var index = -1
-    let makePoints=0, makeLines=1, makeSegments=2, makeRays=3, makeCircles=4
-    let POINT = 1, PTonLINE0 = 2, IntPT = 3, PTonLINE = 4, PTonCIRCLE = 5, IntPt0 = 6
-    let DISTANCE = 10
+    let makePoints=0, makeLines=1, makeSegments=2, makeRays=3, makeCircles=4, makeIntersections=5
+    let measureDistance=20
+    let POINT = 1, PTonLINE = 2, PTonCIRCLE=3, LINEintLINE=6
+    let DISTANCE = 20
     let CIRCLE = 0
     let LINE = -1, SEGMENT = -2, RAY = -3
     let epsilon = 0.0000001
@@ -233,7 +234,7 @@ class Distance: Point {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
         let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
-        let string = "d(\(character[parent[0].index%26])\(parent[0].index/26),\(character[parent[1].index%26])\(parent[1].index/26)) = \(round(1000000*(value/scaleFactor)+0.3)/1000000)"
+        let string = "d(\(character[parent[0].index%26])\(parent[0].index/26),\(character[parent[1].index%26])\(parent[1].index/26)) ≈ \(round(1000000*(value/scaleFactor)+0.3)/1000000)"
         string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:120, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
         
     }
@@ -297,6 +298,14 @@ class Circle: Construction {
         let rect=CGRect(x: coordinates.x-radius, y: coordinates.y-radius, width: radius*2, height: radius*2)
         context.addEllipse(in: rect)
         context.drawPath(using: .fillStroke)
+        if showLabel {
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.alignment = .center
+            let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
+            let string = "\(character[index%26])\(index/26)"
+            let xx=slope.x-coordinates.x, yy=slope.y-coordinates.y, dd=sqrt(xx*xx+yy*yy)
+            string.draw(with: CGRect(x: yy/dd*(dd+18)+coordinates.x, y: -xx*(dd+18)/dd+coordinates.y, width: 20, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+        }
     }
     override func distance(_ point: CGPoint) -> Double {
         if !isReal {
@@ -330,7 +339,50 @@ class PointOnCircle: Point {                                                // p
     }
 }
 
-//class Intersection0: Point {                    // parent: line/circle, line/circle
+class LineIntLine: Point {                                                      // parents: line, line
+    override init(ancestor: [Construction], point: CGPoint, number: Int) {  // this is the intersection
+        super.init(point: point,number:number)                              // point of two lines
+        for object in ancestor {
+            parent.append(object)
+        }
+        update()
+        type=LINEintLINE
+        index=number
+    }
+    
+    func update() {
+        if !parent[0].isReal || !parent[1].isReal {
+            isReal=false
+        } else {
+            isReal=true
+            if let p0=parent[0] as? Line {
+                if let p1=parent[1] as? Line {
+                    let x0=p0.parent[0].coordinates.x
+                    let y0=p0.parent[0].coordinates.y
+                    let x1=p1.parent[0].coordinates.x
+                    let y1=p1.parent[0].coordinates.y
+                    let sx0=p0.slope.x,sy0=p0.slope.y
+                    let sx1=p1.slope.x,sy1=p1.slope.y
+                    if abs(sx0*sy1-sx1*sy0)<epsilon {
+                        isReal=false
+                    } else {
+                        coordinates=CGPoint(x: (sx0*sx1*y0-sx0*sx1*y1+sx0*sy1*x1-sx1*sy0*x0)/(sx0*sy1-sx1*sy0), y: (sx0*sy1*y0-sx1*sy0*y1-sy0*sy1*x0+sy0*sy1*x1)/(sx0*sy1-sx1*sy0))
+                    }
+                }
+            }
+        }
+        
+    }
+    override func distance(_ point: CGPoint)->Double {
+        if isReal {
+            return sqrt(pow(coordinates.x-point.x,2)+pow(coordinates.y-point.y,2))
+        } else {
+            return 1024
+        }
+    }
+}
+
+//class CircIntCirc: Point {                                            // parent: circle, circle
 //    override init(ancestor: [Construction], point: CGPoint, number: Int) {  //
 //            let point0=ancestor[0].coordinates                                  //
 //            let point1=ancestor[1].coordinates                                  //
@@ -363,7 +415,7 @@ class PointOnCircle: Point {                                                // p
 //            } else { // parent[0].type<0, parent[1].type<0
 //                        
 //            }
-//        type=IntPt0
+//        type=CIRCintCIRC
 //        index=number
 //    }
 //}
