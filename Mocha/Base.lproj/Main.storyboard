@@ -170,9 +170,12 @@
                                     <button opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="V9c-s0-0Xp">
                                         <rect key="frame" x="0.0" y="140" width="390" height="28"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Button">
+                                        <buttonConfiguration key="configuration" style="plain" title="FInd intersections of two CONSTRUCTIONS.">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                         </buttonConfiguration>
+                                        <connections>
+                                            <action selector="settingsButtonPressed:" destination="3nO-NK-ot4" eventType="touchUpInside" id="MCA-kB-vEL"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" tag="6" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TO7-f2-l2G">
                                         <rect key="frame" x="0.0" y="168" width="390" height="28"/>

@@ -19,7 +19,7 @@ class Construction {
     var type = 0
     var index = -1
     let makePoints=0, makeLines=1, makeSegments=2, makeRays=3, makeCircles=4
-    let POINT = 1, PTonLINE0 = 2, IntPT = 3, PTonLINE = 4
+    let POINT = 1, PTonLINE0 = 2, IntPT = 3, PTonLINE = 4, PTonCIRCLE = 5, IntPt0 = 6
     let DISTANCE = 10
     let CIRCLE = 0
     let LINE = -1, SEGMENT = -2, RAY = -3
@@ -49,12 +49,12 @@ class Construction {
     }
     func update(point: CGPoint,scaleFactor: Double) {
     }
-    func draw(_ context: CGContext, _ isRed: Bool){
+    func draw(_ context: CGContext, _ isRed: Bool) {
     }
     func draw(_ context: CGContext, _ isRed: Bool, scaleFactor: Double){
     }
-    func distance(_ point: CGPoint)->Double {
-        return 1000.0
+    func distance(_ point: CGPoint) -> Double {
+        return 1024
     }
     func setShown(_ x: Bool) {
         isShown = x
@@ -76,11 +76,9 @@ class Point: Construction {                             // parents: []
         type = POINT
         index=number
     }
-
     override func distance(_ point: CGPoint)->Double {
         return sqrt(pow(coordinates.x-point.x,2)+pow(coordinates.y-point.y,2))
     }
-
     override func draw(_ context: CGContext,_ isRed: Bool) {
         if isRed {
             context.setFillColor(UIColor.red.cgColor)
@@ -116,10 +114,6 @@ class Line: Construction {                                                  // p
         type=LINE
         index=number
     }
-//    override init(point: CGPoint, number: Int) {
-//        super.init(point: point, number: number)
-//    }
-
     func normalizeSlope() {
         let ds=sqrt(pow(slope.x,2)+pow(slope.y,2))
         if ds < epsilon {
@@ -131,18 +125,16 @@ class Line: Construction {                                                  // p
             } else {
                 slope = CGPoint(x: slope.x/ds, y: slope.y/ds)
             }
-
         }
     }
-
-    override func distance(_ point: CGPoint)->Double{
+    override func distance(_ point: CGPoint) -> Double {
         if isReal {
             let x1 = parent[0].coordinates.x, y1=parent[0].coordinates.y
             let sx = slope.x, sy=slope.y
             let x0=point.x, y0=point.y
             if sx*sx+sy*sy < epsilon {
                 isReal=false
-                return 1000.0
+                return 1024
             } else {
                 isReal=true
                 return sqrt((sx*y0-sx*y1-sy*x0+sy*x1)*(sx*y0-sx*y1-sy*x0+sy*x1)/(sx*sx+sy*sy))
@@ -151,7 +143,6 @@ class Line: Construction {                                                  // p
             return 1024
         }
     }
-
     func update(){
         if !parent[0].isReal || !parent[1].isReal {
             isReal=false
@@ -163,7 +154,6 @@ class Line: Construction {                                                  // p
         }
 
     }
-
     override func draw(_ context: CGContext,_ isRed: Bool) {
         if isRed {
             context.setStrokeColor(UIColor.red.cgColor)
@@ -211,7 +201,6 @@ class Distance: Point {
         showLabel=false
         scaleFactor=1.0
     }
-    
     override func update(point: CGPoint, unitValue: Double) {
         var parentsAllReal=true
         for object in parent {
@@ -228,9 +217,8 @@ class Distance: Point {
             isReal=false
         }
     }
-    
     override func draw(_ context: CGContext,_ isRed: Bool) {
-        context.setFillColor(UIColor.white.cgColor)
+        context.setFillColor(UIColor.clear.cgColor)
         if isRed {
             context.setStrokeColor(UIColor.red.cgColor)
         } else {
@@ -245,7 +233,7 @@ class Distance: Point {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
         let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
-        let string = "d(\(character[parent[0].index%26])\(parent[0].index/26),\(character[parent[1].index%26])\(parent[1].index/26))=\(value/scaleFactor)"
+        let string = "d(\(character[parent[0].index%26])\(parent[0].index/26),\(character[parent[1].index%26])\(parent[1].index/26)) = \(round(1000000*(value/scaleFactor)+0.3)/1000000)"
         string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:120, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
         
     }
@@ -253,7 +241,7 @@ class Distance: Point {
 
 class PointOnLine: Point {                                                  // parents: line
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  //
-        super.init(point: point,number: number)                             // it needs a location
+        super.init(point: point, number: number)                            // it needs a location
         for object in ancestor {                                            // to update
             parent.append(object)
         }
@@ -288,9 +276,14 @@ class Circle: Construction {
         type=CIRCLE
         index=number
     }
-    override func update(ancestor: [Construction]) {
-        coordinates=parent[0].coordinates
-        slope=parent[1].coordinates
+    func update() {
+        if !parent[0].isReal || !parent[1].isReal {
+            isReal=false
+        } else {
+            isReal=true
+            coordinates=parent[0].coordinates
+            slope=parent[1].coordinates
+        }
     }
     override func draw(_ context: CGContext, _ isRed: Bool) {
         context.setFillColor(UIColor.clear.cgColor)
@@ -305,5 +298,72 @@ class Circle: Construction {
         context.addEllipse(in: rect)
         context.drawPath(using: .fillStroke)
     }
-    
+    override func distance(_ point: CGPoint) -> Double {
+        if !isReal {
+            return 1024
+        } else {
+            return abs(sqrt(pow(parent[1].coordinates.x-parent[0].coordinates.x,2)+pow(parent[1].coordinates.y-parent[0].coordinates.y,2))-sqrt(pow(point.x-parent[0].coordinates.x,2)+pow(point.y-parent[0].coordinates.y,2)))
+        }
+    }
 }
+
+class PointOnCircle: Point {                                                // parents: line
+    override init(ancestor: [Construction], point: CGPoint, number: Int) {  //
+        super.init(point: point, number: number)                            // it needs a location
+        for object in ancestor {                                            // to update
+            parent.append(object)
+        }
+        self.update(point: point)
+        type=PTonCIRCLE
+        index=number
+    }
+    override func update(point: CGPoint) {
+        if !parent[0].isReal || parent[0].parent[0].distance(point)<epsilon {
+            isReal=false
+        } else {
+            isReal=true
+            let xx=point.x-parent[0].coordinates.x, yy=point.y-parent[0].coordinates.y
+            let ss=sqrt(xx*xx+yy*yy)
+            let rr=sqrt(pow(parent[0].parent[0].coordinates.x-parent[0].parent[1].coordinates.x,2)+pow(parent[0].parent[0].coordinates.y-parent[0].parent[1].coordinates.y,2))
+            coordinates=CGPoint(x: xx*rr/ss+parent[0].coordinates.x, y: yy*rr/ss+parent[0].coordinates.y)
+        }
+    }
+}
+
+//class Intersection0: Point {                    // parent: line/circle, line/circle
+//    override init(ancestor: [Construction], point: CGPoint, number: Int) {  //
+//            let point0=ancestor[0].coordinates                                  //
+//            let point1=ancestor[1].coordinates                                  //
+//            super.init(point: point0, number: number)
+//            for object in ancestor {
+//                parent.append(object)
+//            }
+//            let x0=parent[0].coordinates.x, y0=parent[0].coordinates.y
+//            let sx0=parent[0].slope.x, sy0=parent[0].slope.y
+//            let x1=parent[1].coordinates.x, y1=parent[1].coordinates.y
+//            let sx1=parent[1].slope.x, sy1=parent[1].slope.y
+//            let r0=pow(x0-sx0,2)+pow(y0-sy0,2), r1=pow(x1-sx1,2)+pow(y1-sy1,2)
+//            if parent[0].type==0 {
+//                if parent[1].type==0 {
+//                    let discriminant = 4*y0*y1*y1*y1-y1*y1*y1*y1+(-2*x0*x0+4*x0*x1-2*x1*x1-6*y0*y0+2*r0+2*r1)*y1*y1-4*y0*(-x0*x0+2*x0*x1-x1*x1-y0*y0+r0+r1)*y1-y0*y0*y0*y0+(-2*x0*x0+4*x0*x1-2*x1*x1+2*r0+2*r1)*y0*y0-r0*r0+(2*x0*x0-4*x0*x1+2*x1*x1+2*r1)*r0-(r1-(x0-x1)*(x0-x1))*(r1-(x0-x1)*(x0-x1))
+//                    if discriminant >= 0 {
+//                        let xx = ((y0-y1)*sqrt(discriminant)+x0*x0*x0-x0*x0*x1+(-x1*x1+y0*y0-2*y0*y1+y1*y1-r0+r1)*x0+x1 *  (x1*x1+y0*y0-2*y0*y1+y1*y1+r0-r1))/(2*x0*x0-4*x0*x1+2*x1*x1+2*(y0-y1)*(y0-y1))
+//                        let yy = y0+sqrt(-coordinates.x*coordinates.x+2*coordinates.x*x0-x0*x0+r0)
+//                        coordinates = CGPoint(x: xx, y: yy)
+//                        //coordinates.x =
+//                        //coordinates.y = y0+sqrt(-coordinates.x*coordinates.x+2*coordinates.x*x0-x0*x0+r0)
+//                    } else {
+//                        isReal=false
+//                    }
+//                } else { // parent[0].type=0, parent[1].type<0
+//                        // find int of circle[0] and line[1]
+//                }
+//            } else if parent[1].type==0 { // parent[0].type<0, parent[1].type<0
+//                        
+//            } else { // parent[0].type<0, parent[1].type<0
+//                        
+//            }
+//        type=IntPt0
+//        index=number
+//    }
+//}
