@@ -114,13 +114,7 @@ class MainViewController: UIViewController {
             }
             break
         case makeLines, measureDistance, makeCircles:
-            if activeConstruct {
-                if let temp = potentialClick as? Point {
-                    if distance(temp,location)>touchSense {
-                        clearLastPotential()
-                    }
-                }
-            }
+            getRidOfActivesThatAreTooFar(location)
             if !activeConstruct {
                 getPoint(location)
             }
@@ -147,7 +141,6 @@ class MainViewController: UIViewController {
         canvas.update(constructions: linkedList, indices: clickedIndex)
         canvas.setNeedsDisplay()
     }
-    
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
         let touch=touches.first!
@@ -157,7 +150,9 @@ class MainViewController: UIViewController {
             if activeConstruct {
                 if clickedList[0].type>0 {
                     update(object: clickedList[0], point: location)
-                    update(object: clickedList[0], point: location)
+                    if clickedList[0].type>=DISTANCE {                  // Unit (first distance
+                        update(object: clickedList[0], point: location) // measured) has to be
+                    }                                                   // updated twice.
                 } else if clickedList[0].type<0 {
                     let temp = PointOnLine(ancestor: clickedList, point: location, number: linkedList.count)
                     update(object: temp, point: location)
@@ -175,22 +170,9 @@ class MainViewController: UIViewController {
             clearAllPotentials()
             break
         case makeLines:
-            if activeConstruct {
-                if let temp = potentialClick as? Point {
-                    if distance(temp,location)>touchSense {
-                        clearLastPotential()
-                    }
-                }
-            }
-            if activeConstruct {
-                potentialClick=nil
-                activeConstruct=false
-            }
-            if clickedList.count==2 {
-                if clickedIndex[0]==clickedIndex[1] {
-                    clearLastPotential()
-                }
-            }
+            getRidOfActivesThatAreTooFar(location)
+            clearActives()
+            getRidOfDuplicates()
             if clickedList.count==2 {
                 if clickedIndex[0]>clickedIndex[1] {
                     let temp=clickedList[0]
@@ -217,22 +199,9 @@ class MainViewController: UIViewController {
             }
             break
         case makeCircles:
-            if activeConstruct {
-                if let temp = potentialClick as? Point {
-                    if distance(temp,location)>touchSense {
-                        clearLastPotential()
-                    }
-                }
-            }
-            if activeConstruct {
-                potentialClick=nil
-                activeConstruct=false
-            }
-            if clickedList.count==2 {
-                if clickedIndex[0]==clickedIndex[1] {
-                    clearLastPotential()
-                }
-            }
+            getRidOfActivesThatAreTooFar(location)
+            clearActives()
+            getRidOfDuplicates()
             if clickedList.count==2 {
                 var alreadyExists=false
                 for i in 0..<linkedList.count {
@@ -254,25 +223,15 @@ class MainViewController: UIViewController {
             }
             break
         case makeIntersections:
+            getRidOfActivesThatAreTooFar(location)
+            clearActives()
+            getRidOfDuplicates()
                                     // need to construct InterPt0 & InterPt1.
             break
         case measureDistance:
-            if activeConstruct {
-                if let temp = potentialClick as? Point {
-                    if distance(temp,location)>touchSense {
-                        clearLastPotential()
-                    }
-                }
-            }
-            if activeConstruct {
-                potentialClick=nil
-                activeConstruct=false
-            }
-            if clickedList.count==2 {
-                if clickedIndex[0]==clickedIndex[1] {
-                    clearLastPotential()
-                }
-            }
+            getRidOfActivesThatAreTooFar(location)
+            clearActives()
+            getRidOfDuplicates()
             if clickedList.count==2 {
                 if clickedIndex[0]>clickedIndex[1] {
                     let temp=clickedList[0]
@@ -347,8 +306,6 @@ class MainViewController: UIViewController {
     }
     func getLineOrCircle(_ location: CGPoint) {
         for i in 0..<linkedList.count {
-            if linkedList[i].type==0 {
-            }
             if distance(linkedList[i],location)<touchSense && !clickedIndex.contains(i) && !activeConstruct && linkedList[i].isShown && linkedList[i].isReal {
                 if linkedList[i].type <= 0 {
                     setActiveConstruct(i)
@@ -356,17 +313,44 @@ class MainViewController: UIViewController {
             }
         }
     }
-    
+    func getLine(_ location: CGPoint) {
+        for i in 0..<linkedList.count {
+            if distance(linkedList[i],location)<touchSense && !clickedIndex.contains(i) && !activeConstruct && linkedList[i].isShown && linkedList[i].isReal {
+                if linkedList[i].type < 0 {
+                    setActiveConstruct(i)
+                }
+            }
+        }
+    }
+    func getRidOfActivesThatAreTooFar(_ location: CGPoint) {
+        if activeConstruct {
+            if let temp = potentialClick as? Point {
+                if distance(temp,location)>touchSense {
+                    clearLastPotential()
+                }
+            }
+        }
+    }
+    func clearActives() {
+        if activeConstruct {
+            potentialClick=nil
+            activeConstruct=false
+        }
+    }
     func clearLastPotential() {
-        activeConstruct=false
-        potentialClick=nil
+        clearActives()
         clickedList.removeLast()
         clickedIndex.removeLast()
     }
-    
+    func getRidOfDuplicates() {
+        if clickedList.count==2 {
+            if clickedIndex[0]==clickedIndex[1] {
+                clearLastPotential()
+            }
+        }
+    }
     func clearAllPotentials() {
-        activeConstruct=false
-        potentialClick=nil
+        clearActives()
         clickedIndex.removeAll()
         clickedList.removeAll()
     }
@@ -405,6 +389,8 @@ class MainViewController: UIViewController {
         }
         self.present(actionController, animated: true, completion: nil)
         clearAllPotentials()
+        canvas.update(constructions: linkedList, indices: clickedIndex)
+        canvas.setNeedsDisplay()
     }
     @IBAction func measureButtonPressed() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -417,6 +403,8 @@ class MainViewController: UIViewController {
         }
         self.present(measureController, animated: true, completion: nil)
         clearAllPotentials()
+        canvas.update(constructions: linkedList, indices: clickedIndex)
+        canvas.setNeedsDisplay()
     }
     @IBAction func shareButtonPressed() {
         print("share pressed")
