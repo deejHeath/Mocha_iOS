@@ -152,9 +152,6 @@ class MainViewController: UIViewController {
             if activeConstruct {
                 if clickedList[0].type>0 {
                     update(object: clickedList[0], point: location)
-                    if clickedList[0].type>=DISTANCE {                  // Unit (first distance
-                        update(object: clickedList[0], point: location) // measured) has to be
-                    }                                                   // updated twice.
                 } else if clickedList[0].type<0 {
                     let temp = PointOnLine(ancestor: clickedList, point: location, number: linkedList.count)
                     update(object: temp, point: location)
@@ -170,6 +167,9 @@ class MainViewController: UIViewController {
                 linkedList.append(Point(point: location, number: linkedList.count))
             }
             clearAllPotentials()
+            for object in linkedList {
+                update(object: object, point: object.coordinates)
+            }
             break
         case makeLines:
             getRidOfActivesThatAreTooFar(location)
