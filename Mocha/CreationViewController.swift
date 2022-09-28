@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ActionViewController: UIViewController {
+class CreationViewController: UIViewController {
     
     @IBOutlet weak var verticalStack: UIStackView!
     var settingsButton = [UIButton]()

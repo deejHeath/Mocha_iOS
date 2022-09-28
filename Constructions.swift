@@ -11,16 +11,15 @@ class Construction {
     var character = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
     var isReal=true
     var isShown=true
-    var showLabel=true
+    var showLabel=false
     var value = -1.0
     var coordinates: CGPoint
     var slope=CGPoint(x: 1.0,y: 0.0)
     var parent: [Construction] = []
     var type = 0
     var index = -1
-    let makePoints=0, makeLines=1, makeSegments=2, makeRays=3, makeCircles=4, makeIntersections=5
-    let measureDistance=20
-    let POINT = 1, PTonLINE = 2, PTonCIRCLE=3, LINEintLINE=6
+    let POINT = 1, PTonLINE = 2, PTonCIRCLE=3, MIDPOINT=4, LINEintLINE=5, CIRCintCIRC0=6
+    let CIRCintCIRC1=7
     let DISTANCE = 20
     let CIRCLE = 0
     let LINE = -1, SEGMENT = -2, RAY = -3
@@ -56,6 +55,9 @@ class Construction {
     }
     func distance(_ point: CGPoint) -> Double {
         return 1024
+    }
+    func distance(_ point1: CGPoint,_ point2: CGPoint) -> Double {
+        return sqrt(pow(point1.x-point2.x,2)+pow(point1.y-point2.y,2))
     }
     func setShown(_ x: Bool) {
         isShown = x
@@ -199,6 +201,8 @@ class Distance: Point {
         type = DISTANCE
         index=number
         value=sqrt(pow(parent[0].coordinates.x-parent[1].coordinates.x,2)+pow(parent[0].coordinates.y-parent[1].coordinates.y,2))
+        parent[0].showLabel=true
+        parent[1].showLabel=true
         showLabel=false
         scaleFactor=1.0
     }
@@ -382,40 +386,80 @@ class LineIntLine: Point {                                                      
     }
 }
 
-//class CircIntCirc: Point {                                            // parent: circle, circle
-//    override init(ancestor: [Construction], point: CGPoint, number: Int) {  //
-//            let point0=ancestor[0].coordinates                                  //
-//            let point1=ancestor[1].coordinates                                  //
-//            super.init(point: point0, number: number)
-//            for object in ancestor {
-//                parent.append(object)
-//            }
-//            let x0=parent[0].coordinates.x, y0=parent[0].coordinates.y
-//            let sx0=parent[0].slope.x, sy0=parent[0].slope.y
-//            let x1=parent[1].coordinates.x, y1=parent[1].coordinates.y
-//            let sx1=parent[1].slope.x, sy1=parent[1].slope.y
-//            let r0=pow(x0-sx0,2)+pow(y0-sy0,2), r1=pow(x1-sx1,2)+pow(y1-sy1,2)
-//            if parent[0].type==0 {
-//                if parent[1].type==0 {
-//                    let discriminant = 4*y0*y1*y1*y1-y1*y1*y1*y1+(-2*x0*x0+4*x0*x1-2*x1*x1-6*y0*y0+2*r0+2*r1)*y1*y1-4*y0*(-x0*x0+2*x0*x1-x1*x1-y0*y0+r0+r1)*y1-y0*y0*y0*y0+(-2*x0*x0+4*x0*x1-2*x1*x1+2*r0+2*r1)*y0*y0-r0*r0+(2*x0*x0-4*x0*x1+2*x1*x1+2*r1)*r0-(r1-(x0-x1)*(x0-x1))*(r1-(x0-x1)*(x0-x1))
-//                    if discriminant >= 0 {
-//                        let xx = ((y0-y1)*sqrt(discriminant)+x0*x0*x0-x0*x0*x1+(-x1*x1+y0*y0-2*y0*y1+y1*y1-r0+r1)*x0+x1 *  (x1*x1+y0*y0-2*y0*y1+y1*y1+r0-r1))/(2*x0*x0-4*x0*x1+2*x1*x1+2*(y0-y1)*(y0-y1))
-//                        let yy = y0+sqrt(-coordinates.x*coordinates.x+2*coordinates.x*x0-x0*x0+r0)
-//                        coordinates = CGPoint(x: xx, y: yy)
-//                        //coordinates.x =
-//                        //coordinates.y = y0+sqrt(-coordinates.x*coordinates.x+2*coordinates.x*x0-x0*x0+r0)
-//                    } else {
-//                        isReal=false
-//                    }
-//                } else { // parent[0].type=0, parent[1].type<0
-//                        // find int of circle[0] and line[1]
-//                }
-//            } else if parent[1].type==0 { // parent[0].type<0, parent[1].type<0
-//                        
-//            } else { // parent[0].type<0, parent[1].type<0
-//                        
-//            }
-//        type=CIRCintCIRC
-//        index=number
-//    }
-//}
+class CircIntCirc0: Point {                                 // parent: circle, circle
+    var alternateCoordinates = CGPoint.zero                 // the slope will be used as the lastPoint
+    var alternateSlope = CGPoint.zero                       // and alternates...will be used by CircIntCirc1
+    override init(ancestor: [Construction], point: CGPoint, number: Int) {  //
+        let point0=ancestor[0].coordinates                                  //
+        super.init(point: point0, number: number)
+        for object in ancestor {
+            parent.append(object)
+        }
+        update()
+        slope=coordinates
+        alternateSlope=alternateCoordinates
+        type=CIRCintCIRC0
+        index=number
+    }
+    func update() {
+        if parent[0].isReal && parent[1].isReal {
+            let x0=parent[0].coordinates.x, y0=parent[0].coordinates.y
+            let sx0=parent[0].slope.x, sy0=parent[0].slope.y
+            let x1=parent[1].coordinates.x, y1=parent[1].coordinates.y
+            let sx1=parent[1].slope.x, sy1=parent[1].slope.y
+            let r0=pow(x0-sx0,2)+pow(y0-sy0,2), r1=pow(x1-sx1,2)+pow(y1-sy1,2)
+            let discriminant = -(x1*x1*x1*x1-4*x0*x1*x1*x1+(6*x0*x0+2*y0*y0-4*y0*y1+2*y1*y1-2*r0-2*r1)*x1*x1+4*x0*(-x0*x0-y0*y0+2*y0*y1-y1*y1+r0+r1)*x1+x0*x0*x0*x0+(2*y0*y0-4*y0*y1+2*y1*y1-2*r0-2*r1)*x0*x0+r0*r0+(-2*y0*y0+4*y0*y1-2*y1*y1-2*r1)*r0+(r1-(y0-y1)*(y0-y1))*(r1-(y0-y1)*(y0-y1)))*(y0-y1)*(y0-y1)
+            if discriminant >= 0 {
+                isReal=true
+                let xx = (sqrt(discriminant)+x0*x0*x0-x0*x0*x1+(-x1*x1+y0*y0-2*y0*y1+y1*y1-r0+r1)*x0+x1*x1*x1+(y0*y0-2*y0*y1+y1*y1+r0-r1)*x1)/(2*x0*x0-4*x0*x1+2*x1*x1+2*(y0-y1)*(y0-y1))
+                var yy = y0+sqrt(-xx*xx+2*xx*x0-x0*x0+r0)
+                if abs((xx-x0)*(xx-x0)+(yy-y0)*(yy-y0)-r0)>epsilon || abs((xx-x1)*(xx-x1)+(yy-y1)*(yy-y1)-r1)>epsilon {
+                    yy = y0-sqrt(-xx*xx+2*xx*x0-x0*x0+r0)
+                }
+                coordinates = CGPoint(x: xx, y: yy)
+                let xxx = (-sqrt(discriminant)+x0*x0*x0-x0*x0*x1+(-x1*x1+y0*y0-2*y0*y1+y1*y1-r0+r1)*x0+x1*x1*x1+(y0*y0-2*y0*y1+y1*y1+r0-r1)*x1)/(2*x0*x0-4*x0*x1+2*x1*x1+2*(y0-y1)*(y0-y1))
+                var yyy = y0-sqrt(-xxx*xxx+2*xxx*x0-x0*x0+r0)
+                if abs((xxx-x0)*(xxx-x0)+(yyy-y0)*(yyy-y0)-r0)>epsilon || abs((xxx-x1)*(xxx-x1)+(yyy-y1)*(yyy-y1)-r1)>epsilon {
+                    yyy = y0+sqrt(-xxx*xxx+2*xxx*x0-x0*x0+r0)
+                }
+                alternateCoordinates = CGPoint(x: xxx, y: yyy)
+            } else {
+                isReal=false
+            }
+        } else {
+            isReal=false
+        }
+        if distance(coordinates,slope)+distance(alternateCoordinates,alternateSlope)>distance(coordinates,alternateSlope)+distance(alternateCoordinates,slope) {
+            var temp = alternateCoordinates
+            alternateCoordinates=coordinates
+            coordinates=temp
+        }
+        slope=coordinates
+        alternateSlope=alternateCoordinates
+    }
+}
+
+class CircIntCirc1: Point {                                       // parent: circ, circ, cic0
+    override init(ancestor: [Construction], point: CGPoint, number: Int) {  //
+        let point0=ancestor[0].coordinates                                  //
+        super.init(point: point0, number: number)
+        for object in ancestor {
+            parent.append(object)
+        }
+        update()
+        type=CIRCintCIRC1
+        index=number
+    }
+    func update() {
+        if parent[0].isReal && parent[1].isReal && parent[2].isReal {
+            if let temp = parent[2] as? CircIntCirc0 {
+                isReal=temp.isReal
+                coordinates=temp.alternateCoordinates
+            } else {
+                isReal=false
+            }
+        } else {
+            isReal=false
+        }
+    }
+}
