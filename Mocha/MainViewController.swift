@@ -34,7 +34,7 @@ class MainViewController: UIViewController {
         canvas.translatesAutoresizingMaskIntoConstraints = false
         canvas.backgroundColor = .white
         canvas.isUserInteractionEnabled = true
-        canvas.isMultipleTouchEnabled = false // if we want to add dilation functionality thiw will need to be true
+        canvas.isMultipleTouchEnabled = false // if we want to add dilation functionality this will need to be true
         view.addSubview(canvas)
         NSLayoutConstraint.activate([canvas.centerXAnchor.constraint(equalTo: view.centerXAnchor),canvas.centerYAnchor.constraint(equalTo: view.centerYAnchor),canvas.widthAnchor.constraint(equalTo: view.widthAnchor),canvas.heightAnchor.constraint(equalToConstant: 540)])
     }
@@ -181,10 +181,12 @@ class MainViewController: UIViewController {
                 for i in 0..<linkedList.count {
                     if linkedList[i].type==LINE {
                         if let temp=linkedList[i] as? Line {
-                            if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
-                                alreadyExists=true
-                                linkedList[i].isShown=true
-                                clearAllPotentials()
+                            if !alreadyExists {
+                                if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
+                                    alreadyExists=true
+                                    linkedList[i].isShown=true
+                                    clearAllPotentials()
+                                }
                             }
                         }
                     }
@@ -204,10 +206,12 @@ class MainViewController: UIViewController {
                 var alreadyExists=false
                 for i in 0..<linkedList.count {
                     if let temp=linkedList[i] as? Circle {
-                        if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
-                            alreadyExists=true
-                            linkedList[i].isShown=true
-                            clearAllPotentials()
+                        if !alreadyExists {
+                            if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
+                                alreadyExists=true
+                                linkedList[i].isShown=true
+                                clearAllPotentials()
+                            }
                         }
                     }
                 }
@@ -228,10 +232,12 @@ class MainViewController: UIViewController {
                     var alreadyExists=false
                     for i in 0..<linkedList.count {
                         if let temp=linkedList[i] as? LineIntLine {
-                            if temp.parent[0].index==clickedList[0].index && temp.parent[1].index==clickedList[1].index {
-                                alreadyExists=true
-                                linkedList[i].isShown=true
-                                clearAllPotentials()
+                            if !alreadyExists {
+                                if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
+                                    alreadyExists=true
+                                    linkedList[i].isShown=true
+                                    clearAllPotentials()
+                                }
                             }
                         }
                     }
@@ -245,11 +251,12 @@ class MainViewController: UIViewController {
                     var alreadyExists=false
                     for i in 0..<linkedList.count {
                         if let temp=linkedList[i] as? CircIntCirc0 {
-                            if temp.parent[0].index==clickedList[0].index && temp.parent[1].index==clickedList[1].index {
-                                alreadyExists=true
-                                linkedList[i].isShown=true
-                                linkedList[i+1].isShown=true
-                                clearAllPotentials()
+                            if !alreadyExists {
+                                if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
+                                    alreadyExists=true
+                                    linkedList[i].isShown=true
+                                    clearAllPotentials()
+                                }
                             }
                         }
                     }
@@ -276,10 +283,12 @@ class MainViewController: UIViewController {
                 var alreadyExists=false
                 for i in 0..<linkedList.count {
                     if let temp=linkedList[i] as? Distance {
-                        if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
-                            alreadyExists=true
-                            linkedList[i].isShown=true
-                            clearAllPotentials()
+                        if !alreadyExists {
+                            if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
+                                alreadyExists=true
+                                linkedList[i].isShown=true
+                                clearAllPotentials()
+                            }
                         }
                     } 
                 }
