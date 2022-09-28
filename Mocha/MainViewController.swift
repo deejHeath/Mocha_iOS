@@ -10,13 +10,13 @@ class MainViewController: UIViewController {
     var clickedList: [Construction] = []
     var futureList: [Construction] = []
     var clickedIndex: [Int] = []
-    let actionText=["Draw or move POINTS.", "Draw line on two POINTS.", "Draw segment on two POINTS.","Draw ray on two POINTS.","Draw circle with center POINT and POINT on.","Find intersections of two CONSTRUCTIONS."]
-    let measureText=["Measure the distance between POINTS."]
+    let actionText=["Draw or move POINTS.", "Draw line on POINTS.", "Draw segment on POINTS.","Draw ray on POINTS.","Draw circle with center POINT and POINT on.","Draw intersections of OBJECTS."]
+    let measureText=["Measure distance between POINTS."]
     let makePoints=0, makeLines=1, makeSegments=2, makeRays=3, makeCircles=4, makeIntersections=5
     let makePerps=6, makeParallel=7, makeMidpoint=8, makeBisector=9
     let measureDistance=20
     let POINT = 1, PTonLINE = 2, PTonCIRCLE=3, MIDPOINT=4, LINEintLINE=5, CIRCintCIRC0=6
-    let CIRCintCIRC1=7
+    let CIRCintCIRC1=7, LINEintCIRC0=8, LINEintCIRC1=9
     let DISTANCE = 20
     let CIRCLE = 0
     let LINE = -1, SEGMENT = -2, RAY = -3
@@ -169,6 +169,7 @@ class MainViewController: UIViewController {
             clearAllPotentials()
             for object in linkedList {
                 update(object: object, point: object.coordinates)
+                update(object: object, point: object.coordinates)
             }
             break
         case makeLines:
@@ -227,50 +228,45 @@ class MainViewController: UIViewController {
             clearActives()
             getRidOfDuplicates()
             if clickedList.count==2 {       // need to construct InterPt0 & InterPt1.
-                if clickedList[0].type<0 && clickedList[1].type<0 { // both lines
-                    arrangeClickedObjectsByIndex()
-                    var alreadyExists=false
-                    for i in 0..<linkedList.count {
-                        if let temp=linkedList[i] as? LineIntLine {
-                            if !alreadyExists {
-                                if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
-                                    alreadyExists=true
-                                    linkedList[i].isShown=true
-                                    clearAllPotentials()
-                                }
+                arrangeClickedObjectsByIndex()
+                var alreadyExists=false
+                for i in 0..<linkedList.count {
+                    if let temp=linkedList[i] as? LineIntLine {
+                        if !alreadyExists {
+                            if (temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index) || (temp.parent[0].index == clickedList[1].index && temp.parent[1].index == clickedList[0].index){
+                                alreadyExists=true
+                                linkedList[i].isShown=true
+                                clearAllPotentials()
                             }
                         }
                     }
-                    if !alreadyExists {
+                }
+                if !alreadyExists {
+                    if clickedList[0].type<0 && clickedList[1].type<0 {             // both lines
                         linkedList.append(LineIntLine(ancestor: clickedList, point: location, number: linkedList.count))
                         linkedList[linkedList.count-1].update(ancestor: linkedList[linkedList.count-1].parent)
                         clearAllPotentials()
-                    }
-                } else if clickedList[0].type==0 && clickedList[1].type==0 { // both circles
-                    arrangeClickedObjectsByIndex()
-                    var alreadyExists=false
-                    for i in 0..<linkedList.count {
-                        if let temp=linkedList[i] as? CircIntCirc0 {
-                            if !alreadyExists {
-                                if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
-                                    alreadyExists=true
-                                    linkedList[i].isShown=true
-                                    clearAllPotentials()
-                                }
-                            }
-                        }
-                    }
-                    if !alreadyExists {
+                    } else if clickedList[0].type==0 && clickedList[1].type==0 {    // both circles
                         linkedList.append(CircIntCirc0(ancestor: clickedList, point: location, number: linkedList.count))
                         update(object: linkedList[linkedList.count-1],point: location)
                         clickedList.append(linkedList[linkedList.count-1])
-                        // used this for getting CIC0 in there to pass information to CIC1
+                                        // used this for getting CIC0 in there to pass information to CIC1
                         linkedList.append(CircIntCirc1(ancestor: clickedList, point: location, number: linkedList.count))
                         update(object: linkedList[linkedList.count-1],point: location)
                         clearAllPotentials()
+                    } else {                                                        // one line, one circle
+                        if clickedList[0].type==0 {                 // make sure line is [0], circle is [1]
+                            clickedList.append(clickedList[0])
+                            clickedList.removeFirst()
+                        }
+                        linkedList.append(LineIntCirc0(ancestor: clickedList, point: location, number: linkedList.count))
+                        update(object: linkedList[linkedList.count-1],point: location)
+                        clickedList.append(linkedList[linkedList.count-1])
+                                        // used this for getting LIC0 in there to pass information to LIC1
+                        linkedList.append(LineIntCirc1(ancestor: clickedList, point: location, number: linkedList.count))
+                        update(object: linkedList[linkedList.count-1],point: location)
+                        clearAllPotentials()
                     }
-                } else { // one circle, one line
-                    // check whether it already exists, and if not, create LineIntCirc
                 }
             }
             break
@@ -377,9 +373,8 @@ class MainViewController: UIViewController {
     }
     func arrangeClickedObjectsByIndex() {
         if clickedIndex[0]>clickedIndex[1] {
-            let temp=clickedList[0]
+            clickedList.append(clickedList[0])
             clickedList.removeFirst()
-            clickedList.append(temp)
         }
     }
     func clearActives() {
@@ -423,6 +418,10 @@ class MainViewController: UIViewController {
         } else if let temp = object as? CircIntCirc0 {
             temp.update()
         } else if let temp = object as? CircIntCirc1 {
+            temp.update()
+        } else if let temp = object as? LineIntCirc0 {
+            temp.update()
+        } else if let temp = object as? LineIntCirc1 {
             temp.update()
         } else if let temp = object as? PointOnCircle {
             temp.update(point: point)
@@ -472,7 +471,7 @@ class MainViewController: UIViewController {
             unitIndex=0
         }
         if linkedList.count>0 {
-            if linkedList[linkedList.count-1].type==CIRCintCIRC1 {
+            if linkedList[linkedList.count-1].type==CIRCintCIRC1 || linkedList[linkedList.count-1].type==LINEintCIRC1{
                 linkedList.removeLast()                        // since there were two created at once
             }
             linkedList.removeLast()

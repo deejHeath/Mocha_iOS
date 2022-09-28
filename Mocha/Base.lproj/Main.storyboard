@@ -136,7 +136,7 @@
                                     <button opaque="NO" tag="8" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Thn-rK-Qzv">
                                         <rect key="frame" x="0.0" y="43.333333333333329" width="390" height="25.666666666666671"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Draw midpoint of two POINTS.">
+                                        <buttonConfiguration key="configuration" style="plain" title="Draw midpoint of POINTS.">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
                                         </buttonConfiguration>
                                         <connections>
@@ -146,7 +146,7 @@
                                     <button opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="V9c-s0-0Xp" userLabel="Find intersections of two CONSTRUCTIONS.">
                                         <rect key="frame" x="0.0" y="69" width="390" height="25.666666666666671"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Find intersections of two CONSTRUCTIONS.">
+                                        <buttonConfiguration key="configuration" style="plain" title="Find intersections of OBJECTS.">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
                                         </buttonConfiguration>
                                         <connections>
@@ -162,7 +162,7 @@
                                     <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YDY-f1-OmO">
                                         <rect key="frame" x="0.0" y="112.33333333333334" width="390" height="25.666666666666657"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Draw segment on two POINTS.">
+                                        <buttonConfiguration key="configuration" style="plain" title="Draw segment on POINTS.">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
                                         </buttonConfiguration>
                                         <connections>
@@ -172,7 +172,7 @@
                                     <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fEW-u8-drH">
                                         <rect key="frame" x="0.0" y="138" width="390" height="25.666666666666657"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Draw ray on two POINTS.">
+                                        <buttonConfiguration key="configuration" style="plain" title="Draw ray on POINTS.">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
                                         </buttonConfiguration>
                                         <connections>
@@ -182,7 +182,7 @@
                                     <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5EZ-WS-7tp">
                                         <rect key="frame" x="0.0" y="163.66666666666666" width="390" height="25.666666666666657"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Draw line on two POINTS.">
+                                        <buttonConfiguration key="configuration" style="plain" title="Draw line on POINTS.">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
                                         </buttonConfiguration>
                                         <connections>
