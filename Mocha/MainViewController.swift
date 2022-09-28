@@ -15,7 +15,8 @@ class MainViewController: UIViewController {
     let makePoints=0, makeLines=1, makeSegments=2, makeRays=3, makeCircles=4, makeIntersections=5
     let makePerps=6, makeParallel=7, makeMidpoint=8, makeBisector=9
     let measureDistance=20
-    let POINT = 1, PTonLINE = 2, PTonCIRCLE=3, MIDPOINT=4, LINEintLINE=5, CIRCintCIRC=6
+    let POINT = 1, PTonLINE = 2, PTonCIRCLE=3, MIDPOINT=4, LINEintLINE=5, CIRCintCIRC0=6
+    let CIRCintCIRC1=7
     let DISTANCE = 20
     let CIRCLE = 0
     let LINE = -1, SEGMENT = -2, RAY = -3
@@ -428,13 +429,13 @@ class MainViewController: UIViewController {
     @IBAction func actionButtonPressed(_ sender: UIButton) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let creationController = storyboard.instantiateViewController(withIdentifier: "creation_VC") as! CreationViewController
-        creationController.view.backgroundColor = .white.withAlphaComponent(0.75)
+        creationController.view.backgroundColor = .white.withAlphaComponent(0.9)
         //creationController.modalPresentationStyle = .fullScreen
         creationController.completionHandler = {tag in
             self.whatToDo=tag
             self.infoLabel.text = self.actionText[self.whatToDo]
         }
-        self.present(creationController, animated: true, completion: nil)
+        self.present(creationController, animated: false, completion: nil)
         clearAllPotentials()
         canvas.update(constructions: linkedList, indices: clickedIndex)
         canvas.setNeedsDisplay()
@@ -442,13 +443,13 @@ class MainViewController: UIViewController {
     @IBAction func measureButtonPressed() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let measureController = storyboard.instantiateViewController(withIdentifier: "measure_VC") as! MeasureViewController
-        measureController.view.backgroundColor = .white.withAlphaComponent(0.75)
+        measureController.view.backgroundColor = .white.withAlphaComponent(0.9)
         //measureController.modalPresentationStyle = .fullScreen
         measureController.completionHandler = {tag in
             self.whatToDo=tag
             self.infoLabel.text = self.measureText[self.whatToDo-20]
         }
-        self.present(measureController, animated: true, completion: nil)
+        self.present(measureController, animated: false, completion: nil)
         clearAllPotentials()
         canvas.update(constructions: linkedList, indices: clickedIndex)
         canvas.setNeedsDisplay()
@@ -462,6 +463,9 @@ class MainViewController: UIViewController {
             unitIndex=0
         }
         if linkedList.count>0 {
+            if linkedList[linkedList.count-1].type==CIRCintCIRC1 {
+                linkedList.removeLast()                        // since there were two created at once
+            }
             linkedList.removeLast()
             clearAllPotentials()
             canvas.update(constructions: linkedList, indices: clickedIndex)
