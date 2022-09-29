@@ -115,7 +115,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="K91-AU-Uls">
-                                <rect key="frame" x="0.0" y="47" width="390" height="309.66666666666669"/>
+                                <rect key="frame" x="0.0" y="47" width="390" height="361"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-Points-" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="j0t-ju-QAY">
                                         <rect key="frame" x="0.0" y="0.0" width="390" height="17.666666666666668"/>
@@ -133,7 +133,7 @@
                                             <action selector="settingsButtonPressed:" destination="3nO-NK-ot4" eventType="touchUpInside" id="nv6-P4-8Jf"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" tag="8" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Thn-rK-Qzv">
+                                    <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Thn-rK-Qzv">
                                         <rect key="frame" x="0.0" y="43.333333333333329" width="390" height="25.666666666666671"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Draw midpoint of POINTS.">
@@ -143,7 +143,7 @@
                                             <action selector="settingsButtonPressed:" destination="3nO-NK-ot4" eventType="touchUpInside" id="F3A-N1-2vC"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="V9c-s0-0Xp" userLabel="Find intersections of two CONSTRUCTIONS.">
+                                    <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="V9c-s0-0Xp" userLabel="Find intersections of two CONSTRUCTIONS.">
                                         <rect key="frame" x="0.0" y="69" width="390" height="25.666666666666671"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Find intersections of OBJECTS.">
@@ -153,14 +153,24 @@
                                             <action selector="settingsButtonPressed:" destination="3nO-NK-ot4" eventType="touchUpInside" id="MCA-kB-vEL"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="K8a-Py-ItO" userLabel="Find intersections of two CONSTRUCTIONS.">
+                                        <rect key="frame" x="0.0" y="94.666666666666657" width="390" height="25.666666666666671"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Fold POINT over LINE.">
+                                            <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
+                                        </buttonConfiguration>
+                                        <connections>
+                                            <action selector="settingsButtonPressed:" destination="3nO-NK-ot4" eventType="touchUpInside" id="35M-sZ-beW"/>
+                                        </connections>
+                                    </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-Lines-" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Eiw-Qx-cm6">
-                                        <rect key="frame" x="0.0" y="94.666666666666657" width="390" height="17.666666666666671"/>
+                                        <rect key="frame" x="0.0" y="120.33333333333336" width="390" height="17.666666666666671"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <button opaque="NO" tag="2" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YDY-f1-OmO">
-                                        <rect key="frame" x="0.0" y="112.33333333333334" width="390" height="25.666666666666657"/>
+                                    <button opaque="NO" tag="4" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YDY-f1-OmO">
+                                        <rect key="frame" x="0.0" y="138" width="390" height="25.666666666666657"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Draw segment on POINTS.">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
@@ -169,8 +179,8 @@
                                             <action selector="settingsButtonPressed:" destination="3nO-NK-ot4" eventType="touchUpInside" id="YCk-FN-luY"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" tag="3" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fEW-u8-drH">
-                                        <rect key="frame" x="0.0" y="138" width="390" height="25.666666666666657"/>
+                                    <button opaque="NO" tag="5" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fEW-u8-drH">
+                                        <rect key="frame" x="0.0" y="163.66666666666666" width="390" height="25.666666666666657"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Draw ray on POINTS.">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
@@ -179,8 +189,8 @@
                                             <action selector="settingsButtonPressed:" destination="3nO-NK-ot4" eventType="touchUpInside" id="sEG-0L-wIr"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5EZ-WS-7tp">
-                                        <rect key="frame" x="0.0" y="163.66666666666666" width="390" height="25.666666666666657"/>
+                                    <button opaque="NO" tag="6" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5EZ-WS-7tp">
+                                        <rect key="frame" x="0.0" y="189.33333333333334" width="390" height="25.666666666666657"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Draw line on POINTS.">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
@@ -189,35 +199,54 @@
                                             <action selector="settingsButtonPressed:" destination="3nO-NK-ot4" eventType="touchUpInside" id="2WS-Go-9Lu"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" tag="6" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TO7-f2-l2G">
-                                        <rect key="frame" x="0.0" y="189.33333333333334" width="390" height="25.666666666666657"/>
-                                        <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Draw perpendicular on POINT to LINE.">
-                                            <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
-                                        </buttonConfiguration>
-                                    </button>
-                                    <button opaque="NO" tag="7" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MzA-lr-1rO">
+                                    <button opaque="NO" tag="7" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TO7-f2-l2G">
                                         <rect key="frame" x="0.0" y="215" width="390" height="25.666666666666657"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Draw parallel on POINT to LINE.">
+                                        <buttonConfiguration key="configuration" style="plain" title="Draw line on POINT and ⊥ to LINE.">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
                                         </buttonConfiguration>
+                                        <connections>
+                                            <action selector="settingsButtonPressed:" destination="3nO-NK-ot4" eventType="touchUpInside" id="d1F-QL-Ypn"/>
+                                        </connections>
                                     </button>
-                                    <button opaque="NO" tag="9" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pOc-nn-XLU">
+                                    <button opaque="NO" tag="8" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MzA-lr-1rO">
                                         <rect key="frame" x="0.0" y="240.66666666666669" width="390" height="25.666666666666686"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Draw bisector from three POINTS.">
+                                        <buttonConfiguration key="configuration" style="plain" title="Draw line on POINT and || to LINE.">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
                                         </buttonConfiguration>
+                                        <connections>
+                                            <action selector="settingsButtonPressed:" destination="3nO-NK-ot4" eventType="touchUpInside" id="CMH-xG-IWz"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" tag="9" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pOc-nn-XLU">
+                                        <rect key="frame" x="0.0" y="266.33333333333331" width="390" height="25.666666666666686"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Draw angle bisectors from two LINES.">
+                                            <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
+                                        </buttonConfiguration>
+                                        <connections>
+                                            <action selector="settingsButtonPressed:" destination="3nO-NK-ot4" eventType="touchUpInside" id="Bpk-cB-XVc"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" tag="10" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2NT-4Q-xDT">
+                                        <rect key="frame" x="0.0" y="292" width="390" height="25.666666666666686"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Origami 6: fold 2 POINTS to 2 LINES.">
+                                            <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
+                                        </buttonConfiguration>
+                                        <connections>
+                                            <action selector="settingsButtonPressed:" destination="3nO-NK-ot4" eventType="touchUpInside" id="CvO-Mb-WUU"/>
+                                        </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-Circles-" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4jD-R9-RYP">
-                                        <rect key="frame" x="0.0" y="266.33333333333331" width="390" height="17.666666666666686"/>
+                                        <rect key="frame" x="0.0" y="317.66666666666669" width="390" height="17.666666666666686"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="u6b-7Z-pp2">
-                                        <rect key="frame" x="0.0" y="284" width="390" height="25.666666666666686"/>
+                                    <button opaque="NO" tag="11" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="u6b-7Z-pp2">
+                                        <rect key="frame" x="0.0" y="335.33333333333331" width="390" height="25.666666666666686"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Draw circle with center POINT and POINT on.">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
@@ -234,6 +263,7 @@
                                     <constraint firstItem="Gxf-x4-XyG" firstAttribute="leading" secondItem="K91-AU-Uls" secondAttribute="leading" id="8Pv-oA-hof"/>
                                     <constraint firstItem="5EZ-WS-7tp" firstAttribute="leading" secondItem="K91-AU-Uls" secondAttribute="leading" id="9fz-at-QcH"/>
                                     <constraint firstItem="Thn-rK-Qzv" firstAttribute="leading" secondItem="K91-AU-Uls" secondAttribute="leading" id="9y3-Ja-dRe"/>
+                                    <constraint firstItem="2NT-4Q-xDT" firstAttribute="leading" secondItem="K91-AU-Uls" secondAttribute="leading" id="C8j-EF-ZrF"/>
                                     <constraint firstItem="j0t-ju-QAY" firstAttribute="top" secondItem="K91-AU-Uls" secondAttribute="top" id="FLq-PL-qc8"/>
                                     <constraint firstItem="pOc-nn-XLU" firstAttribute="leading" secondItem="K91-AU-Uls" secondAttribute="leading" id="GCj-Q6-4PM"/>
                                     <constraint firstItem="Eiw-Qx-cm6" firstAttribute="leading" secondItem="K91-AU-Uls" secondAttribute="leading" id="GQ5-1s-i6p"/>
@@ -243,16 +273,19 @@
                                     <constraint firstAttribute="trailing" secondItem="MzA-lr-1rO" secondAttribute="trailing" id="Pog-cN-9k5"/>
                                     <constraint firstAttribute="trailing" secondItem="fEW-u8-drH" secondAttribute="trailing" id="Sya-vE-kRc"/>
                                     <constraint firstAttribute="trailing" secondItem="pOc-nn-XLU" secondAttribute="trailing" id="UFO-gH-y93"/>
+                                    <constraint firstItem="K8a-Py-ItO" firstAttribute="leading" secondItem="K91-AU-Uls" secondAttribute="leading" id="YVn-8G-4JS"/>
                                     <constraint firstItem="4jD-R9-RYP" firstAttribute="leading" secondItem="K91-AU-Uls" secondAttribute="leading" id="YfW-vx-uGg"/>
                                     <constraint firstAttribute="trailing" secondItem="Eiw-Qx-cm6" secondAttribute="trailing" id="ZmV-WJ-g7w"/>
                                     <constraint firstAttribute="trailing" secondItem="YDY-f1-OmO" secondAttribute="trailing" id="c4o-6h-hL3"/>
                                     <constraint firstAttribute="trailing" secondItem="4jD-R9-RYP" secondAttribute="trailing" id="dp9-a4-qnf"/>
                                     <constraint firstAttribute="trailing" secondItem="5EZ-WS-7tp" secondAttribute="trailing" id="gWo-Ku-opc"/>
                                     <constraint firstItem="fEW-u8-drH" firstAttribute="leading" secondItem="K91-AU-Uls" secondAttribute="leading" id="hl5-2f-OL8"/>
+                                    <constraint firstAttribute="trailing" secondItem="2NT-4Q-xDT" secondAttribute="trailing" id="hr5-Hi-gVa"/>
                                     <constraint firstItem="V9c-s0-0Xp" firstAttribute="leading" secondItem="K91-AU-Uls" secondAttribute="leading" id="jFq-jZ-HuV"/>
                                     <constraint firstItem="YDY-f1-OmO" firstAttribute="leading" secondItem="K91-AU-Uls" secondAttribute="leading" id="mMI-rV-MxG"/>
                                     <constraint firstItem="u6b-7Z-pp2" firstAttribute="leading" secondItem="K91-AU-Uls" secondAttribute="leading" id="rdJ-Zc-0dp"/>
                                     <constraint firstAttribute="trailing" secondItem="u6b-7Z-pp2" secondAttribute="trailing" id="s4g-Za-I03"/>
+                                    <constraint firstAttribute="trailing" secondItem="K8a-Py-ItO" secondAttribute="trailing" id="wJF-hf-26E"/>
                                     <constraint firstItem="MzA-lr-1rO" firstAttribute="leading" secondItem="K91-AU-Uls" secondAttribute="leading" id="y0e-AQ-7z2"/>
                                     <constraint firstAttribute="trailing" secondItem="Thn-rK-Qzv" secondAttribute="trailing" id="ySv-AL-yeW"/>
                                 </constraints>
@@ -357,9 +390,12 @@
                                     <button opaque="NO" tag="21" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="umV-wt-fxt">
                                         <rect key="frame" x="0.0" y="28" width="390" height="28"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Measure angle on three POINTS.">
+                                        <buttonConfiguration key="configuration" style="plain" title="Measure angle between LINES.">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                         </buttonConfiguration>
+                                        <connections>
+                                            <action selector="settingsButtonPressed:" destination="mZU-iz-2BW" eventType="touchUpInside" id="wBg-YF-5ks"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" tag="22" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sXD-Yb-6Fa">
                                         <rect key="frame" x="0.0" y="56" width="390" height="28"/>
@@ -367,6 +403,9 @@
                                         <buttonConfiguration key="configuration" style="plain" title="Measure area of CIRCLE.">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                         </buttonConfiguration>
+                                        <connections>
+                                            <action selector="settingsButtonPressed:" destination="mZU-iz-2BW" eventType="touchUpInside" id="AV3-Uq-Ckn"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" tag="23" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="alP-0J-kXe">
                                         <rect key="frame" x="0.0" y="84" width="390" height="28"/>
@@ -374,6 +413,9 @@
                                         <buttonConfiguration key="configuration" style="plain" title="Show ratio of two MEASURES.">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                         </buttonConfiguration>
+                                        <connections>
+                                            <action selector="settingsButtonPressed:" destination="mZU-iz-2BW" eventType="touchUpInside" id="S3c-qB-32E"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" tag="24" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1ei-Yo-98g">
                                         <rect key="frame" x="0.0" y="112" width="390" height="28"/>
@@ -381,6 +423,9 @@
                                         <buttonConfiguration key="configuration" style="plain" title="Show sum of two MEASURES.">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                         </buttonConfiguration>
+                                        <connections>
+                                            <action selector="settingsButtonPressed:" destination="mZU-iz-2BW" eventType="touchUpInside" id="cxu-rS-z7a"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" tag="25" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3SN-jE-3gh">
                                         <rect key="frame" x="0.0" y="140" width="390" height="28"/>
@@ -388,6 +433,9 @@
                                         <buttonConfiguration key="configuration" style="plain" title="Show difference of two MEASURES.">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                         </buttonConfiguration>
+                                        <connections>
+                                            <action selector="settingsButtonPressed:" destination="mZU-iz-2BW" eventType="touchUpInside" id="mOX-Gb-8yV"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" tag="26" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="e3f-EM-exB">
                                         <rect key="frame" x="0.0" y="168" width="390" height="28"/>
@@ -395,6 +443,9 @@
                                         <buttonConfiguration key="configuration" style="plain" title="Show product of two MEASURES.">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                         </buttonConfiguration>
+                                        <connections>
+                                            <action selector="settingsButtonPressed:" destination="mZU-iz-2BW" eventType="touchUpInside" id="W31-A8-q9p"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <constraints>

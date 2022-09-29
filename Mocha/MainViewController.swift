@@ -10,16 +10,19 @@ class MainViewController: UIViewController {
     var clickedList: [Construction] = []
     var futureList: [Construction] = []
     var clickedIndex: [Int] = []
-    let actionText=["Draw or move POINTS.", "Draw line on POINTS.", "Draw segment on POINTS.","Draw ray on POINTS.","Draw circle with center POINT and POINT on.","Draw intersections of OBJECTS."]
-    let measureText=["Measure distance between POINTS."]
-    let makePoints=0, makeLines=1, makeSegments=2, makeRays=3, makeCircles=4, makeIntersections=5
-    let makePerps=6, makeParallel=7, makeMidpoint=8, makeBisector=9
+    let actionText=["Draw or move POINTS.", "Draw midpoint between POINTS.","Draw intersection between OBJECTS.","Fold POINT in LINE.","Draw segment on POINTS.", "Draw ray on POINTS.","Draw line on POINTS.","Draw line on POINT and ⊥ to LINE.","Draw line on POINT and || to LINE.","Draw angle bisectors to LINES.","Origami 6: Fold 2 POINTS to 2 LINES.","Draw circle with center POINT and POINT on it."]
+    let measureText=["Measure distance between POINTS.","Measure angle between LINES."]
+    let makePoints=0, makeMidpoint=1, makeIntersections=2, foldPoints=3
+    let makeSegments=4, makeRays=5, makeLines=6, makePerps=7, makeParallels=8
+    let makeBisectors=9, useOrigamiSix=10, makeCircles=11
     let measureDistance=20
-    let POINT = 1, PTonLINE = 2, PTonCIRCLE=3, MIDPOINT=4, LINEintLINE=5, CIRCintCIRC0=6
-    let CIRCintCIRC1=7, LINEintCIRC0=8, LINEintCIRC1=9
-    let DISTANCE = 20
+    let POINT = 1, PTonLINE = 2, PTonCIRCLE = 3, MIDPOINT = 4, LINEintLINE = 5
+    let CIRCintCIRC0 = 6,CIRCintCIRC1 = 7, LINEintCIRC0 = 8, LINEintCIRC1 = 9, FOLDedPT = 10
+    let FOLD6PT0 = 11, FOLD6PT1 = 12, FOLD6PT2 = 13
+    let DISTANCE = 20, ANGLE = 21, RATIO = 22
     let CIRCLE = 0
-    let LINE = -1, SEGMENT = -2, RAY = -3
+    let LINE = -1, PERP = -2, PARALLEL = -3, BISECTOR0 = -4, BISECTOR1 = -5, FOLD6LINE0 = -7
+    let FOLD6LINE1 = -8, FOLD6LINE2 = -9, SEGMENT = -10, RAY = -11
     private var whatToDo=0
     var firstTouch: CGPoint?
     var activeConstruct = false
@@ -65,8 +68,18 @@ class MainViewController: UIViewController {
                 }
             }
             break
-        case makeLines,measureDistance,makeCircles:
+        case makeLines,measureDistance,makeCircles,makeMidpoint:
             getPoint(location)
+            if !activeConstruct {
+                potentialClick=nil
+            }
+            break
+        case foldPoints,makePerps,makeParallels:
+            if clickedList.count==0 {
+                getPoint(location)
+            } else if clickedList.count==1 {
+                getLine(location)
+            }
             if !activeConstruct {
                 potentialClick=nil
             }
@@ -115,10 +128,28 @@ class MainViewController: UIViewController {
                 update(object: object, point: object.coordinates)
             }
             break
-        case makeLines, measureDistance, makeCircles:
+        case makeLines, measureDistance, makeCircles, makeMidpoint:
             getRidOfActivesThatAreTooFar(location)
             if !activeConstruct {
                 getPoint(location)
+            }
+            break
+        case foldPoints,makePerps,makeParallels:
+            if activeConstruct {
+                if let temp = potentialClick as? Point {
+                    if distance(temp,location)>touchSense {
+                        clearLastPotential()
+                    }
+                } else if let temp = potentialClick as? Line {
+                    if distance(temp,location)>touchSense {
+                        clearLastPotential()
+                    }
+                }
+            }
+            if clickedList.count==0 {
+                getPoint(location)
+            } else if clickedList.count==1 {
+                getLine(location)
             }
             break
         case makeIntersections:
@@ -195,6 +226,138 @@ class MainViewController: UIViewController {
                 if !alreadyExists {
                     linkedList.append(Line(ancestor: clickedList, point: location, number: linkedList.count))
                     linkedList[linkedList.count-1].update(width: canvas.frame.width)
+                    clearAllPotentials()
+                }
+            }
+            break
+        case makeMidpoint:
+            getRidOfActivesThatAreTooFar(location)
+            clearActives()
+            getRidOfDuplicates()
+            if clickedList.count==2 {
+                arrangeClickedObjectsByIndex()
+                var alreadyExists=false
+                for i in 0..<linkedList.count {
+                    if linkedList[i].type==MIDPOINT {
+                        if let temp=linkedList[i] as? MidPoint {
+                            if !alreadyExists {
+                                if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
+                                    alreadyExists=true
+                                    linkedList[i].isShown=true
+                                    clearAllPotentials()
+                                }
+                            }
+                        }
+                    }
+                }
+                if !alreadyExists {
+                    linkedList.append(MidPoint(ancestor: clickedList, point: location, number: linkedList.count))
+                    linkedList[linkedList.count-1].update(width: canvas.frame.width)
+                    clearAllPotentials()
+                }
+            }
+            break
+        case foldPoints:
+            if activeConstruct {
+                if let temp = potentialClick as? Point {
+                    if distance(temp,location)>touchSense {
+                        clearLastPotential()
+                    }
+                } else if let temp = potentialClick as? Line {
+                    if distance(temp,location)>touchSense {
+                        clearLastPotential()
+                    }
+                }
+            }
+            if !activeConstruct {
+                potentialClick=nil
+                activeConstruct=false
+            }
+            if clickedList.count==2 {
+                var alreadyExists=false
+                for i in 0..<linkedList.count {
+                    if linkedList[i].type==FOLDedPT {
+                        if let temp=linkedList[i] as? FoldedPoint {
+                            if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
+                                alreadyExists=true
+                                linkedList[i].isShown=true
+                                clearAllPotentials()
+                            }
+                        }
+                    }
+                }
+                if !alreadyExists {
+                    linkedList.append(FoldedPoint(ancestor: clickedList, point: location, number: linkedList.count))
+                    clearAllPotentials()
+                }
+            }
+            break
+        case makePerps:
+            if activeConstruct {
+                if let temp = potentialClick as? Point {
+                    if distance(temp,location)>touchSense {
+                        clearLastPotential()
+                    }
+                } else if let temp = potentialClick as? Line {
+                    if distance(temp,location)>touchSense {
+                        clearLastPotential()
+                    }
+                }
+            }
+            if !activeConstruct {
+                potentialClick=nil
+                activeConstruct=false
+            }
+            if clickedList.count==2 {
+                var alreadyExists=false
+                for i in 0..<linkedList.count {
+                    if linkedList[i].type==PERP {
+                        if let temp=linkedList[i] as? PerpLine {
+                            if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
+                                alreadyExists=true
+                                linkedList[i].isShown=true
+                                clearAllPotentials()
+                            }
+                        }
+                    }
+                }
+                if !alreadyExists {
+                    linkedList.append(PerpLine(ancestor: clickedList, point: location, number: linkedList.count))
+                    clearAllPotentials()
+                }
+            }
+            break
+        case makeParallels:
+            if activeConstruct {
+                if let temp = potentialClick as? Point {
+                    if distance(temp,location)>touchSense {
+                        clearLastPotential()
+                    }
+                } else if let temp = potentialClick as? Line {
+                    if distance(temp,location)>touchSense {
+                        clearLastPotential()
+                    }
+                }
+            }
+            if !activeConstruct {
+                potentialClick=nil
+                activeConstruct=false
+            }
+            if clickedList.count==2 {
+                var alreadyExists=false
+                for i in 0..<linkedList.count {
+                    if linkedList[i].type==PARALLEL {
+                        if let temp=linkedList[i] as? ParallelLine {
+                            if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
+                                alreadyExists=true
+                                linkedList[i].isShown=true
+                                clearAllPotentials()
+                            }
+                        }
+                    }
+                }
+                if !alreadyExists {
+                    linkedList.append(ParallelLine(ancestor: clickedList, point: location, number: linkedList.count))
                     clearAllPotentials()
                 }
             }
@@ -413,6 +576,10 @@ class MainViewController: UIViewController {
             temp.update(point: point, unitValue: linkedList[unitIndex].value)
         } else if let temp = object as? PointOnLine {
             temp.update(point: point)
+        } else if let temp = object as? PointOnCircle {
+            temp.update(point: point)
+        } else if let temp = object as? MidPoint {
+            temp.update()
         } else if let temp = object as? LineIntLine {
             temp.update()
         } else if let temp = object as? CircIntCirc0 {
@@ -423,10 +590,14 @@ class MainViewController: UIViewController {
             temp.update()
         } else if let temp = object as? LineIntCirc1 {
             temp.update()
-        } else if let temp = object as? PointOnCircle {
-            temp.update(point: point)
+        } else if let temp = object as? FoldedPoint {
+            temp.update()
         } else if let temp = object as? Point {
             temp.update(point: point)
+        } else if let temp = object as? PerpLine {
+            temp.update()
+        } else if let temp = object as? ParallelLine {
+            temp.update()
         } else if let temp = object as? Line {
             temp.update()
         } else if let temp = object as? Circle {
@@ -463,8 +634,14 @@ class MainViewController: UIViewController {
         canvas.setNeedsDisplay()
     }
     @IBAction func shareButtonPressed() {
-        print("share pressed")
-    }
+        let renderer = UIGraphicsImageRenderer(size: canvas.bounds.size)
+        let image = renderer.image { ctx in
+            canvas.drawHierarchy(in: canvas.bounds, afterScreenUpdates: true)
+        }
+        let activity = UIActivityViewController(activityItems: [image] ,applicationActivities: nil)
+        present(activity, animated: true)
+        print("shareButtonPressed")
+      }
     @IBAction func clearLastButtonPressed() {
         if linkedList.count-1 == unitIndex {
             unitChosen=false
