@@ -15,6 +15,7 @@ class MainViewController: UIViewController {
     let makeSegments=5, makeRays=6, makeLines=7, makePerps=8, makeParallels=9
     let makeBisectors=10, useOrigamiSix=11, makeCircles=12, make3PTCircle=13
     let measureDistance=20
+    let hideObject=27
     let POINT = 1, PTonLINE = 2, PTonCIRCLE = 3, MIDPOINT = 4
     let LINEintLINE = 5, FOLDedPT = 6, INVERTedPT=7
     let CIRCintCIRC0 = 8,CIRCintCIRC1 = 9, LINEintCIRC0 = 10, LINEintCIRC1 = 11
@@ -112,6 +113,17 @@ class MainViewController: UIViewController {
                 getPoint(location)
             } else if clickedList.count==2 || clickedList.count==3 {
                 getLine(location)
+            }
+            break
+        case hideObject:
+            if !activeConstruct {
+                getPoint(location)
+            }
+            if !activeConstruct {
+                getLineOrCircle(location)
+            }
+            if !activeConstruct {
+                potentialClick=nil
             }
             break
         default:
@@ -229,6 +241,28 @@ class MainViewController: UIViewController {
                         clearLastPotential()
                     }
                 }
+            }
+            if !activeConstruct {
+                getLineOrCircle(location)
+            }
+            break
+        case hideObject:
+            if activeConstruct {
+                if let temp = potentialClick as? Point {
+                    if distance(temp,location)>touchSense {
+                        activeConstruct=false
+                        clearLastPotential()
+                    }
+                }
+                if let temp = potentialClick as? Line {
+                    if distance(temp,location)>touchSense {
+                        activeConstruct=false
+                        clearLastPotential()
+                    }
+                }
+            }
+            if !activeConstruct {
+                getPoint(location)
             }
             if !activeConstruct {
                 getLineOrCircle(location)
@@ -679,9 +713,30 @@ class MainViewController: UIViewController {
                         unitChosen=true
                         unitIndex=linkedList.count-1
                     }
-                    update(object: linkedList[linkedList.count-1], point: CGPoint(x:  (linkedList[linkedList.count-1].parent[0].coordinates.x+linkedList[linkedList.count-1].parent[1].coordinates.x)/2,y:  (linkedList[linkedList.count-1].parent[0].coordinates.y+linkedList[linkedList.count-1].parent[1].coordinates.y)/2))
+                    update(object: linkedList[linkedList.count-1], point: CGPoint(x:  (linkedList[linkedList.count-1].parent[0].coordinates.x+2*linkedList[linkedList.count-1].parent[1].coordinates.x)/3,y:  (2*linkedList[linkedList.count-1].parent[0].coordinates.y+linkedList[linkedList.count-1].parent[1].coordinates.y)/3))
                     clearAllPotentials()
                 }
+            }
+            break
+        case hideObject:
+            if activeConstruct {
+                if let temp = potentialClick as? Point {
+                    if distance(temp,location)>touchSense {
+                        clearLastPotential()
+                    }
+                } else if let temp = potentialClick as? Line {
+                    if distance(temp,location)>touchSense {
+                        clearLastPotential()
+                    }
+                }
+            }
+            if !activeConstruct {
+                potentialClick=nil
+                activeConstruct=false
+            }
+            if clickedList.count==1 {
+                linkedList[clickedIndex[0]].isShown=false
+                clearAllPotentials()
             }
             break
         default:
