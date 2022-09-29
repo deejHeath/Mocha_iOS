@@ -10,8 +10,8 @@ class MainViewController: UIViewController {
     var clickedList: [Construction] = []
     var futureList: [Construction] = []
     var clickedIndex: [Int] = []
-    let actionText=["Draw or move POINTS.", "Draw midpoint between POINTS.","Draw intersection between OBJECTS.","Fold POINT in LINE.","Draw segment on POINTS.", "Draw ray on POINTS.","Draw line on POINTS.","Draw line on POINT and ⊥ to LINE.","Draw line on POINT and || to LINE.","Draw angle bisectors to LINES.","Origami 6: Fold 2 POINTS to 2 LINES.","Draw circle with center POINT and POINT on it."]
-    let measureText=["Measure distance between POINTS.","Measure angle between LINES."]
+    let actionText=["Draw or move POINTS.", "Draw midpoint between 2 POINTS.","Draw intersection of 2 OBJECTS.","Fold POINT in LINE.","Draw segment on 2 POINTS.", "Draw ray on 2 POINTS.","Draw line on 2 POINTS.","Draw line on POINT and ⊥ to LINE.","Draw line on POINT and || to LINE.","Draw bisector to 2 LINES.","Origami 6: Fold 2 POINTS to 2 LINES.","Draw circle with center POINT and POINT on it.","Draw 3 POINT circle."]
+    let measureText=["Measure distance between 2 POINTS.","Choose 3 POINTS to measure angle.", "Measure area of CIRCLE.","Show sum of two MEASURES.","Show difference of 2 MEASURES.","Show product of 2 MEASURES.","Show ratio of 2 MEASURES.","Hide OBJECT.","Show or hide label of OBJECT.","Toggle degrees / radians."]
     let makePoints=0, makeMidpoint=1, makeIntersections=2, foldPoints=3
     let makeSegments=4, makeRays=5, makeLines=6, makePerps=7, makeParallels=8
     let makeBisectors=9, useOrigamiSix=10, makeCircles=11
