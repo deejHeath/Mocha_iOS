@@ -229,7 +229,7 @@
                                             <action selector="settingsButtonPressed:" destination="3nO-NK-ot4" eventType="touchUpInside" id="CMH-xG-IWz"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" tag="10" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pOc-nn-XLU">
+                                    <button opaque="NO" tag="10" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pOc-nn-XLU">
                                         <rect key="frame" x="0.0" y="295" width="320" height="26"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Origami 3: Draw bisector from 2 LINES.">
@@ -239,7 +239,7 @@
                                             <action selector="settingsButtonPressed:" destination="3nO-NK-ot4" eventType="touchUpInside" id="Bpk-cB-XVc"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" tag="11" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2NT-4Q-xDT">
+                                    <button opaque="NO" tag="11" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2NT-4Q-xDT">
                                         <rect key="frame" x="0.0" y="321" width="320" height="26"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Origami 6: Fold 2 POINTS to 2 LINES.">
@@ -265,14 +265,14 @@
                                             <action selector="settingsButtonPressed:" destination="3nO-NK-ot4" eventType="touchUpInside" id="BD6-2V-ahw"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" tag="13" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ry9-WP-65y">
+                                    <button opaque="NO" tag="13" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ry9-WP-65y">
                                         <rect key="frame" x="0.0" y="390.5" width="320" height="26"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Draw 3 POINT circle.">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
                                         </buttonConfiguration>
                                         <connections>
-                                            <action selector="settingsButtonPressed:" destination="3nO-NK-ot4" eventType="touchUpInside" id="BRi-H7-VQf"/>
+                                            <action selector="settingsButtonPressed:" destination="3nO-NK-ot4" eventType="touchUpInside" id="gdK-9S-vkB"/>
                                         </connections>
                                     </button>
                                 </subviews>

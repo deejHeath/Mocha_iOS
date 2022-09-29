@@ -15,13 +15,15 @@ class MainViewController: UIViewController {
     let makeSegments=5, makeRays=6, makeLines=7, makePerps=8, makeParallels=9
     let makeBisectors=10, useOrigamiSix=11, makeCircles=12, make3PTCircle=13
     let measureDistance=20
-    let POINT = 1, PTonLINE = 2, PTonCIRCLE = 3, MIDPOINT = 4, LINEintLINE = 5
-    let CIRCintCIRC0 = 6,CIRCintCIRC1 = 7, LINEintCIRC0 = 8, LINEintCIRC1 = 9, FOLDedPT = 10
-    let INVERTedPT=11, FOLD6PT0 = 12, FOLD6PT1 = 13, FOLD6PT2 = 14
+    let POINT = 1, PTonLINE = 2, PTonCIRCLE = 3, MIDPOINT = 4
+    let LINEintLINE = 5, FOLDedPT = 6, INVERTedPT=7
+    let CIRCintCIRC0 = 8,CIRCintCIRC1 = 9, LINEintCIRC0 = 10, LINEintCIRC1 = 11
+    let BiPOINT = 12, THREEptCIRCLEcntr=13
+    let TOOL6PT0 = 14, TOOL6PT1 = 15, TOOL6PT2 = 16
     let DISTANCE = 20, ANGLE = 21, RATIO = 22
     let CIRCLE = 0
-    let LINE = -1, PERP = -2, PARALLEL = -3, BISECTOR0 = -4, BISECTOR1 = -5, FOLD6LINE0 = -7
-    let FOLD6LINE1 = -8, FOLD6LINE2 = -9, SEGMENT = -10, RAY = -11
+    let LINE = -1, PERP = -2, PARALLEL = -3, BISECTOR0 = -4, BISECTOR1 = -5, TOOL6LINE0 = -7
+    let TOOL6LINE1 = -8, TOOL6LINE2 = -9, THREEptLINE = -10, SEGMENT = -11, RAY = -12
     private var whatToDo=0
     var firstTouch: CGPoint?
     var activeConstruct = false
@@ -67,8 +69,14 @@ class MainViewController: UIViewController {
                 }
             }
             break
-        case makeLines,measureDistance,makeCircles,makeMidpoint:
+        case makeLines,measureDistance,makeCircles,makeMidpoint,make3PTCircle:
             getPoint(location)
+            if !activeConstruct {
+                potentialClick=nil
+            }
+            break
+        case makeBisectors:
+            getLine(location)
             if !activeConstruct {
                 potentialClick=nil
             }
@@ -97,6 +105,13 @@ class MainViewController: UIViewController {
             getLineOrCircle(location)
             if !activeConstruct {
                 potentialClick=nil
+            }
+            break
+        case useOrigamiSix:
+            if clickedList.count==0 || clickedList.count==1 {
+                getPoint(location)
+            } else if clickedList.count==2 || clickedList.count==3 {
+                getLine(location)
             }
             break
         default:
@@ -137,10 +152,16 @@ class MainViewController: UIViewController {
                 update(object: object, point: object.coordinates)
             }
             break
-        case makeLines, measureDistance, makeCircles, makeMidpoint:
+        case makeLines, measureDistance, makeCircles, makeMidpoint,make3PTCircle:
             getRidOfActivesThatAreTooFar(location)
             if !activeConstruct {
                 getPoint(location)
+            }
+            break
+        case makeBisectors:
+            getRidOfActivesThatAreTooFar(location)
+            if !activeConstruct {
+                getLine(location)
             }
             break
         case foldPoints,makePerps,makeParallels:
@@ -177,6 +198,24 @@ class MainViewController: UIViewController {
                 getPoint(location)
             } else if clickedList.count==1 {
                 getCircle(location)
+            }
+            break
+        case useOrigamiSix:
+            if activeConstruct {
+                if let temp = potentialClick as? Point {
+                    if distance(temp,location)>touchSense {
+                        clearLastPotential()
+                    }
+                } else if let temp = potentialClick as? Line {
+                    if distance(temp,location)>touchSense {
+                        clearLastPotential()
+                    }
+                }
+            }
+            if clickedList.count==0 || clickedList.count==1 {
+                getPoint(location)
+            } else if clickedList.count==2 || clickedList.count==3 {
+                getLine(location)
             }
             break
         case makeIntersections:
@@ -225,10 +264,6 @@ class MainViewController: UIViewController {
                 linkedList.append(Point(point: location, number: linkedList.count))
             }
             clearAllPotentials()
-            for object in linkedList {
-                update(object: object, point: object.coordinates)
-                update(object: object, point: object.coordinates)
-            }
             break
         case makeLines:
             getRidOfActivesThatAreTooFar(location)
@@ -279,6 +314,39 @@ class MainViewController: UIViewController {
                 }
                 if !alreadyExists {
                     linkedList.append(MidPoint(ancestor: clickedList, point: location, number: linkedList.count))
+                    linkedList[linkedList.count-1].update(width: canvas.frame.width)
+                    clearAllPotentials()
+                }
+            }
+            break
+        case makeBisectors:
+            getRidOfActivesThatAreTooFar(location)
+            clearActives()
+            getRidOfDuplicates()
+            if clickedList.count==2 {
+                arrangeClickedObjectsByIndex()
+                var alreadyExists=false
+                for i in 0..<linkedList.count {
+                    if linkedList[i].type==BiPOINT {
+                        if let temp=linkedList[i] as? BisectorPoint {
+                            if !alreadyExists {
+                                if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
+                                    alreadyExists=true
+                                    linkedList[i+1].isShown=true
+                                    linkedList[i+2].isShown=true
+                                    clearAllPotentials()
+                                }
+                            }
+                        }
+                    }
+                }
+                if !alreadyExists {
+                    linkedList.append(BisectorPoint(ancestor: clickedList, point: location, number: linkedList.count))
+                    linkedList[linkedList.count-1].isShown=false
+                    clickedList.insert(linkedList[linkedList.count-1], at: 0)
+                    linkedList.append(Bisector0(ancestor: clickedList, point: location, number: linkedList.count))
+                    linkedList[linkedList.count-1].update(width: canvas.frame.width)
+                    linkedList.append(Bisector1(ancestor: clickedList, point: location, number: linkedList.count))
                     linkedList[linkedList.count-1].update(width: canvas.frame.width)
                     clearAllPotentials()
                 }
@@ -385,6 +453,7 @@ class MainViewController: UIViewController {
                 }
                 if !alreadyExists {
                     linkedList.append(PerpLine(ancestor: clickedList, point: location, number: linkedList.count))
+                    linkedList[linkedList.count-1].update(width: canvas.frame.width)
                     clearAllPotentials()
                 }
             }
@@ -420,6 +489,7 @@ class MainViewController: UIViewController {
                 }
                 if !alreadyExists {
                     linkedList.append(ParallelLine(ancestor: clickedList, point: location, number: linkedList.count))
+                    linkedList[linkedList.count-1].update(width: canvas.frame.width)
                     clearAllPotentials()
                 }
             }
@@ -446,6 +516,96 @@ class MainViewController: UIViewController {
                     linkedList[linkedList.count-1].update(ancestor: linkedList[linkedList.count-1].parent)
                     clearAllPotentials()
                 }
+            }
+            break
+        case make3PTCircle:
+            getRidOfActivesThatAreTooFar(location)
+            clearActives()
+            getRidOfDuplicates()
+            if clickedList.count==3 {
+                arrangeClickedObjectsByIndex()
+                var alreadyExists=false
+                for i in 0..<linkedList.count {
+                    if linkedList[i].type<0 {
+                        if let temp=linkedList[i] as? ThreePointLine {
+                            if !alreadyExists {
+                                if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index && temp.parent[2].index == clickedList[2].index {
+                                    alreadyExists=true
+                                    linkedList[i].isShown=true
+                                    linkedList[i+2].isShown=true
+                                    clearAllPotentials()
+                                }
+                            }
+                        }
+                    }
+                }
+                if !alreadyExists {
+                    linkedList.append(ThreePointLine(ancestor: clickedList, point: location, number: linkedList.count))
+                    linkedList[linkedList.count-1].update(width: canvas.frame.width)
+                    clickedList.append(linkedList[linkedList.count-1])
+                    linkedList.append(ThreePointCircleCntr(ancestor: clickedList, point: location, number: linkedList.count))
+                    linkedList[linkedList.count-1].isShown=false
+                    let temp=clickedList[0]
+                    clearAllPotentials()
+                    clickedList.append(linkedList[linkedList.count-1])
+                    clickedList.append(temp)
+                    linkedList.append(Circle(ancestor: clickedList, point: location, number: linkedList.count))
+                    clearAllPotentials()
+                }
+            }
+            break
+        case useOrigamiSix:
+            if activeConstruct {
+                if let temp = potentialClick as? Point {
+                    if distance(temp,location)>touchSense {
+                        clearLastPotential()
+                    }
+                } else if let temp = potentialClick as? Line {
+                    if distance(temp,location)>touchSense {
+                        clearLastPotential()
+                    }
+                }
+            }
+            if !activeConstruct {
+                potentialClick=nil
+                activeConstruct=false
+            }
+            if clickedList.count==4 {
+                var alreadyExists=false
+                for i in 0..<linkedList.count {
+                    if linkedList[i].type==TOOL6PT0 {
+                        if let temp=linkedList[i] as? Tool6Point0 {
+                            if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index && temp.parent[2].index==clickedList[2].index && temp.parent[3].index==clickedList[3].index {
+                                alreadyExists=true
+                                linkedList[i].isShown=true
+                                linkedList[i+1].isShown=true
+                                linkedList[i+2].isShown=true
+                                linkedList[i+3].isShown=true
+                                linkedList[i+4].isShown=true
+                                linkedList[i+5].isShown=true
+                                
+                            }
+                        }
+                    }
+                }
+                if !alreadyExists {
+                    linkedList.append(Tool6Point0(ancestor: clickedList, point: location, number: linkedList.count))
+                    linkedList[linkedList.count-1].isShown=false
+                    clickedList.removeAll()
+                    clickedList.append(linkedList[linkedList.count-1])
+                    linkedList.append(Tool6Line0(ancestor: clickedList, point: location, number: linkedList.count))
+                    linkedList.append(Tool6Point1(ancestor: clickedList, point: location, number: linkedList.count))
+                    linkedList[linkedList.count-1].isShown=false
+                    clickedList.insert(linkedList[linkedList.count-1], at: 0)
+                    linkedList.append(Tool6Line1(ancestor: clickedList, point: location, number: linkedList.count))
+                    clickedList.remove(at: 0)
+                    linkedList.append(Tool6Point2(ancestor: clickedList, point: location, number: linkedList.count))
+                    linkedList[linkedList.count-1].isShown=false
+                    clickedList.insert(linkedList[linkedList.count-1], at: 0)
+                    linkedList.append(Tool6Line2(ancestor: clickedList, point: location, number: linkedList.count))
+
+                }
+                clearAllPotentials()
             }
             break
         case makeIntersections:
@@ -527,6 +687,10 @@ class MainViewController: UIViewController {
         default:
             print("touchesEnded: \(location)")
         }
+        for object in linkedList {
+            update(object: object, point: object.coordinates)
+            update(object: object, point: object.coordinates)
+        }
         canvas.update(constructions: linkedList, indices: clickedIndex)
         canvas.setNeedsDisplay()
     }
@@ -607,8 +771,18 @@ class MainViewController: UIViewController {
     }
     func arrangeClickedObjectsByIndex() {
         if clickedIndex[0]>clickedIndex[1] {
-            clickedList.append(clickedList[0])
-            clickedList.removeFirst()
+            clickedList.append(clickedList[0]);
+            clickedList.removeFirst();
+        }
+        if clickedList.count==3 {
+            if clickedIndex[0]>clickedIndex[2] {
+                clickedList.append(clickedList[0]);
+                clickedList.removeFirst()
+            }
+            if clickedIndex[1]>clickedIndex[2] {
+                clickedList.append(clickedList[1])
+                clickedList.remove(at:1)
+            }
         }
     }
     func clearActives() {
@@ -623,9 +797,14 @@ class MainViewController: UIViewController {
         clickedIndex.removeLast()
     }
     func getRidOfDuplicates() {
-        if clickedList.count==2 {
+        if clickedList.count>1 {
             if clickedIndex[0]==clickedIndex[1] {
                 clearLastPotential()
+            }
+            if clickedList.count==3 {
+                if clickedIndex[0]==clickedIndex[2] || clickedIndex[1]==clickedIndex[2] {
+                    clearLastPotential()
+                }
             }
         }
     }
@@ -665,11 +844,35 @@ class MainViewController: UIViewController {
             temp.update()
         } else if let temp = object as? InvertedPoint {
             temp.update()
+        } else if let temp = object as? ThreePointCircleCntr {
+            temp.update()
+        } else if let temp = object as? BisectorPoint {
+            temp.update()
+        } else if let temp = object as? BisectorPoint {
+            temp.update()
+        } else if let temp = object as? Tool6Point0 {
+            temp.update()
+        } else if let temp = object as? Tool6Point1 {
+            temp.update()
+        } else if let temp = object as? Tool6Point2 {
+            temp.update()
         } else if let temp = object as? Point {
             temp.update(point: point)
         } else if let temp = object as? PerpLine {
             temp.update()
         } else if let temp = object as? ParallelLine {
+            temp.update()
+        } else if let temp = object as? ThreePointLine {
+            temp.update()
+        } else if let temp = object as? Bisector0 {
+            temp.update()
+        } else if let temp = object as? Bisector1 {
+            temp.update()
+        } else if let temp = object as? Tool6Line0 {
+            temp.update()
+        } else if let temp = object as? Tool6Line1 {
+            temp.update()
+        } else if let temp = object as? Tool6Line2 {
             temp.update()
         } else if let temp = object as? Line {
             temp.update()
@@ -721,7 +924,11 @@ class MainViewController: UIViewController {
             unitIndex=0
         }
         if linkedList.count>0 {
-            if linkedList[linkedList.count-1].type==CIRCintCIRC1 || linkedList[linkedList.count-1].type==LINEintCIRC1{
+            if linkedList[linkedList.count-1].type==THREEptCIRCLEcntr {
+                linkedList.removeLast()
+                linkedList.removeLast()
+            }
+            if linkedList[linkedList.count-1].type==CIRCintCIRC1 || linkedList[linkedList.count-1].type==LINEintCIRC1 {
                 linkedList.removeLast()                        // since there were two created at once
             }
             linkedList.removeLast()
