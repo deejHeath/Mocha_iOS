@@ -20,7 +20,7 @@ class Construction {
     var index = -1
     let POINT = 1, PTonLINE = 2, PTonCIRCLE = 3, MIDPOINT = 4, LINEintLINE = 5
     let CIRCintCIRC0 = 6,CIRCintCIRC1 = 7, LINEintCIRC0 = 8, LINEintCIRC1 = 9, FOLDedPT = 10
-    let FOLD6PT0 = 11, FOLD6PT1 = 12, FOLD6PT2 = 13
+    let INVERTedPT=11, FOLD6PT0 = 12, FOLD6PT1 = 13, FOLD6PT2 = 14
     let DISTANCE = 20, ANGLE = 21, RATIO = 22
     let CIRCLE = 0
     let LINE = -1, PERP = -2, PARALLEL = -3, BISECTOR0 = -4, BISECTOR1 = -5, FOLD6LINE0 = -7
@@ -74,9 +74,6 @@ class Point: Construction {                             // parents: []
     }
     override init(ancestor: [Construction], point: CGPoint, number: Int) {
         super.init(ancestor: ancestor,point: point, number: number)
-        for object in ancestor {
-            parent.append(object)
-        }
         coordinates=point
         type = POINT
         index=number
@@ -115,10 +112,7 @@ class Point: Construction {                             // parents: []
 
 class PointOnLine: Point {                                                  // parents: line
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  //
-        super.init(point: point, number: number)                            // it needs a location
-        for object in ancestor {                                            // to update
-            parent.append(object)
-        }
+        super.init(ancestor: ancestor, point: point, number: number)        // it needs a location
         self.update(point: point)
         type=PTonLINE
         index=number
@@ -139,10 +133,7 @@ class PointOnLine: Point {                                                  // p
 
 class PointOnCircle: Point {                                                // parents: line
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  //
-        super.init(point: point, number: number)                            // it needs a location
-        for object in ancestor {                                            // to update
-            parent.append(object)
-        }
+        super.init(ancestor: ancestor, point: point, number: number)        // it needs a location
         self.update(point: point)
         type=PTonCIRCLE
         index=number
@@ -162,10 +153,7 @@ class PointOnCircle: Point {                                                // p
 
 class MidPoint: Point {                                                     // parents: point, point
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  // this is usually
-        super.init(point: point,number:number)                              // invisible
-        for object in ancestor {
-            parent.append(object)
-        }
+        super.init(ancestor: ancestor, point: point,number:number)          // invisible
         update()
         type=MIDPOINT
         index=number
@@ -189,12 +177,9 @@ class MidPoint: Point {                                                     // p
     }
 }
 
-class LineIntLine: Point {                                                      // parents: line, line
+class LineIntLine: Point {                                                  // parents: line, line
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  // this is the intersection
-        super.init(point: point,number:number)                              // point of two lines
-        for object in ancestor {
-            parent.append(object)
-        }
+        super.init(ancestor: ancestor, point: point, number: number)        // point of two lines
         update()
         type=LINEintLINE
         index=number
@@ -236,10 +221,7 @@ class CircIntCirc0: Point {                                 // parent: circle, c
     var alternateSlope = CGPoint.zero                       // and alternates...will be used by CircIntCirc1
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  //
         let point0=ancestor[0].coordinates                                  //
-        super.init(point: point0, number: number)
-        for object in ancestor {
-            parent.append(object)
-        }
+        super.init(ancestor: ancestor, point: point0, number: number)
         update()
         slope=coordinates
         alternateSlope=alternateCoordinates
@@ -287,10 +269,7 @@ class CircIntCirc0: Point {                                 // parent: circle, c
 class CircIntCirc1: Point {                                       // parent: circ, circ, cic0
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  //
         let point0=ancestor[0].coordinates                                  //
-        super.init(point: point0, number: number)
-        for object in ancestor {
-            parent.append(object)
-        }
+        super.init(ancestor: ancestor, point: point0, number: number)
         update()
         type=CIRCintCIRC1
         index=number
@@ -314,10 +293,7 @@ class LineIntCirc0: Point {                                 // parent: circle, c
     var alternateSlope = CGPoint.zero                       // and alternates...will be used by LineIntCirc1
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  //
         let point0=ancestor[0].coordinates                                  //
-        super.init(point: point0, number: number)
-        for object in ancestor {
-            parent.append(object)
-        }
+        super.init(ancestor: ancestor, point: point0, number: number)
         update()
         slope=coordinates
         alternateSlope=alternateCoordinates
@@ -365,10 +341,7 @@ class LineIntCirc0: Point {                                 // parent: circle, c
 class LineIntCirc1: Point {                                       // parent: line, circ, lic0
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  //
         let point0=ancestor[0].coordinates                                  //
-        super.init(point: point0, number: number)
-        for object in ancestor {
-            parent.append(object)
-        }
+        super.init(ancestor: ancestor, point: point0, number: number)
         update()
         type=LINEintCIRC1
         index=number
@@ -389,9 +362,6 @@ class LineIntCirc1: Point {                                       // parent: lin
 class FoldedPoint: Point {                                                  // parents: point, line
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  // fold point with crease
         super.init(ancestor: ancestor, point: point, number: number)        //
-        for object in ancestor {
-            parent.append(object)
-        }
         let point0=ancestor[0].coordinates                                  // the line
         let point1=ancestor[1].parent[0].coordinates                        //
         let mx=ancestor[1].slope.x, my=ancestor[1].slope.y
@@ -417,13 +387,35 @@ class FoldedPoint: Point {                                                  // p
     }
 }
 
+class InvertedPoint: Point {                                // parent: point, circle
+    override init(ancestor: [Construction], point: CGPoint, number: Int) {  // invert point in circle
+        super.init(ancestor: ancestor, point: point, number: number)        //
+        update()
+        type=INVERTedPT
+        index=number
+    }
+    func update() {
+        if !parent[0].isReal || !parent[1].isReal {
+            isReal=false
+        } else {
+            let point0=parent[0].coordinates                  // point to invert
+            let point1=parent[1].parent[0].coordinates        // center of circle
+            let radius=parent[1].parent[0].distance(parent[1].slope)    // radius of circle
+            let distance=parent[1].parent[0].distance(point0)
+            if  distance<epsilon {
+                isReal=false
+            } else {
+                isReal=true
+                coordinates = CGPoint(x: pow(radius,2)*(point0.x-point1.x)/pow(distance,2)+point1.x,y: pow(radius,2)*(point0.y-point1.y)/pow(distance,2)+point1.y)
+            }
+        }
+    }
+}
+
 class Distance: Point {
     var scaleFactor = 1.0
     override init(ancestor: [Construction], point: CGPoint, number: Int) {
         super.init(ancestor: ancestor,point: point, number: number)
-        for object in ancestor {
-            parent.append(object)
-        }
         coordinates=CGPoint(x: (parent[0].coordinates.x+parent[1].coordinates.x)/2, y: (parent[0].coordinates.y+parent[1].coordinates.y)/2)
         type = DISTANCE
         index=number
@@ -480,12 +472,9 @@ class Line: Construction {                                                  // p
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  // (usually)
         let point0=ancestor[0].coordinates                                  // the first must be a
         let point1=ancestor[1].coordinates                                  // point
-        super.init(point: point0, number: number)
+        super.init(ancestor: ancestor, point: point0, number: number)
         slope=CGPoint(x: point0.x-point1.x,y: point0.y-point1.y)
         normalizeSlope()
-        for object in ancestor {
-            parent.append(object)
-        }
         type=LINE
         index=number
     }
@@ -566,12 +555,9 @@ class PerpLine: Line {                                                      // p
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  // the line on the point
         let point0=ancestor[0].coordinates                                  // and perp to the given
         let line1=ancestor[1].slope                                         // line.
-            super.init(ancestor: ancestor, point: point0, number: number)
-            slope=CGPoint(x: -line1.y,y: line1.x)
-            normalizeSlope()
-            for object in ancestor {
-                parent.append(object)
-            }
+        super.init(ancestor: ancestor, point: point0, number: number)
+        slope=CGPoint(x: -line1.y,y: line1.x)
+        normalizeSlope()
         self.update()
         type=PERP
         index=number
@@ -592,12 +578,9 @@ class ParallelLine: Line {                                                  // p
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  // the line on the point
         let point0=ancestor[0].coordinates                                  // and parallel to the
         let line1=ancestor[1].slope                                         // given line.
-            super.init(ancestor: ancestor, point: point0, number: number)
-            slope=CGPoint(x: -line1.y,y: line1.x)
-            normalizeSlope()
-            for object in ancestor {
-                parent.append(object)
-            }
+        super.init(ancestor: ancestor, point: point0, number: number)
+        slope=CGPoint(x: -line1.y,y: line1.x)
+        normalizeSlope()
         self.update()
         type=PARALLEL
         index=number
@@ -620,12 +603,9 @@ class Circle: Construction {
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  // parent: point, point
         let point0=ancestor[0].coordinates                                  // the first must be a
         let point1=ancestor[1].coordinates                                  // point
-        super.init(point: point0, number: number)
+        super.init(ancestor: ancestor, point: point0, number: number)
         coordinates=point0
-        slope=point1                                    // Here we use slope for coordinates of second point
-        for object in ancestor {
-            parent.append(object)
-        }
+        slope=point1                             // Here we use slope for coordinates of second point
         type=CIRCLE
         index=number
     }

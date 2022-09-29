@@ -1,7 +1,6 @@
 import UIKit
 
 class MainViewController: UIViewController {
-    
 
     @IBOutlet weak var infoLabel: UILabel!
     var potentialClick: Construction?
@@ -10,15 +9,15 @@ class MainViewController: UIViewController {
     var clickedList: [Construction] = []
     var futureList: [Construction] = []
     var clickedIndex: [Int] = []
-    let actionText=["Draw or move POINTS.", "Draw midpoint between 2 POINTS.","Draw intersection of 2 OBJECTS.","Fold POINT in LINE.","Draw segment on 2 POINTS.", "Draw ray on 2 POINTS.","Draw line on 2 POINTS.","Draw line on POINT and ⊥ to LINE.","Draw line on POINT and || to LINE.","Draw bisector to 2 LINES.","Origami 6: Fold 2 POINTS to 2 LINES.","Draw circle with center POINT and POINT on it.","Draw 3 POINT circle."]
+    let actionText=["Draw or move POINTS.", "Draw midpoint between 2 POINTS.","Draw intersection of 2 OBJECTS.","Fold POINT in LINE.","Invert POINT in CIRCLE.", "Draw segment on 2 POINTS.", "Draw ray on 2 POINTS.","Draw line on 2 POINTS.","Draw line on POINT and ⊥ to LINE.","Draw line on POINT and || to LINE.","Draw bisector to 2 LINES.","Origami 6: Fold 2 POINTS to 2 LINES.","Draw circle with center POINT and POINT on it.","Draw 3 POINT circle."]
     let measureText=["Measure distance between 2 POINTS.","Choose 3 POINTS to measure angle.", "Measure area of CIRCLE.","Show sum of two MEASURES.","Show difference of 2 MEASURES.","Show product of 2 MEASURES.","Show ratio of 2 MEASURES.","Hide OBJECT.","Show or hide label of OBJECT.","Toggle degrees / radians."]
-    let makePoints=0, makeMidpoint=1, makeIntersections=2, foldPoints=3
-    let makeSegments=4, makeRays=5, makeLines=6, makePerps=7, makeParallels=8
-    let makeBisectors=9, useOrigamiSix=10, makeCircles=11
+    let makePoints=0, makeMidpoint=1, makeIntersections=2, foldPoints=3, invertPoints=4
+    let makeSegments=5, makeRays=6, makeLines=7, makePerps=8, makeParallels=9
+    let makeBisectors=10, useOrigamiSix=11, makeCircles=12, make3PTCircle=13
     let measureDistance=20
     let POINT = 1, PTonLINE = 2, PTonCIRCLE = 3, MIDPOINT = 4, LINEintLINE = 5
     let CIRCintCIRC0 = 6,CIRCintCIRC1 = 7, LINEintCIRC0 = 8, LINEintCIRC1 = 9, FOLDedPT = 10
-    let FOLD6PT0 = 11, FOLD6PT1 = 12, FOLD6PT2 = 13
+    let INVERTedPT=11, FOLD6PT0 = 12, FOLD6PT1 = 13, FOLD6PT2 = 14
     let DISTANCE = 20, ANGLE = 21, RATIO = 22
     let CIRCLE = 0
     let LINE = -1, PERP = -2, PARALLEL = -3, BISECTOR0 = -4, BISECTOR1 = -5, FOLD6LINE0 = -7
@@ -79,6 +78,16 @@ class MainViewController: UIViewController {
                 getPoint(location)
             } else if clickedList.count==1 {
                 getLine(location)
+            }
+            if !activeConstruct {
+                potentialClick=nil
+            }
+            break
+        case invertPoints:
+            if clickedList.count==0 {
+                getPoint(location)
+            } else if clickedList.count==1 {
+                getCircle(location)
             }
             if !activeConstruct {
                 potentialClick=nil
@@ -150,6 +159,24 @@ class MainViewController: UIViewController {
                 getPoint(location)
             } else if clickedList.count==1 {
                 getLine(location)
+            }
+            break
+        case invertPoints:
+            if activeConstruct {
+                if let temp = potentialClick as? Point {
+                    if distance(temp,location)>touchSense {
+                        clearLastPotential()
+                    }
+                } else if let temp = potentialClick as? Circle {
+                    if distance(temp,location)>touchSense {
+                        clearLastPotential()
+                    }
+                }
+            }
+            if clickedList.count==0 {
+                getPoint(location)
+            } else if clickedList.count==1 {
+                getCircle(location)
             }
             break
         case makeIntersections:
@@ -288,6 +315,41 @@ class MainViewController: UIViewController {
                 }
                 if !alreadyExists {
                     linkedList.append(FoldedPoint(ancestor: clickedList, point: location, number: linkedList.count))
+                    clearAllPotentials()
+                }
+            }
+            break
+        case invertPoints:
+            if activeConstruct {
+                if let temp = potentialClick as? Point {
+                    if distance(temp,location)>touchSense {
+                        clearLastPotential()
+                    }
+                } else if let temp = potentialClick as? Circle {
+                    if distance(temp,location)>touchSense {
+                        clearLastPotential()
+                    }
+                }
+            }
+            if !activeConstruct {
+                potentialClick=nil
+                activeConstruct=false
+            }
+            if clickedList.count==2 {
+                var alreadyExists=false
+                for i in 0..<linkedList.count {
+                    if linkedList[i].type==INVERTedPT {
+                        if let temp=linkedList[i] as? InvertedPoint {
+                            if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
+                                alreadyExists=true
+                                linkedList[i].isShown=true
+                                clearAllPotentials()
+                            }
+                        }
+                    }
+                }
+                if !alreadyExists {
+                    linkedList.append(InvertedPoint(ancestor: clickedList, point: location, number: linkedList.count))
                     clearAllPotentials()
                 }
             }
@@ -525,6 +587,15 @@ class MainViewController: UIViewController {
             }
         }
     }
+    func getCircle(_ location: CGPoint) {
+        for i in 0..<linkedList.count {
+            if distance(linkedList[i],location)<touchSense && !clickedIndex.contains(i) && !activeConstruct && linkedList[i].isShown && linkedList[i].isReal {
+                if linkedList[i].type == 0 {
+                    setActiveConstruct(i)
+                }
+            }
+        }
+    }
     func getRidOfActivesThatAreTooFar(_ location: CGPoint) {
         if activeConstruct {
             if let temp = potentialClick as? Point {
@@ -591,6 +662,8 @@ class MainViewController: UIViewController {
         } else if let temp = object as? LineIntCirc1 {
             temp.update()
         } else if let temp = object as? FoldedPoint {
+            temp.update()
+        } else if let temp = object as? InvertedPoint {
             temp.update()
         } else if let temp = object as? Point {
             temp.update(point: point)
