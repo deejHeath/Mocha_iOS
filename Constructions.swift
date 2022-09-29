@@ -484,13 +484,13 @@ class Distance: Measure {
         type = DISTANCE
         index=number
         value=sqrt(pow(parent[0].coordinates.x-parent[1].coordinates.x,2)+pow(parent[0].coordinates.y-parent[1].coordinates.y,2))
-        update(point: coordinates, unitValue: value)
+        update(point: CGPoint(x: (parent[0].coordinates.x+2*parent[1].coordinates.x)/3, y: (2*parent[0].coordinates.x+parent[1].coordinates.x)/3))
         parent[0].showLabel=true
         parent[1].showLabel=true
         showLabel=false
         textString="d(\(character[parent[0].index%26])\(parent[0].index/26),\(character[parent[1].index%26])\(parent[1].index/26))"
     }
-    override func update(point: CGPoint, unitValue: Double) {
+    override func update(point: CGPoint) {
         var parentsAllReal=true
         for object in parent {
             if !object.isReal {
@@ -501,7 +501,11 @@ class Distance: Measure {
             isReal=true
             coordinates=point
             value=sqrt(pow(parent[0].coordinates.x-parent[1].coordinates.x,2)+pow(parent[0].coordinates.y-parent[1].coordinates.y,2))
-            scaleFactor=unitValue
+            if parent.count==3 {
+                scaleFactor=parent[2].value
+            } else {
+                scaleFactor=value
+            }
         } else {
             isReal=false
         }
@@ -528,10 +532,9 @@ class Distance: Measure {
 }
 
 class Angle: Measure {
-    var scaleFactor = 1.0
     override init(ancestor: [Construction], point: CGPoint, number: Int) {
         super.init(ancestor: ancestor,point: point, number: number)
-        coordinates=CGPoint(x: (parent[0].coordinates.x+parent[1].coordinates.x)/2, y: (parent[0].coordinates.y+parent[1].coordinates.y)/2)
+        update(point: CGPoint(x: (parent[0].coordinates.x+2*parent[1].coordinates.x)/3, y: (2*parent[0].coordinates.x+parent[1].coordinates.x)/3))
         type = DISTANCE
         index=number
         value=sqrt(pow(parent[0].coordinates.x-parent[2].coordinates.x,2)+pow(parent[0].coordinates.y-parent[2].coordinates.y,2))
@@ -539,9 +542,9 @@ class Angle: Measure {
         parent[1].showLabel=true
         parent[2].showLabel=true
         showLabel=false
-        scaleFactor=1.0
+        textString="∠(\(character[parent[0].index%26])\(parent[0].index/26),\(character[parent[1].index%26])\(parent[1].index/26),\(character[parent[2].index%26])\(parent[2].index/26))"
     }
-    override func update(point: CGPoint, unitValue: Double) {
+    override func update(point: CGPoint) {
         var parentsAllReal=true
         for object in parent {
             if !object.isReal {
@@ -551,13 +554,35 @@ class Angle: Measure {
         if parentsAllReal {
             isReal=true
             coordinates=point
-            value=sqrt(pow(parent[0].coordinates.x-parent[1].coordinates.x,2)+pow(parent[0].coordinates.y-parent[1].coordinates.y,2))
-            scaleFactor=unitValue
+            let p0=parent[0].coordinates
+            let p1=parent[1].coordinates
+            let p2=parent[2].coordinates
+            let uDotV=(p0.x-p1.x)*(p2.x-p1.x)+(p0.y-p1.y)*(p2.y-p1.y)
+            let normU=sqrt(pow(p0.x-p1.x,2)+pow(p0.y-p1.y,2))
+            let normV=sqrt(pow(p2.x-p1.x,2)+pow(p2.y-p1.y,2))
+            value=acos(uDotV/(normU*normV))*180/3.141592653589793
         } else {
             isReal=false
         }
     }
     override func draw(_ context: CGContext,_ isRed: Bool) {
+        context.setFillColor(UIColor.clear.cgColor)
+        if isRed {
+            context.setStrokeColor(UIColor.red.cgColor)
+        } else {
+                context.setStrokeColor(UIColor.black.cgColor)
+        }
+        context.setLineWidth(2.0)
+        let currentRect = CGRect(x: coordinates.x-4.0,y:coordinates.y-4.0,
+                                 width: 8.0,
+                                 height: 8.0)
+        context.addEllipse(in: currentRect)
+        context.drawPath(using: .fillStroke)
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .center
+        let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
+        let string = textString+" ≈ \(round(1000000*(value)+0.3)/1000000)"
+        string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:200, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
     }
 }
     
