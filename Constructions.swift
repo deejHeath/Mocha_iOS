@@ -477,18 +477,31 @@ class Measure: Point {
 }
 
 class Distance: Measure {
-    var scaleFactor = 1.0
+    var measuredValue=1.0
     override init(ancestor: [Construction], point: CGPoint, number: Int) {
         super.init(ancestor: ancestor, point: point, number: number)
         coordinates=parent[0].coordinates
         type = DISTANCE
         index=number
-        value=sqrt(pow(parent[0].coordinates.x-parent[1].coordinates.x,2)+pow(parent[0].coordinates.y-parent[1].coordinates.y,2))
+        measuredValue=sqrt(pow(parent[0].coordinates.x-parent[1].coordinates.x,2)+pow(parent[0].coordinates.y-parent[1].coordinates.y,2))
         update(point: CGPoint(x: (parent[0].coordinates.x+2*parent[1].coordinates.x)/3, y: (2*parent[0].coordinates.x+parent[1].coordinates.x)/3))
         parent[0].showLabel=true
         parent[1].showLabel=true
         showLabel=false
         textString="d(\(character[parent[0].index%26])\(parent[0].index/26),\(character[parent[1].index%26])\(parent[1].index/26))"
+        if parent.count==3 {
+            if let temp = parent[2] as? Distance {
+                if temp.measuredValue>epsilon {
+                    value=measuredValue/temp.measuredValue
+                } else {
+                    isReal=false
+                }
+            } else {
+                isReal=false
+            }
+        } else {
+            value=1.0
+        }
     }
     override func update(point: CGPoint) {
         var parentsAllReal=true
@@ -500,11 +513,19 @@ class Distance: Measure {
         if parentsAllReal {
             isReal=true
             coordinates=point
-            value=sqrt(pow(parent[0].coordinates.x-parent[1].coordinates.x,2)+pow(parent[0].coordinates.y-parent[1].coordinates.y,2))
+            measuredValue=sqrt(pow(parent[0].coordinates.x-parent[1].coordinates.x,2)+pow(parent[0].coordinates.y-parent[1].coordinates.y,2))
             if parent.count==3 {
-                scaleFactor=parent[2].value
+                if let temp = parent[2] as? Distance {
+                    if temp.measuredValue>epsilon {
+                        value=measuredValue/temp.measuredValue
+                    } else {
+                        isReal=false
+                    }
+                } else {
+                    isReal=false
+                }
             } else {
-                scaleFactor=value
+                value=1.0
             }
         } else {
             isReal=false
@@ -526,7 +547,7 @@ class Distance: Measure {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
         let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
-        let string = textString+" ≈ \(round(1000000*(value/scaleFactor)+0.3)/1000000)"
+        let string = textString+" ≈ \(round(1000000*(value)+0.3)/1000000)"
         string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:120, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
     }
 }
