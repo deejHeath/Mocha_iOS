@@ -329,39 +329,39 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HeL-Su-8RG" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" id="Eed-ZQ-Cjg">
-                    <rect key="frame" x="0.0" y="0.0" width="390" height="158.5"/>
+                    <rect key="frame" x="0.0" y="0.0" width="390" height="158.66666666666666"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YyV-UF-pJY">
-                            <rect key="frame" x="0.0" y="0.0" width="390" height="32.5"/>
+                            <rect key="frame" x="0.0" y="0.0" width="390" height="32"/>
                             <state key="normal" title="Button"/>
                             <buttonConfiguration key="configuration" style="plain" title="Button">
                                 <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                             </buttonConfiguration>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dTf-gw-IaW">
-                            <rect key="frame" x="0.0" y="32.5" width="390" height="31.5"/>
+                            <rect key="frame" x="0.0" y="32" width="390" height="31.666666666666671"/>
                             <state key="normal" title="Button"/>
                             <buttonConfiguration key="configuration" style="plain" title="Button">
                                 <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                             </buttonConfiguration>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XjI-5C-nmG">
-                            <rect key="frame" x="0.0" y="64" width="390" height="31.5"/>
+                            <rect key="frame" x="0.0" y="63.666666666666664" width="390" height="31.666666666666664"/>
                             <state key="normal" title="Button"/>
                             <buttonConfiguration key="configuration" style="plain" title="Button">
                                 <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                             </buttonConfiguration>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bHv-mu-XTd">
-                            <rect key="frame" x="0.0" y="95.5" width="390" height="31.5"/>
+                            <rect key="frame" x="0.0" y="95.333333333333329" width="390" height="31.666666666666671"/>
                             <state key="normal" title="Button"/>
                             <buttonConfiguration key="configuration" style="plain" title="Button">
                                 <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                             </buttonConfiguration>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eEG-1Q-j2O">
-                            <rect key="frame" x="0.0" y="127" width="390" height="31.5"/>
+                            <rect key="frame" x="0.0" y="127.00000000000001" width="390" height="31.666666666666671"/>
                             <state key="normal" title="Button"/>
                             <buttonConfiguration key="configuration" style="plain" title="Button">
                                 <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
@@ -427,7 +427,7 @@
                                             <action selector="settingsButtonPressed:" destination="mZU-iz-2BW" eventType="touchUpInside" id="wBg-YF-5ks"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" tag="23" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1ei-Yo-98g">
+                                    <button opaque="NO" tag="23" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1ei-Yo-98g">
                                         <rect key="frame" x="0.0" y="76.5" width="320" height="28"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Show sum of two MEASURES.">
@@ -437,7 +437,7 @@
                                             <action selector="settingsButtonPressed:" destination="mZU-iz-2BW" eventType="touchUpInside" id="cxu-rS-z7a"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" tag="24" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3SN-jE-3gh">
+                                    <button opaque="NO" tag="24" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3SN-jE-3gh">
                                         <rect key="frame" x="0.0" y="104.5" width="320" height="28"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Show difference of two MEASURES.">
@@ -447,7 +447,7 @@
                                             <action selector="settingsButtonPressed:" destination="mZU-iz-2BW" eventType="touchUpInside" id="mOX-Gb-8yV"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" tag="25" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="e3f-EM-exB">
+                                    <button opaque="NO" tag="25" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="e3f-EM-exB">
                                         <rect key="frame" x="0.0" y="132.5" width="320" height="28"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Show product of two MEASURES.">
@@ -457,7 +457,7 @@
                                             <action selector="settingsButtonPressed:" destination="mZU-iz-2BW" eventType="touchUpInside" id="W31-A8-q9p"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" tag="26" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="alP-0J-kXe">
+                                    <button opaque="NO" tag="26" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="alP-0J-kXe">
                                         <rect key="frame" x="0.0" y="160.5" width="320" height="28"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Show ratio of two MEASURES.">

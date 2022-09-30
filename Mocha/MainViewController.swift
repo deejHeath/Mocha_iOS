@@ -14,14 +14,15 @@ class MainViewController: UIViewController {
     let makePoints=0, makeMidpoint=1, makeIntersections=2, foldPoints=3, invertPoints=4
     let makeSegments=5, makeRays=6, makeLines=7, makePerps=8, makeParallels=9
     let makeBisectors=10, useOrigamiSix=11, makeCircles=12, make3PTCircle=13
-    let measureDistance=20, measureAngle=21
+    let measureDistance=20, measureAngle=21, measureSum=23, measureDifference=24
+    let measureProduct=25, measureRatio=26
     let hideObject=27, showLabel=28
     let POINT = 1, PTonLINE = 2, PTonCIRCLE = 3, MIDPOINT = 4
     let LINEintLINE = 5, FOLDedPT = 6, INVERTedPT=7
     let CIRCintCIRC0 = 8,CIRCintCIRC1 = 9, LINEintCIRC0 = 10, LINEintCIRC1 = 11
     let BiPOINT = 12, THREEptCIRCLEcntr=13
     let TOOL6PT0 = 14, TOOL6PT1 = 15, TOOL6PT2 = 16
-    let DISTANCE = 20, ANGLE = 21, RATIO = 22
+    let DISTANCE = 20, ANGLE = 21, RATIO = 22, SUM = 23, PRODUCT = 24, DIFFERENCE = 25
     let CIRCLE = 0
     let LINE = -1, PERP = -2, PARALLEL = -3, BISECTOR0 = -4, BISECTOR1 = -5, TOOL6LINE0 = -7
     let TOOL6LINE1 = -8, TOOL6LINE2 = -9, THREEptLINE = -10, SEGMENT = -11, RAY = -12
@@ -126,6 +127,12 @@ class MainViewController: UIViewController {
                 potentialClick=nil
             }
             break
+        case measureRatio, measureSum, measureProduct, measureDifference:
+            getMeasure(location)
+            if !activeConstruct {
+                potentialClick=nil
+            }
+            break
         default:
             print("touchesBegan \(location)")
         }
@@ -160,7 +167,6 @@ class MainViewController: UIViewController {
                 }
             }
             for object in linkedList {
-                update(object: object, point: object.coordinates)
                 update(object: object, point: object.coordinates)
             }
             break
@@ -204,6 +210,12 @@ class MainViewController: UIViewController {
             getRidOfActivesThatAreTooFar(location)
             if !activeConstruct {
                 getLineOrCircle(location)
+            }
+            break
+        case measureRatio, measureSum, measureDifference,measureProduct:
+            getRidOfActivesThatAreTooFar(location)
+            if !activeConstruct {
+                getMeasure(location)
             }
             break
         case hideObject,showLabel:
@@ -629,6 +641,45 @@ class MainViewController: UIViewController {
                 }
             }
             break
+        case measureRatio, measureSum, measureProduct, measureDifference:
+            getRidOfActivesThatAreTooFar(location)
+            clearActives()
+            getRidOfDuplicates()
+            if clickedList.count==2 {
+                var alreadyExists=false
+                for i in 0..<linkedList.count {
+                    if let temp=linkedList[i] as? Measure {
+                        if !alreadyExists {
+                            if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
+                                alreadyExists=true
+                                linkedList[i].isShown=true
+                                clearAllPotentials()
+                            }
+                        }
+                    }
+                }
+                if !alreadyExists {
+                    switch(whatToDo) {
+                    case measureRatio:
+                        linkedList.append(Ratio(ancestor: clickedList, point: location, number: linkedList.count))
+                        break
+                    case measureProduct:
+                        linkedList.append(Product(ancestor: clickedList, point: location, number: linkedList.count))
+                        break
+                    case measureSum:
+                        linkedList.append(Sum(ancestor: clickedList, point: location, number: linkedList.count))
+                        break
+                    case measureDifference:
+                        linkedList.append(Difference(ancestor: clickedList, point: location, number: linkedList.count))
+                        break
+                    default:
+                        print("measure default reached")
+                    }
+                    update(object: linkedList[linkedList.count-1], point: CGPoint(x:  (linkedList[linkedList.count-1].parent[0].coordinates.x+2*linkedList[linkedList.count-1].parent[1].coordinates.x)/3,y:  (2*linkedList[linkedList.count-1].parent[0].coordinates.y+linkedList[linkedList.count-1].parent[1].coordinates.y)/3))
+                    clearAllPotentials()
+                }
+            }
+            break
         case hideObject:
             getRidOfActivesThatAreTooFar(location)
             if !activeConstruct {
@@ -655,7 +706,6 @@ class MainViewController: UIViewController {
             print("touchesEnded: \(location)")
         }
         for object in linkedList {
-            update(object: object, point: object.coordinates)
             update(object: object, point: object.coordinates)
         }
         canvas.update(constructions: linkedList, indices: clickedIndex)
@@ -686,6 +736,15 @@ class MainViewController: UIViewController {
         for i in 0..<linkedList.count {
             if distance(linkedList[i],location)<touchSense && !clickedIndex.contains(i) && !activeConstruct && linkedList[i].isShown && linkedList[i].isReal {
                 if (linkedList[i].type>0 && linkedList[i].type<MIDPOINT) || linkedList[i].type>=DISTANCE {
+                    setActiveConstruct(i)
+                }
+            }
+        }
+    }
+    func getMeasure(_ location: CGPoint) {
+        for i in 0..<linkedList.count {
+            if distance(linkedList[i],location)<touchSense && !clickedIndex.contains(i) && !activeConstruct && linkedList[i].isShown && linkedList[i].isReal {
+                if linkedList[i].type>=DISTANCE {
                     setActiveConstruct(i)
                 }
             }
@@ -801,9 +860,19 @@ class MainViewController: UIViewController {
             temp.update(point: point)
         } else if let temp = object as? Angle {
             temp.update(point: point)
+        } else if let temp = object as? Ratio {
+            temp.update(point: point)
+        } else if let temp = object as? Product {
+            temp.update(point: point)
+        } else if let temp = object as? Sum {
+            temp.update(point: point)
+        } else if let temp = object as? Difference {
+            temp.update(point: point)
         } else if let temp = object as? PointOnLine {
             temp.update(point: point)
+            temp.update(point: point)
         } else if let temp = object as? PointOnCircle {
+            temp.update(point: point)
             temp.update(point: point)
         } else if let temp = object as? MidPoint {
             temp.update()
@@ -893,26 +962,34 @@ class MainViewController: UIViewController {
         }
         let activity = UIActivityViewController(activityItems: [image] ,applicationActivities: nil)
         present(activity, animated: true)
-        print("shareButtonPressed")
       }
     @IBAction func clearLastButtonPressed() {
         if linkedList.count-1 == unitIndex {
             unitChosen=false
             unitIndex=0
         }
-        if linkedList.count>0 {
-            if linkedList[linkedList.count-1].type==THREEptCIRCLEcntr {
+        if linkedList.count>1 {
+            if linkedList[linkedList.count-2].type==THREEptCIRCLEcntr || linkedList[linkedList.count-1].type==BISECTOR1 {
                 linkedList.removeLast()
                 linkedList.removeLast()
             }
             if linkedList[linkedList.count-1].type==CIRCintCIRC1 || linkedList[linkedList.count-1].type==LINEintCIRC1 {
                 linkedList.removeLast()                        // since there were two created at once
             }
-            linkedList.removeLast()
-            clearAllPotentials()
-            canvas.update(constructions: linkedList, indices: clickedIndex)
-            canvas.setNeedsDisplay()
+            if linkedList[linkedList.count-1].type==TOOL6LINE2 {
+                linkedList.removeLast()
+                linkedList.removeLast()
+                linkedList.removeLast()
+                linkedList.removeLast()
+                linkedList.removeLast()
+            }
         }
+        if linkedList.count>0 {
+            linkedList.removeLast()
+        }
+        clearAllPotentials()
+        canvas.update(constructions: linkedList, indices: clickedIndex)
+        canvas.setNeedsDisplay()
         if linkedList.count<2 {
             self.whatToDo=self.makePoints
             self.infoLabel.text = self.actionText[self.whatToDo]

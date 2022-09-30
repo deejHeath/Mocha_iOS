@@ -23,11 +23,12 @@ class Construction {
     let CIRCintCIRC0 = 8,CIRCintCIRC1 = 9, LINEintCIRC0 = 10, LINEintCIRC1 = 11
     let BiPOINT = 12, THREEptCIRCLEcntr=13
     let TOOL6PT0 = 14, TOOL6PT1 = 15, TOOL6PT2 = 16
-    let DISTANCE = 20, ANGLE = 21, RATIO = 22
+    let DISTANCE = 20, ANGLE = 21, RATIO = 22, SUM = 23, PRODUCT = 24, DIFFERENCE = 25
     let CIRCLE = 0
     let LINE = -1, PERP = -2, PARALLEL = -3, BISECTOR0 = -4, BISECTOR1 = -5, TOOL6LINE0 = -7
     let TOOL6LINE1 = -8, TOOL6LINE2 = -9, THREEptLINE = -10, SEGMENT = -11, RAY = -12
     let epsilon = 0.0000001
+    var textString=""
     var canvasWidth = 200.0
     
     init(point: CGPoint, number: Int) {
@@ -470,7 +471,6 @@ class ThreePointCircleCntr: Point { // parent: point, point, point, ThreePointLi
 }
 
 class Measure: Point {
-    var textString=""
     override init(ancestor: [Construction], point: CGPoint, number: Int) {
         super.init(ancestor: ancestor, point: point, number: number)
     }
@@ -548,10 +548,9 @@ class Distance: Measure {
         paragraphStyle.alignment = .center
         let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
         let string = textString+" ≈ \(round(1000000*(value)+0.3)/1000000)"
-        string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:120, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+        string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:300, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
     }
 }
-
 class Angle: Measure {
     override init(ancestor: [Construction], point: CGPoint, number: Int) {
         super.init(ancestor: ancestor,point: point, number: number)
@@ -606,6 +605,91 @@ class Angle: Measure {
         string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:200, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
     }
 }
+class Ratio: Distance {
+    override init(ancestor: [Construction], point: CGPoint, number: Int) {
+        super.init(ancestor: ancestor, point: point, number: number)
+        coordinates=parent[0].coordinates
+        type = RATIO
+        index=number
+        if abs(parent[1].value)>epsilon {
+            value=parent[0].value/parent[1].value
+        } else {
+            isReal=false
+        }
+        showLabel=false
+        textString="["+parent[0].textString+"]:["+parent[1].textString+"]"
+    }
+    override func update(point: CGPoint) {
+        if parent[0].isReal && parent[1].isReal && abs(parent[1].value)>epsilon {
+            isReal=true
+            coordinates=point
+            value=parent[0].value/parent[1].value
+        } else {
+            isReal=false
+        }
+    }
+}
+class Product: Distance {
+    override init(ancestor: [Construction], point: CGPoint, number: Int) {
+        super.init(ancestor: ancestor, point: point, number: number)
+        coordinates=parent[0].coordinates
+        type = PRODUCT
+        index=number
+        value=parent[0].value*parent[1].value
+        showLabel=false
+        textString="["+parent[0].textString+"]:["+parent[1].textString+"]"
+    }
+    override func update(point: CGPoint) {
+        if parent[0].isReal && parent[1].isReal {
+            isReal=true
+            coordinates=point
+            value=parent[0].value*parent[1].value
+        } else {
+            isReal=false
+        }
+    }
+}
+class Sum: Distance {
+    override init(ancestor: [Construction], point: CGPoint, number: Int) {
+        super.init(ancestor: ancestor, point: point, number: number)
+        coordinates=parent[0].coordinates
+        type = SUM
+        index=number
+        value=parent[0].value+parent[1].value
+        showLabel=false
+        textString="["+parent[0].textString+"]:["+parent[1].textString+"]"
+    }
+    override func update(point: CGPoint) {
+        if parent[0].isReal && parent[1].isReal {
+            isReal=true
+            coordinates=point
+            value=parent[0].value+parent[1].value
+        } else {
+            isReal=false
+        }
+    }
+}
+class Difference: Distance {
+    override init(ancestor: [Construction], point: CGPoint, number: Int) {
+        super.init(ancestor: ancestor, point: point, number: number)
+        coordinates=parent[0].coordinates
+        type = DIFFERENCE
+        index=number
+        value=parent[0].value-parent[1].value
+        showLabel=false
+        textString="["+parent[0].textString+"]:["+parent[1].textString+"]"
+    }
+    override func update(point: CGPoint) {
+        if parent[0].isReal && parent[1].isReal {
+            isReal=true
+            coordinates=point
+            value=parent[0].value-parent[1].value
+        } else {
+            isReal=false
+        }
+    }
+}
+
     
     
     
@@ -1070,15 +1154,16 @@ class Angle: Measure {
                 reals[1]=temp2
             }
             for i in 0..<3 {    // here we check to make sure the fold moves pt0 & pt1 to line2 & line3
-                let temp=Point(point: points[i], number: 0)
-                let temp0=Point(point: CGPoint(x: points[i].x + slopes[i].x, y: points[i].y + slopes[i].y), number: 1)
-                let temp1=Line(ancestor: [temp,temp0], point: coordinates, number: 2)
-                let temp2=FoldedPoint(ancestor:[parent[0],temp1],point: parent[0].coordinates, number: 3)
-                let temp3=FoldedPoint(ancestor:[parent[1],temp1],point: parent[1].coordinates, number: 4)
-                if parent[2].distance(temp2.coordinates)+parent[3].distance(temp3.coordinates)>epsilon {
-                    reals[i]=false
-                } else {
-                    reals[i]=true
+                if reals[i] {let temp=Point(point: points[i], number: 0)
+                    let temp0=Point(point: CGPoint(x: points[i].x + slopes[i].x, y: points[i].y + slopes[i].y), number: 1)
+                    let temp1=Line(ancestor: [temp,temp0], point: coordinates, number: 2)
+                    let temp2=FoldedPoint(ancestor:[parent[0],temp1],point: parent[0].coordinates, number: 3)
+                    let temp3=FoldedPoint(ancestor:[parent[1],temp1],point: parent[1].coordinates, number: 4)
+                    if parent[2].distance(temp2.coordinates)+parent[3].distance(temp3.coordinates)>epsilon {
+                        reals[i]=false
+                    } else {
+                        reals[i]=true
+                    }
                 }
             }
             isReal=reals[0]
@@ -1090,7 +1175,6 @@ class Angle: Measure {
             }
         }
     }
-    
     class Tool6Line0: Line {                                  // parents: point (T6P0)
         override init(ancestor: [Construction], point: CGPoint, number: Int) {
             super.init(ancestor: ancestor, point: point, number: number)
@@ -1105,7 +1189,6 @@ class Angle: Measure {
             type=TOOL6LINE0
             index=number
         }
-        
         override func update() {
             if let temp=parent[0] as? Tool6Point0 {
                 coordinates=temp.points[0]
@@ -1118,13 +1201,13 @@ class Angle: Measure {
             isReal = isReal && parent[0].isReal
         }
     }
-    
     class Tool6Point1: Point {                                  // parents: point (T6P0)
         override init(ancestor: [Construction], point: CGPoint, number: Int) {
             super.init(ancestor: ancestor, point: point, number: number)
             if let temp = parent[0] as? Tool6Point0 {
                 isReal=temp.reals[1]
                 coordinates=temp.points[1]
+                slope=temp.slopes[1]
             } else {
                 isReal=false
             }
@@ -1136,20 +1219,19 @@ class Angle: Measure {
             if let temp=parent[0] as? Tool6Point0 {
                 isReal=temp.reals[1]
                 coordinates=temp.points[1]
+                slope=temp.slopes[1]
             } else {
                 isReal=false
             }
-            isReal = isReal && parent[0].isReal
         }
     }
-    
     class Tool6Line1: Line {                                  // parents: T6P1, point T6P0
         override init(ancestor: [Construction], point: CGPoint, number: Int) {
             super.init(ancestor: ancestor, point: point, number: number)
-            if let temp = parent[1] as? Tool6Point0 {
-                isReal=temp.reals[1]
-                coordinates=temp.points[1]
-                slope=temp.slopes[1]
+            if let temp = parent[0] as? Tool6Point1 {
+                isReal=temp.isReal
+                coordinates=temp.coordinates
+                slope=temp.slope
                 normalizeSlope()
             } else {
                 isReal=false
@@ -1159,24 +1241,24 @@ class Angle: Measure {
         }
         
         override func update() {
-            if let temp=parent[1] as? Tool6Point0 {
-                isReal=temp.reals[1]
-                coordinates=temp.points[1]
-                slope=temp.slopes[1]
+            if let temp = parent[0] as? Tool6Point1 {
+                isReal=temp.isReal
+                coordinates=temp.coordinates
+                slope=temp.slope
                 normalizeSlope()
             } else {
                 isReal=false
             }
-            isReal = isReal && parent[0].isReal && parent[1].isReal
+            isReal = isReal && parent[0].isReal
         }
     }
-    
     class Tool6Point2: Point {                                  // parents: point (T6P0)
         override init(ancestor: [Construction], point: CGPoint, number: Int) {
             super.init(ancestor: ancestor, point: point, number: number)
             if let temp = parent[0] as? Tool6Point0 {
                 isReal=temp.reals[2]
                 coordinates=temp.points[2]
+                slope=temp.slopes[2]
             } else {
                 isReal=false
             }
@@ -1188,38 +1270,36 @@ class Angle: Measure {
             if let temp=parent[0] as? Tool6Point0 {
                 isReal=temp.reals[2]
                 coordinates=temp.points[2]
+                slope=temp.slopes[2]
             } else {
                 isReal=false
             }
-            isReal = isReal && parent[0].isReal
         }
+    }
+class Tool6Line2: Line {                                  // parents: T6P2, point T6P0
+    override init(ancestor: [Construction], point: CGPoint, number: Int) {
+        super.init(ancestor: ancestor, point: point, number: number)
+        if let temp = parent[0] as? Tool6Point2 {
+            isReal=temp.isReal
+            coordinates=temp.coordinates
+            slope=temp.slope
+            normalizeSlope()
+        } else {
+            isReal=false
+        }
+        type=TOOL6LINE2
+        index=number
     }
     
-    class Tool6Line2: Line {                                  // parents: T6P2, point T6P0
-        override init(ancestor: [Construction], point: CGPoint, number: Int) {
-            super.init(ancestor: ancestor, point: point, number: number)
-            if let temp = parent[1] as? Tool6Point0 {
-                isReal=temp.reals[2]
-                coordinates=temp.points[2]
-                slope=temp.slopes[2]
-                normalizeSlope()
-            } else {
-                isReal=false
-            }
-            type=TOOL6LINE2
-            index=number
+    override func update() {
+        if let temp=parent[0] as? Tool6Point2 {
+            isReal=temp.isReal
+            coordinates=temp.coordinates
+            slope=temp.slope
+            normalizeSlope()
+        } else {
+            isReal=false
         }
-        
-        override func update() {
-            if let temp=parent[1] as? Tool6Point0 {
-                isReal=temp.reals[2]
-                coordinates=temp.points[2]
-                slope=temp.slopes[2]
-                normalizeSlope()
-            } else {
-                isReal=false
-            }
-            isReal = isReal && parent[0].isReal && parent[1].isReal
-        }
+        isReal = isReal && parent[0].isReal
     }
-
+}
