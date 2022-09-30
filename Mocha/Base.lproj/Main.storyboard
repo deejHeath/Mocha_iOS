@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
-    <device id="retina4_0" orientation="portrait" appearance="light"/>
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
@@ -14,14 +14,14 @@
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="MainViewController" customModule="Mocha" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="22" translatesAutoresizingMaskIntoConstraints="NO" id="n3b-JJ-JTj">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="31.5"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="31.5"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yWQ-1W-iag">
-                                        <rect key="frame" x="0.0" y="0.0" width="92" height="31.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="110.5" height="31.5"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Measure">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
@@ -31,7 +31,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XrN-Fu-FLZ">
-                                        <rect key="frame" x="114" y="0.0" width="92" height="31.5"/>
+                                        <rect key="frame" x="132.5" y="0.0" width="110" height="31.5"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Share">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
@@ -41,7 +41,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kQY-xd-i0m">
-                                        <rect key="frame" x="228" y="0.0" width="92" height="31.5"/>
+                                        <rect key="frame" x="264.5" y="0.0" width="110.5" height="31.5"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Create">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
@@ -53,16 +53,16 @@
                                 </subviews>
                             </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Draw or move POINTS." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GRV-lR-Pqn">
-                                <rect key="frame" x="0.0" y="550.5" width="320" height="17.5"/>
+                                <rect key="frame" x="0.0" y="649.5" width="375" height="17.5"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="119" translatesAutoresizingMaskIntoConstraints="NO" id="iIz-77-95N">
-                                <rect key="frame" x="0.0" y="519" width="320" height="31.5"/>
+                                <rect key="frame" x="0.0" y="618" width="375" height="31.5"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pon-f3-5ie">
-                                        <rect key="frame" x="0.0" y="0.0" width="100.5" height="31.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="128" height="31.5"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Clear all">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
@@ -72,7 +72,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="o4e-ut-YBt">
-                                        <rect key="frame" x="219.5" y="0.0" width="100.5" height="31.5"/>
+                                        <rect key="frame" x="247" y="0.0" width="128" height="31.5"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Clear Last">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
@@ -111,22 +111,22 @@
             <objects>
                 <viewController storyboardIdentifier="creation_VC" id="3nO-NK-ot4" customClass="CreationViewController" customModule="Mocha" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="RRx-8u-oz3">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="K91-AU-Uls">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="416.5"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="416.5"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-Points-" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="j0t-ju-QAY">
-                                        <rect key="frame" x="0.0" y="0.0" width="320" height="17.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="17.5"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
-                                        <nil key="textColor"/>
+                                        <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gxf-x4-XyG">
-                                        <rect key="frame" x="0.0" y="17.5" width="320" height="26"/>
+                                        <rect key="frame" x="0.0" y="17.5" width="375" height="26"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Draw or move POINTS.">
+                                        <buttonConfiguration key="configuration" style="plain" title="Create or move POINTS">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
                                         </buttonConfiguration>
                                         <connections>
@@ -134,9 +134,9 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Thn-rK-Qzv">
-                                        <rect key="frame" x="0.0" y="43.5" width="320" height="26"/>
+                                        <rect key="frame" x="0.0" y="43.5" width="375" height="26"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Draw midpoint between 2 POINTS.">
+                                        <buttonConfiguration key="configuration" style="plain" title="Midpoint between 2 POINTS">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
                                         </buttonConfiguration>
                                         <connections>
@@ -144,9 +144,9 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="V9c-s0-0Xp" userLabel="Find intersections of two CONSTRUCTIONS.">
-                                        <rect key="frame" x="0.0" y="69.5" width="320" height="26"/>
+                                        <rect key="frame" x="0.0" y="69.5" width="375" height="26"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Find intersections of 2 OBJECTS.">
+                                        <buttonConfiguration key="configuration" style="plain" title="Intersections of 2 OBJECTS">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
                                         </buttonConfiguration>
                                         <connections>
@@ -154,9 +154,9 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="3" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="K8a-Py-ItO">
-                                        <rect key="frame" x="0.0" y="95.5" width="320" height="26"/>
+                                        <rect key="frame" x="0.0" y="95.5" width="375" height="26"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Fold POINT over LINE.">
+                                        <buttonConfiguration key="configuration" style="plain" title="Fold POINT over LINE">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
                                         </buttonConfiguration>
                                         <connections>
@@ -164,9 +164,9 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="4" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4Zb-av-xcD">
-                                        <rect key="frame" x="0.0" y="121.5" width="320" height="26"/>
+                                        <rect key="frame" x="0.0" y="121.5" width="375" height="26"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Invert POINT in CIRCLE.">
+                                        <buttonConfiguration key="configuration" style="plain" title="Invert POINT in CIRCLE">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
                                         </buttonConfiguration>
                                         <connections>
@@ -174,15 +174,15 @@
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-Lines-" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Eiw-Qx-cm6">
-                                        <rect key="frame" x="0.0" y="147.5" width="320" height="17.5"/>
+                                        <rect key="frame" x="0.0" y="147.5" width="375" height="17.5"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
-                                        <nil key="textColor"/>
+                                        <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" tag="5" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YDY-f1-OmO">
-                                        <rect key="frame" x="0.0" y="165" width="320" height="26"/>
+                                        <rect key="frame" x="0.0" y="165" width="375" height="26"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Draw segment on 2 POINTS.">
+                                        <buttonConfiguration key="configuration" style="plain" title="Segment on 2 POINTS">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
                                         </buttonConfiguration>
                                         <connections>
@@ -190,9 +190,9 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="6" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fEW-u8-drH">
-                                        <rect key="frame" x="0.0" y="191" width="320" height="26"/>
+                                        <rect key="frame" x="0.0" y="191" width="375" height="26"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Draw ray on 2 POINTS.">
+                                        <buttonConfiguration key="configuration" style="plain" title="Ray on 2 POINTS">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
                                         </buttonConfiguration>
                                         <connections>
@@ -200,9 +200,9 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="7" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5EZ-WS-7tp">
-                                        <rect key="frame" x="0.0" y="217" width="320" height="26"/>
+                                        <rect key="frame" x="0.0" y="217" width="375" height="26"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Origami 1: Draw line on 2 POINTS.">
+                                        <buttonConfiguration key="configuration" style="plain" title="Line on 2 POINTS">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
                                         </buttonConfiguration>
                                         <connections>
@@ -210,9 +210,9 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="8" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TO7-f2-l2G">
-                                        <rect key="frame" x="0.0" y="243" width="320" height="26"/>
+                                        <rect key="frame" x="0.0" y="243" width="375" height="26"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Origami 4: Draw line on POINT and ⊥ to LINE.">
+                                        <buttonConfiguration key="configuration" style="plain" title="Line on POINT and ⊥ to LINE">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
                                         </buttonConfiguration>
                                         <connections>
@@ -220,9 +220,9 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="9" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MzA-lr-1rO">
-                                        <rect key="frame" x="0.0" y="269" width="320" height="26"/>
+                                        <rect key="frame" x="0.0" y="269" width="375" height="26"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Draw line on POINT and || to LINE.">
+                                        <buttonConfiguration key="configuration" style="plain" title="Line on POINT and || to LINE">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
                                         </buttonConfiguration>
                                         <connections>
@@ -230,9 +230,9 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="10" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pOc-nn-XLU">
-                                        <rect key="frame" x="0.0" y="295" width="320" height="26"/>
+                                        <rect key="frame" x="0.0" y="295" width="375" height="26"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Origami 3: Draw bisector from 2 LINES.">
+                                        <buttonConfiguration key="configuration" style="plain" title="Bisector from 2 LINES">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
                                         </buttonConfiguration>
                                         <connections>
@@ -240,9 +240,9 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="11" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2NT-4Q-xDT">
-                                        <rect key="frame" x="0.0" y="321" width="320" height="26"/>
+                                        <rect key="frame" x="0.0" y="321" width="375" height="26"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Origami 6: Fold 2 POINTS to 2 LINES.">
+                                        <buttonConfiguration key="configuration" style="plain" title="Fold from 2 POINTS to 2 LINES">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
                                         </buttonConfiguration>
                                         <connections>
@@ -250,15 +250,15 @@
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-Circles-" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4jD-R9-RYP">
-                                        <rect key="frame" x="0.0" y="347" width="320" height="17.5"/>
+                                        <rect key="frame" x="0.0" y="347" width="375" height="17.5"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
-                                        <nil key="textColor"/>
+                                        <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" tag="12" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="u6b-7Z-pp2">
-                                        <rect key="frame" x="0.0" y="364.5" width="320" height="26"/>
+                                        <rect key="frame" x="0.0" y="364.5" width="375" height="26"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Draw circle with center POINT and POINT on.">
+                                        <buttonConfiguration key="configuration" style="plain" title="Circle with center POINT and POINT on">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
                                         </buttonConfiguration>
                                         <connections>
@@ -266,9 +266,9 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="13" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ry9-WP-65y">
-                                        <rect key="frame" x="0.0" y="390.5" width="320" height="26"/>
+                                        <rect key="frame" x="0.0" y="390.5" width="375" height="26"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Draw 3 POINT circle.">
+                                        <buttonConfiguration key="configuration" style="plain" title="Three POINT circle">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
                                         </buttonConfiguration>
                                         <connections>
@@ -329,39 +329,39 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HeL-Su-8RG" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" id="Eed-ZQ-Cjg">
-                    <rect key="frame" x="0.0" y="0.0" width="390" height="158.66666666666666"/>
+                    <rect key="frame" x="0.0" y="0.0" width="390" height="158.5"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YyV-UF-pJY">
-                            <rect key="frame" x="0.0" y="0.0" width="390" height="32"/>
+                            <rect key="frame" x="0.0" y="0.0" width="390" height="32.5"/>
                             <state key="normal" title="Button"/>
                             <buttonConfiguration key="configuration" style="plain" title="Button">
                                 <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                             </buttonConfiguration>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dTf-gw-IaW">
-                            <rect key="frame" x="0.0" y="32" width="390" height="31.666666666666671"/>
+                            <rect key="frame" x="0.0" y="32.5" width="390" height="31.5"/>
                             <state key="normal" title="Button"/>
                             <buttonConfiguration key="configuration" style="plain" title="Button">
                                 <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                             </buttonConfiguration>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XjI-5C-nmG">
-                            <rect key="frame" x="0.0" y="63.666666666666664" width="390" height="31.666666666666664"/>
+                            <rect key="frame" x="0.0" y="64" width="390" height="31.5"/>
                             <state key="normal" title="Button"/>
                             <buttonConfiguration key="configuration" style="plain" title="Button">
                                 <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                             </buttonConfiguration>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bHv-mu-XTd">
-                            <rect key="frame" x="0.0" y="95.333333333333329" width="390" height="31.666666666666671"/>
+                            <rect key="frame" x="0.0" y="95.5" width="390" height="31.5"/>
                             <state key="normal" title="Button"/>
                             <buttonConfiguration key="configuration" style="plain" title="Button">
                                 <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                             </buttonConfiguration>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eEG-1Q-j2O">
-                            <rect key="frame" x="0.0" y="127.00000000000001" width="390" height="31.666666666666671"/>
+                            <rect key="frame" x="0.0" y="127" width="390" height="31.5"/>
                             <state key="normal" title="Button"/>
                             <buttonConfiguration key="configuration" style="plain" title="Button">
                                 <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
@@ -395,22 +395,22 @@
             <objects>
                 <viewController storyboardIdentifier="measure_VC" id="mZU-iz-2BW" customClass="MeasureViewController" customModule="Mocha" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="h2T-HL-Mpe">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="16G-Yu-f1c">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="265"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="265"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-Measures-" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vIa-5T-UhZ">
-                                        <rect key="frame" x="0.0" y="0.0" width="320" height="20.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="20.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <nil key="textColor"/>
+                                        <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" tag="20" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sjf-xj-ogT">
-                                        <rect key="frame" x="0.0" y="20.5" width="320" height="28"/>
+                                        <rect key="frame" x="0.0" y="20.5" width="375" height="28"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Measure distance between 2 POINTS.">
+                                        <buttonConfiguration key="configuration" style="plain" title="Distance between 2 POINTS">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                         </buttonConfiguration>
                                         <connections>
@@ -418,9 +418,9 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="21" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="umV-wt-fxt">
-                                        <rect key="frame" x="0.0" y="48.5" width="320" height="28"/>
+                                        <rect key="frame" x="0.0" y="48.5" width="375" height="28"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Choose 3 POINTS to measure angle.">
+                                        <buttonConfiguration key="configuration" style="plain" title="Angle from 3 POINTS">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                         </buttonConfiguration>
                                         <connections>
@@ -428,9 +428,9 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="23" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1ei-Yo-98g">
-                                        <rect key="frame" x="0.0" y="76.5" width="320" height="28"/>
+                                        <rect key="frame" x="0.0" y="76.5" width="375" height="28"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Show sum of two MEASURES.">
+                                        <buttonConfiguration key="configuration" style="plain" title="Sum of two MEASURES">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                         </buttonConfiguration>
                                         <connections>
@@ -438,9 +438,9 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="24" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3SN-jE-3gh">
-                                        <rect key="frame" x="0.0" y="104.5" width="320" height="28"/>
+                                        <rect key="frame" x="0.0" y="104.5" width="375" height="28"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Show difference of two MEASURES.">
+                                        <buttonConfiguration key="configuration" style="plain" title="Difference of two MEASURES">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                         </buttonConfiguration>
                                         <connections>
@@ -448,9 +448,9 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="25" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="e3f-EM-exB">
-                                        <rect key="frame" x="0.0" y="132.5" width="320" height="28"/>
+                                        <rect key="frame" x="0.0" y="132.5" width="375" height="28"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Show product of two MEASURES.">
+                                        <buttonConfiguration key="configuration" style="plain" title="Product of two MEASURES">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                         </buttonConfiguration>
                                         <connections>
@@ -458,9 +458,9 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="26" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="alP-0J-kXe">
-                                        <rect key="frame" x="0.0" y="160.5" width="320" height="28"/>
+                                        <rect key="frame" x="0.0" y="160.5" width="375" height="28"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Show ratio of two MEASURES.">
+                                        <buttonConfiguration key="configuration" style="plain" title="Ratio of two MEASURES">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                         </buttonConfiguration>
                                         <connections>
@@ -468,15 +468,15 @@
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-Display-" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Yox-5K-Vo9">
-                                        <rect key="frame" x="0.0" y="188.5" width="320" height="20.5"/>
+                                        <rect key="frame" x="0.0" y="188.5" width="375" height="20.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <nil key="textColor"/>
+                                        <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" tag="27" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UMt-bY-u22">
-                                        <rect key="frame" x="0.0" y="209" width="320" height="28"/>
+                                        <rect key="frame" x="0.0" y="209" width="375" height="28"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Hide OBJECT.">
+                                        <buttonConfiguration key="configuration" style="plain" title="Hide OBJECT">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                         </buttonConfiguration>
                                         <connections>
@@ -484,9 +484,9 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" tag="28" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fB1-OG-Epf">
-                                        <rect key="frame" x="0.0" y="237" width="320" height="28"/>
+                                        <rect key="frame" x="0.0" y="237" width="375" height="28"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Show or hide label of OBJECT.">
+                                        <buttonConfiguration key="configuration" style="plain" title="Show or hide label of OBJECT">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                         </buttonConfiguration>
                                         <connections>

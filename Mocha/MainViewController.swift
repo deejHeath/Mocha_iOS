@@ -9,8 +9,8 @@ class MainViewController: UIViewController {
     var clickedList: [Construction] = []
     var futureList: [Construction] = []
     var clickedIndex: [Int] = []
-    let actionText=["Draw or move POINTS.", "Draw midpoint between 2 POINTS.","Draw intersection of 2 OBJECTS.","Fold POINT in LINE.","Invert POINT in CIRCLE.", "Draw segment on 2 POINTS.", "Draw ray on 2 POINTS.","Draw line on 2 POINTS.","Draw line on POINT and ⊥ to LINE.","Draw line on POINT and || to LINE.","Draw bisector to 2 LINES.","Origami 6: Fold 2 POINTS to 2 LINES.","Draw circle with center POINT and POINT on it.","Draw 3 POINT circle."]
-    let measureText=["Measure distance between 2 POINTS.","Choose 3 POINTS to measure angle.", "Measure area of CIRCLE.","Show sum of two MEASURES.","Show difference of 2 MEASURES.","Show product of 2 MEASURES.","Show ratio of 2 MEASURES.","Hide OBJECT.","Show or hide label of OBJECT.","Toggle degrees / radians."]
+    let actionText=["Create or move POINTS", "Midpoint between 2 POINTS","Intersections of 2 OBJECTS","Fold POINT over LINE","Invert POINT in CIRCLE", "Segment on 2 POINTS", "Ray on 2 POINTS","Line on 2 POINTS","Line on POINT and ⊥ to LINE","Line on POINT and || to LINE","Bisector from 2 LINES","Fold from 2 POINTS to 2 LINES","Circle with center POINT and POINT on","Three POINT circle"]
+    let measureText=["Distance between 2 POINTS","Angle from 3 POINTS", "Area of CIRCLE","Sum of two MEASURES","Difference of 2 MEASURES","Product of 2 MEASURES","Ratio of 2 MEASURES","Hide OBJECT","Show or hide label of OBJECT","Toggle degrees / radians."]
     let makePoints=0, makeMidpoint=1, makeIntersections=2, foldPoints=3, invertPoints=4
     let makeSegments=5, makeRays=6, makeLines=7, makePerps=8, makeParallels=9
     let makeBisectors=10, useOrigamiSix=11, makeCircles=12, make3PTCircle=13
@@ -42,7 +42,7 @@ class MainViewController: UIViewController {
         canvas.isUserInteractionEnabled = true
         canvas.isMultipleTouchEnabled = false // if we want to add dilation functionality this will need to be true
         view.addSubview(canvas)
-        NSLayoutConstraint.activate([canvas.centerXAnchor.constraint(equalTo: view.centerXAnchor),canvas.centerYAnchor.constraint(equalTo: view.centerYAnchor),canvas.widthAnchor.constraint(equalTo: view.widthAnchor),canvas.heightAnchor.constraint(equalToConstant: 540)])
+        NSLayoutConstraint.activate([canvas.centerXAnchor.constraint(equalTo: view.centerXAnchor),canvas.centerYAnchor.constraint(equalTo: view.centerYAnchor),canvas.widthAnchor.constraint(equalTo: view.widthAnchor),canvas.heightAnchor.constraint(equalToConstant: 480)])
     }
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
