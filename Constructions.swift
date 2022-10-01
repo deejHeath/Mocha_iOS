@@ -116,6 +116,44 @@ class Point: Construction {                             // parents: []
             string.draw(with: CGRect(x: coordinates.x+8, y: coordinates.y+8, width: 20, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
         }
     }
+    func invalidatePointOffSegment(i: Int, location: CGPoint) {
+        if parent[i].parent[0].coordinates.x<parent[i].parent[1].coordinates.x {
+            if location.x<parent[i].parent[0].coordinates.x || location.x>parent[i].parent[1].coordinates.x {
+                isReal=false
+            }
+        } else if parent[i].parent[0].coordinates.x>parent[i].parent[1].coordinates.x {
+            if location.x>parent[i].parent[0].coordinates.x || location.x<parent[i].parent[1].coordinates.x {
+                isReal=false
+            }
+        } else if parent[i].parent[0].coordinates.y<parent[i].parent[1].coordinates.y {
+            if location.y<parent[i].parent[0].coordinates.y || location.y>parent[i].parent[1].coordinates.y {
+                isReal=false
+            }
+        } else if parent[i].parent[0].coordinates.y>parent[i].parent[1].coordinates.y {
+            if location.y>parent[i].parent[0].coordinates.y || location.y<parent[i].parent[1].coordinates.y {
+                isReal=false
+            }
+        }
+    }
+    func invalidatePointOffRay(i: Int, location: CGPoint) {
+        if parent[i].parent[0].coordinates.x<parent[i].parent[1].coordinates.x {
+            if location.x<parent[i].parent[0].coordinates.x {
+                isReal=false
+            }
+        } else if parent[i].parent[0].coordinates.x>parent[i].parent[1].coordinates.x {
+            if location.x>parent[i].parent[0].coordinates.x {
+                isReal=false
+            }
+        } else if parent[i].parent[0].coordinates.y<parent[i].parent[1].coordinates.y {
+            if location.y<parent[i].parent[0].coordinates.y {
+                isReal=false
+            }
+        } else if parent[i].parent[0].coordinates.y>parent[i].parent[1].coordinates.y {
+            if location.y>parent[i].parent[0].coordinates.y {
+                isReal=false
+            }
+        }
+    }
 }
 
 class PointOnLine: Point {                                                  // parents: line
@@ -212,6 +250,18 @@ class LineIntLine: Point {                                                  // p
                         coordinates=CGPoint(x: (sx0*sx1*y0-sx0*sx1*y1+sx0*sy1*x1-sx1*sy0*x0)/(sx0*sy1-sx1*sy0), y: (sx0*sy1*y0-sx1*sy0*y1-sy0*sy1*x0+sy0*sy1*x1)/(sx0*sy1-sx1*sy0))
                     }
                     // now if either parent is a segment or ray, we need to check whether the point of intersection is on it, and if not, set isReal=false
+                    if parent[0].type==SEGMENT {
+                        invalidatePointOffSegment(i: 0,location: coordinates)
+                    }
+                    if parent[1].type==SEGMENT {
+                        invalidatePointOffSegment(i: 1,location: coordinates)
+                    }
+                    if parent[0].type==RAY {
+                        invalidatePointOffRay(i: 0,location: coordinates)
+                    }
+                    if parent[1].type==RAY {
+                        invalidatePointOffRay(i: 1,location: coordinates)
+                    }
                 }
             }
         }
@@ -347,6 +397,12 @@ class LineIntCirc0: Point {                                 // parent: circle, c
         alternateSlope=alternateCoordinates
         
         // now we need to check if parent[0] is a segment or ray, and if so, whether the point of intersection is on it.  If not, set isReal=false. (And pass second root to LIC1)
+        if parent[0].type==SEGMENT {
+            invalidatePointOffSegment(i: 0, location: coordinates)
+        }
+        if parent[0].type==RAY {
+            invalidatePointOffRay(i: 0, location: coordinates)
+        }
     }
 }
 
@@ -359,10 +415,22 @@ class LineIntCirc1: Point {                                       // parent: lin
         index=number
     }
     func update() {
-        if parent[0].isReal && parent[1].isReal && parent[2].isReal {
+        if parent[0].isReal && parent[1].isReal {
             if let temp = parent[2] as? LineIntCirc0 {
-                isReal=temp.isReal
+                let x0=parent[0].coordinates.x, y0=parent[0].coordinates.y  // coordinates of point on line
+                let sx0=parent[0].slope.x, sy0=parent[0].slope.y            // slope of line
+                let x1=parent[1].coordinates.x, y1=parent[1].coordinates.y  // coordinates of center of circle
+                let sx1=parent[1].slope.x, sy1=parent[1].slope.y            // coordinates of point on circle
+                let r1=pow(x1-sx1,2)+pow(y1-sy1,2)
+                let discriminant = (-y0*y0+2*y0*y1-y1*y1+r1)*sx0*sx0+2*sy0*(y0-y1)*(x0-x1)*sx0+sy0*sy0*(-x0*x0+2*x0*x1-x1*x1+r1)
+                isReal=(discriminant >= 0)
                 coordinates=temp.alternateCoordinates
+                if parent[0].type==SEGMENT {
+                    invalidatePointOffSegment(i: 0, location: coordinates)
+                }
+                if parent[0].type==RAY {
+                    invalidatePointOffRay(i: 0, location: coordinates)
+                }
             } else {
                 isReal=false
             }
