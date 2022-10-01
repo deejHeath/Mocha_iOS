@@ -33,6 +33,7 @@ class MainViewController: UIViewController {
     var unitChosen=false
     var unitIndex = -1
     var newPoint=false, newPointMoved=false
+    var numberOfMeasures=1
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -646,7 +647,8 @@ class MainViewController: UIViewController {
                         unitIndex=linkedList.count
                     }
                     linkedList.append(Distance(ancestor: clickedList, point: location, number: linkedList.count))
-                    update(object: linkedList[linkedList.count-1], point: CGPoint(x:  (linkedList[linkedList.count-1].parent[0].coordinates.x+2*linkedList[linkedList.count-1].parent[1].coordinates.x)/3,y:  (2*linkedList[linkedList.count-1].parent[0].coordinates.y+linkedList[linkedList.count-1].parent[1].coordinates.y)/3))
+                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 14*numberOfMeasures))
+                    numberOfMeasures+=1
                     clearAllPotentials()
                 }
             }
@@ -670,7 +672,8 @@ class MainViewController: UIViewController {
                 }
                 if !alreadyExists {
                     linkedList.append(Angle(ancestor: clickedList, point: location, number: linkedList.count))
-                    update(object: linkedList[linkedList.count-1], point: CGPoint(x:  (linkedList[linkedList.count-1].parent[0].coordinates.x+2*linkedList[linkedList.count-1].parent[2].coordinates.x)/3,y:  (2*linkedList[linkedList.count-1].parent[0].coordinates.y+linkedList[linkedList.count-1].parent[2].coordinates.y)/3))
+                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 14*numberOfMeasures))
+                    numberOfMeasures+=1
                     clearAllPotentials()
                 }
             }
@@ -709,7 +712,8 @@ class MainViewController: UIViewController {
                     default:
                         print("measure default reached")
                     }
-                    update(object: linkedList[linkedList.count-1], point: CGPoint(x:  (linkedList[linkedList.count-1].parent[0].coordinates.x+2*linkedList[linkedList.count-1].parent[1].coordinates.x)/3,y:  (2*linkedList[linkedList.count-1].parent[0].coordinates.y+linkedList[linkedList.count-1].parent[1].coordinates.y)/3))
+                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 14*numberOfMeasures))
+                    numberOfMeasures+=1
                     clearAllPotentials()
                 }
             }
@@ -1008,6 +1012,9 @@ class MainViewController: UIViewController {
         if linkedList.count-1 == unitIndex {
             unitChosen=false
             unitIndex=0
+        }
+        if linkedList[linkedList.count-1].type>=DISTANCE {
+            numberOfMeasures-=1
         }
         if linkedList.count>1 {
             if linkedList[linkedList.count-2].type==THREEptCIRCLEcntr || linkedList[linkedList.count-1].type==BISECTOR1 {

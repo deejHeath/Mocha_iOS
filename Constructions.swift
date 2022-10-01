@@ -135,6 +135,7 @@ class PointOnLine: Point {                                                  // p
                 let x0=point.x,y0=point.y,sx=parent0.slope.x,sy=parent0.slope.y
                 coordinates=CGPoint(x: (sx*sx*x0+sx*sy*y0-sx*sy*y1+sy*sy*x1)/(sx*sx+sy*sy), y: (sx*sx*y1+sx*sy*x0-sx*sy*x1+sy*sy*y0)/(sx*sx+sy*sy))
             }
+            // here we need to check if parent is a segment or ray, and if so, whether the point is still on it...if not, set isReal=false
         }
     }
 }
@@ -210,6 +211,7 @@ class LineIntLine: Point {                                                  // p
                     } else {
                         coordinates=CGPoint(x: (sx0*sx1*y0-sx0*sx1*y1+sx0*sy1*x1-sx1*sy0*x0)/(sx0*sy1-sx1*sy0), y: (sx0*sy1*y0-sx1*sy0*y1-sy0*sy1*x0+sy0*sy1*x1)/(sx0*sy1-sx1*sy0))
                     }
+                    // now if either parent is a segment or ray, we need to check whether the point of intersection is on it, and if not, set isReal=false
                 }
             }
         }
@@ -343,6 +345,8 @@ class LineIntCirc0: Point {                                 // parent: circle, c
         }
         slope=coordinates
         alternateSlope=alternateCoordinates
+        
+        // now we need to check if parent[0] is a segment or ray, and if so, whether the point of intersection is on it.  If not, set isReal=false. (And pass second root to LIC1)
     }
 }
 
@@ -812,7 +816,7 @@ class Segment: Line {                                                  // parent
             paragraphStyle.alignment = .center
             let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
             let string = "\(character[index%26])\(index/26)"
-            var xx=(coordinates.x+0.4*(parent[1].coordinates.x-coordinates.x))+slope.y*15, yy=(coordinates.y+0.4*(parent[1].coordinates.y-coordinates.y))-slope.x*15
+            var xx=(coordinates.x+(parent[1].coordinates.x-coordinates.x)/3)+slope.y*15, yy=(coordinates.y+(parent[1].coordinates.y-coordinates.y)/3)-slope.x*15
             string.draw(with: CGRect(x: xx, y: yy, width: 20, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
         }
     }
