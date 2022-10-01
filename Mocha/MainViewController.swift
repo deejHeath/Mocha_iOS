@@ -32,7 +32,7 @@ class MainViewController: UIViewController {
     let touchSense=16.0
     var unitChosen=false
     var unitIndex = -1
-    var newPoint=false
+    var newPoint=false, newPointMoved=false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,6 +51,7 @@ class MainViewController: UIViewController {
         firstTouch=location
         activeConstruct=false
         newPoint=false
+        newPointMoved=false
         switch whatToDo {
         case makePoints:
             getPointOrMeasure(location)
@@ -71,7 +72,7 @@ class MainViewController: UIViewController {
                 }
             }
             break
-        case makeLines,measureDistance,makeCircles,makeMidpoint,make3PTCircle,measureAngle:
+        case makeLines,makeSegments,makeRays,measureDistance,makeCircles,makeMidpoint,make3PTCircle,measureAngle:
             getPoint(location)
             if !activeConstruct {
                 potentialClick=nil
@@ -117,12 +118,7 @@ class MainViewController: UIViewController {
             }
             break
         case hideObject, showLabel:
-            if !activeConstruct {
-                getPoint(location)
-            }
-            if !activeConstruct {
-                getLineOrCircle(location)
-            }
+            getPointOrLineOrCircle(location)
             if !activeConstruct {
                 potentialClick=nil
             }
@@ -170,7 +166,7 @@ class MainViewController: UIViewController {
                 update(object: object, point: object.coordinates)
             }
             break
-        case makeLines, measureDistance, makeCircles, makeMidpoint,make3PTCircle,measureAngle:
+        case makeLines,makeSegments,makeRays,measureDistance, makeCircles, makeMidpoint,make3PTCircle,measureAngle:
             getRidOfActivesThatAreTooFar(location)
             if !activeConstruct {
                 getPoint(location)
@@ -220,12 +216,7 @@ class MainViewController: UIViewController {
             break
         case hideObject,showLabel:
             getRidOfActivesThatAreTooFar(location)
-            if !activeConstruct {
-                getPoint(location)
-            }
-            if !activeConstruct {
-                getLineOrCircle(location)
-            }
+            getPointOrLineOrCircle(location)
             break
         default:
             print("touchesMoved: \(location)")
@@ -285,6 +276,55 @@ class MainViewController: UIViewController {
                 }
             }
             break
+        case makeSegments:
+            getRidOfActivesThatAreTooFar(location)
+            clearActives()
+            getRidOfDuplicates()
+            if clickedList.count==2 {
+                arrangeClickedObjectsByIndex()
+                var alreadyExists=false
+                for i in 0..<linkedList.count {
+                    if let temp=linkedList[i] as? Segment {
+                        if !alreadyExists {
+                            if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
+                                alreadyExists=true
+                                linkedList[i].isShown=true
+                                clearAllPotentials()
+                            }
+                        }
+                    }
+                }
+                if !alreadyExists {
+                    linkedList.append(Segment(ancestor: clickedList, point: location, number: linkedList.count))
+                    linkedList[linkedList.count-1].update(width: canvas.frame.width)
+                    clearAllPotentials()
+                }
+            }
+            break
+        case makeRays:
+            getRidOfActivesThatAreTooFar(location)
+            clearActives()
+            getRidOfDuplicates()
+            if clickedList.count==2 {
+                var alreadyExists=false
+                for i in 0..<linkedList.count {
+                    if let temp=linkedList[i] as? Ray {
+                        if !alreadyExists {
+                            if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
+                                alreadyExists=true
+                                linkedList[i].isShown=true
+                                clearAllPotentials()
+                            }
+                        }
+                    }
+                }
+                if !alreadyExists {
+                    linkedList.append(Ray(ancestor: clickedList, point: location, number: linkedList.count))
+                    linkedList[linkedList.count-1].update(width: canvas.frame.width)
+                    clearAllPotentials()
+                }
+            }
+            break
         case makeMidpoint:
             getRidOfActivesThatAreTooFar(location)
             clearActives()
@@ -293,14 +333,12 @@ class MainViewController: UIViewController {
                 arrangeClickedObjectsByIndex()
                 var alreadyExists=false
                 for i in 0..<linkedList.count {
-                    if linkedList[i].type==MIDPOINT {
-                        if let temp=linkedList[i] as? MidPoint {
-                            if !alreadyExists {
-                                if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
-                                    alreadyExists=true
-                                    linkedList[i].isShown=true
-                                    clearAllPotentials()
-                                }
+                    if let temp=linkedList[i] as? MidPoint {
+                        if !alreadyExists {
+                            if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
+                                alreadyExists=true
+                                linkedList[i].isShown=true
+                                clearAllPotentials()
                             }
                         }
                     }
@@ -320,15 +358,13 @@ class MainViewController: UIViewController {
                 arrangeClickedObjectsByIndex()
                 var alreadyExists=false
                 for i in 0..<linkedList.count {
-                    if linkedList[i].type==BiPOINT {
-                        if let temp=linkedList[i] as? BisectorPoint {
-                            if !alreadyExists {
-                                if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
-                                    alreadyExists=true
-                                    linkedList[i+1].isShown=true
-                                    linkedList[i+2].isShown=true
-                                    clearAllPotentials()
-                                }
+                    if let temp=linkedList[i] as? BisectorPoint {
+                        if !alreadyExists {
+                            if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
+                                alreadyExists=true
+                                linkedList[i+1].isShown=true
+                                linkedList[i+2].isShown=true
+                                clearAllPotentials()
                             }
                         }
                     }
@@ -351,8 +387,8 @@ class MainViewController: UIViewController {
             if clickedList.count==2 {
                 var alreadyExists=false
                 for i in 0..<linkedList.count {
-                    if linkedList[i].type==FOLDedPT {
-                        if let temp=linkedList[i] as? FoldedPoint {
+                    if let temp=linkedList[i] as? FoldedPoint {
+                        if !alreadyExists {
                             if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
                                 alreadyExists=true
                                 linkedList[i].isShown=true
@@ -373,8 +409,8 @@ class MainViewController: UIViewController {
             if clickedList.count==2 {
                 var alreadyExists=false
                 for i in 0..<linkedList.count {
-                    if linkedList[i].type==INVERTedPT {
-                        if let temp=linkedList[i] as? InvertedPoint {
+                    if let temp=linkedList[i] as? InvertedPoint {
+                        if !alreadyExists {
                             if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
                                 alreadyExists=true
                                 linkedList[i].isShown=true
@@ -395,8 +431,8 @@ class MainViewController: UIViewController {
             if clickedList.count==2 {
                 var alreadyExists=false
                 for i in 0..<linkedList.count {
-                    if linkedList[i].type==PERP {
-                        if let temp=linkedList[i] as? PerpLine {
+                    if let temp=linkedList[i] as? PerpLine {
+                        if !alreadyExists {
                             if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
                                 alreadyExists=true
                                 linkedList[i].isShown=true
@@ -418,8 +454,8 @@ class MainViewController: UIViewController {
             if clickedList.count==2 {
                 var alreadyExists=false
                 for i in 0..<linkedList.count {
-                    if linkedList[i].type==PARALLEL {
-                        if let temp=linkedList[i] as? ParallelLine {
+                    if let temp=linkedList[i] as? ParallelLine {
+                        if !alreadyExists {
                             if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
                                 alreadyExists=true
                                 linkedList[i].isShown=true
@@ -467,15 +503,13 @@ class MainViewController: UIViewController {
                 arrangeClickedObjectsByIndex()
                 var alreadyExists=false
                 for i in 0..<linkedList.count {
-                    if linkedList[i].type<0 {
+                    if linkedList[i].type<0 && !alreadyExists {
                         if let temp=linkedList[i] as? ThreePointLine {
-                            if !alreadyExists {
-                                if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index && temp.parent[2].index == clickedList[2].index {
-                                    alreadyExists=true
-                                    linkedList[i].isShown=true
-                                    linkedList[i+2].isShown=true
-                                    clearAllPotentials()
-                                }
+                            if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index && temp.parent[2].index == clickedList[2].index {
+                                alreadyExists=true
+                                linkedList[i].isShown=true
+                                linkedList[i+2].isShown=true
+                                clearAllPotentials()
                             }
                         }
                     }
@@ -504,8 +538,8 @@ class MainViewController: UIViewController {
             if clickedList.count==4 {
                 var alreadyExists=false
                 for i in 0..<linkedList.count {
-                    if linkedList[i].type==TOOL6PT0 {
-                        if let temp=linkedList[i] as? Tool6Point0 {
+                    if let temp=linkedList[i] as? Tool6Point0 {
+                        if !alreadyExists {
                             if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index && temp.parent[2].index==clickedList[2].index && temp.parent[3].index==clickedList[3].index {
                                 alreadyExists=true
                                 linkedList[i].isShown=true
@@ -648,7 +682,7 @@ class MainViewController: UIViewController {
             if clickedList.count==2 {
                 var alreadyExists=false
                 for i in 0..<linkedList.count {
-                    if let temp=linkedList[i] as? Measure {
+                    if let temp=linkedList[i] as? Measure {  // problem here!
                         if !alreadyExists {
                             if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
                                 alreadyExists=true
@@ -656,8 +690,8 @@ class MainViewController: UIViewController {
                                 clearAllPotentials()
                             }
                         }
-                    }
-                }
+                    }   // this doesn't allow a ratio to be calculated if a sum of the same
+                }       // measures has already been calculated.  Need to redo.
                 if !alreadyExists {
                     switch(whatToDo) {
                     case measureRatio:
@@ -786,6 +820,12 @@ class MainViewController: UIViewController {
             }
         }
     }
+    func getPointOrLineOrCircle(_ location: CGPoint) {
+        getPoint(location)
+        if !activeConstruct {
+            getLineOrCircle(location)
+        }
+    }
     func getRidOfActivesThatAreTooFar(_ location: CGPoint) {
         if activeConstruct {
             if let temp = potentialClick as? Point {
@@ -819,17 +859,6 @@ class MainViewController: UIViewController {
             }
         }
     }
-    func clearActives() {
-        if activeConstruct {
-            potentialClick=nil
-            activeConstruct=false
-        }
-    }
-    func clearLastPotential() {
-        clearActives()
-        clickedList.removeLast()
-        clickedIndex.removeLast()
-    }
     func getRidOfDuplicates() {
         if clickedList.count>1 {
             if clickedIndex[0]==clickedIndex[1] {
@@ -841,6 +870,17 @@ class MainViewController: UIViewController {
                 }
             }
         }
+    }
+    func clearActives() {
+        if activeConstruct {
+            potentialClick=nil
+            activeConstruct=false
+        }
+    }
+    func clearLastPotential() {
+        clearActives()
+        clickedList.removeLast()
+        clickedIndex.removeLast()
     }
     func clearAllPotentials() {
         clearActives()
@@ -930,6 +970,7 @@ class MainViewController: UIViewController {
     @IBAction func actionButtonPressed(_ sender: UIButton) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let creationController = storyboard.instantiateViewController(withIdentifier: "creation_VC") as! CreationViewController
+        //creationController.update(linkedList)
         creationController.view.backgroundColor = .white.withAlphaComponent(0.9)
         //creationController.modalPresentationStyle = .fullScreen
         creationController.completionHandler = {tag in

@@ -11,7 +11,7 @@ class Construction {
     var character = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
     var isReal=true
     var isShown=true
-    var showLabel=false
+    var showLabel=true
     var value = -1.0
     var coordinates: CGPoint
     var slope=CGPoint(x: 1.0,y: 0.0)
@@ -706,6 +706,7 @@ class Difference: Distance {
             } else {
                 slope=CGPoint(x: 1.0, y: 0.0)
             }
+            update()
             type=LINE
             index=number
         }
@@ -787,6 +788,64 @@ class Difference: Distance {
             }
         }
     }
+
+class Segment: Line {                                                  // parents: point, point
+    override init(ancestor: [Construction], point: CGPoint, number: Int) {  // (usually)
+        let point0=ancestor[0].coordinates                                  // the first must be a
+        super.init(ancestor: ancestor, point: point0, number: number)       // point
+        update()
+        type=SEGMENT
+        index=number
+    }
+    override func draw(_ context: CGContext,_ isRed: Bool) {
+        if isRed {
+            context.setStrokeColor(UIColor.red.cgColor)
+        } else {
+            context.setStrokeColor(UIColor.black.cgColor)
+        }
+        context.setLineWidth(2.0)
+        context.move(to: CGPoint(x: parent[0].coordinates.x,y: parent[0].coordinates.y))
+        context.addLine(to: CGPoint(x: parent[1].coordinates.x,y: parent[1].coordinates.y))
+        context.strokePath()
+        if showLabel {
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.alignment = .center
+            let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
+            let string = "\(character[index%26])\(index/26)"
+            var xx=(coordinates.x+0.4*(parent[1].coordinates.x-coordinates.x))+slope.y*15, yy=(coordinates.y+0.4*(parent[1].coordinates.y-coordinates.y))-slope.x*15
+            string.draw(with: CGRect(x: xx, y: yy, width: 20, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+        }
+    }
+}
+class Ray: Line {                                                  // parents: point, point
+    override init(ancestor: [Construction], point: CGPoint, number: Int) {  // (usually)
+        let point0=ancestor[0].coordinates                                  // the first must be a
+        super.init(ancestor: ancestor, point: point0, number: number)       // point
+        update()
+        type=RAY
+        index=number
+    }
+    override func draw(_ context: CGContext,_ isRed: Bool) {
+        if isRed {
+            context.setStrokeColor(UIColor.red.cgColor)
+        } else {
+            context.setStrokeColor(UIColor.black.cgColor)
+        }
+        context.setLineWidth(2.0)
+        context.move(to: CGPoint(x: coordinates.x,y: coordinates.y))
+        context.addLine(to: CGPoint(x: coordinates.x+256*(parent[1].coordinates.x-coordinates.x), y: coordinates.y+256*(parent[1].coordinates.y-coordinates.y)))
+        context.strokePath()
+        if showLabel {
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.alignment = .center
+            let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
+            let string = "\(character[index%26])\(index/26)"
+            var xx=(coordinates.x+1.4*(parent[1].coordinates.x-coordinates.x))+slope.y*15, yy=(coordinates.y+1.4*(parent[1].coordinates.y-coordinates.y))-slope.x*15
+            string.draw(with: CGRect(x: xx, y: yy, width: 20, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+        }
+    }
+}
+
     
     class PerpLine: Line {                                                      // parents: point, line
         override init(ancestor: [Construction], point: CGPoint, number: Int) {  // the line on the point

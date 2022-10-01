@@ -12,6 +12,8 @@ class MeasureViewController: UIViewController {
     @IBOutlet weak var verticalStack: UIStackView!
     var settingsButton = [UIButton]()
     public var completionHandler: ((Int)->Void)?
+    var linkedList: [Construction]=[]
+    var constructs = [0,0,0,0]
     
     override func viewDidLoad() {
         super.viewDidLoad()
