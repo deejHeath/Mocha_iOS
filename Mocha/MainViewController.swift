@@ -3,20 +3,21 @@ import UIKit
 class MainViewController: UIViewController {
 
     @IBOutlet weak var infoLabel: UILabel!
+    @IBOutlet weak var infoXLabel: UILabel!
     var potentialClick: Construction?
     var linkedList: [Construction] = []
     let canvas = Canvas()
     var clickedList: [Construction] = []
     var futureList: [Construction] = []
     var clickedIndex: [Int] = []
-    let actionText=["Create or move POINTS", "Midpoint between 2 POINTS","Intersections of 2 OBJECTS","Fold POINT over LINE","Invert POINT in CIRCLE", "Segment on 2 POINTS", "Ray on 2 POINTS","Line on 2 POINTS","Line on POINT and ⊥ to LINE","Line on POINT and || to LINE","Bisector from 2 LINES","Fold from 2 POINTS to 2 LINES","Circle with center POINT and POINT on","Three POINT circle"]
-    let measureText=["Distance between 2 POINTS","Angle from 3 POINTS", "Area of CIRCLE","Sum of two MEASURES","Difference of 2 MEASURES","Product of 2 MEASURES","Ratio of 2 MEASURES","Hide OBJECT","Show or hide label of OBJECT","Toggle degrees / radians."]
+    let actionText=["Create or move POINTS", "Create midpoint between 2 POINTS","Intersect 2 OBJECTS","Fold POINT over LINE","Invert POINT in CIRCLE", "Create segment on 2 POINTS", "Create ray on 2 POINTS","Create line on 2 POINTS","create line on POINT and ⊥ to LINE","create line on POINT and || to LINE","Create bisector from 2 LINES","Fold from 2 POINTS to 2 LINES","Create circle with center POINT and POINT on","Create 3 POINT circle"]
+    let measureText=["Measure distance between 2 POINTS","Measure angle from 3 POINTS", "Measure sum of two MEASURES","Measure difference of 2 MEASURES","Measure product of 2 MEASURES","Measure ratio of 2 MEASURES","FIND sine of MEASURE","Find cosine of MEASURE.","Hide OBJECT","Show or hide label of OBJECT"]
     let makePoints=0, makeMidpoint=1, makeIntersections=2, foldPoints=3, invertPoints=4
     let makeSegments=5, makeRays=6, makeLines=7, makePerps=8, makeParallels=9
     let makeBisectors=10, useOrigamiSix=11, makeCircles=12, make3PTCircle=13
-    let measureDistance=20, measureAngle=21, measureSum=23, measureDifference=24
-    let measureProduct=25, measureRatio=26
-    let hideObject=27, showLabel=28
+    let measureDistance=20, measureAngle=21, measureSum=22, measureDifference=23
+    let measureProduct=24, measureRatio=25, measureSine=26, measureCosine=27
+    let hideObject=28, showLabel=29
     let POINT = 1, PTonLINE = 2, PTonCIRCLE = 3, MIDPOINT = 4
     let LINEintLINE = 5, FOLDedPT = 6, INVERTedPT=7
     let CIRCintCIRC0 = 8,CIRCintCIRC1 = 9, LINEintCIRC0 = 10, LINEintCIRC1 = 11
@@ -980,6 +981,8 @@ class MainViewController: UIViewController {
         creationController.completionHandler = {tag in
             self.whatToDo=tag
             self.infoLabel.text = self.actionText[self.whatToDo]
+            self.infoXLabel.text = self.actionText[self.whatToDo]
+            
         }
         self.present(creationController, animated: false, completion: nil)
         clearAllPotentials()
@@ -994,6 +997,7 @@ class MainViewController: UIViewController {
         measureController.completionHandler = {tag in
             self.whatToDo=tag
             self.infoLabel.text = self.measureText[self.whatToDo-20]
+            self.infoXLabel.text = self.measureText[self.whatToDo-20]
         }
         self.present(measureController, animated: false, completion: nil)
         clearAllPotentials()
@@ -1041,12 +1045,14 @@ class MainViewController: UIViewController {
         if linkedList.count<2 {
             self.whatToDo=self.makePoints
             self.infoLabel.text = self.actionText[self.whatToDo]
+            self.infoXLabel.text = self.actionText[self.whatToDo]
         }
     }
     @IBAction func clearAllButtonPressed(_ sender: UIButton) {
         self.linkedList.removeAll()
         self.whatToDo=self.makePoints
         self.infoLabel.text = self.actionText[self.whatToDo]
+        self.infoXLabel.text = self.actionText[self.whatToDo]
         clearAllPotentials()
         canvas.update(constructions: linkedList, indices: clickedIndex)
         canvas.setNeedsDisplay()

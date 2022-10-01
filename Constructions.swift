@@ -172,6 +172,52 @@ class PointOnLine: Point {                                                  // p
                 let x1=parent0.parent[0].coordinates.x, y1=parent0.parent[0].coordinates.y
                 let x0=point.x,y0=point.y,sx=parent0.slope.x,sy=parent0.slope.y
                 coordinates=CGPoint(x: (sx*sx*x0+sx*sy*y0-sx*sy*y1+sy*sy*x1)/(sx*sx+sy*sy), y: (sx*sx*y1+sx*sy*x0-sx*sy*x1+sy*sy*y0)/(sx*sx+sy*sy))
+                if parent0.type==SEGMENT {
+                    if parent0.parent[0].coordinates.x<parent0.parent[1].coordinates.x {
+                        if coordinates.x<parent0.parent[0].coordinates.x {
+                            coordinates=parent0.parent[0].coordinates
+                        } else if coordinates.x>parent0.parent[1].coordinates.x {
+                            coordinates=parent0.parent[1].coordinates
+                        }
+                    } else if parent0.parent[0].coordinates.x>parent0.parent[1].coordinates.x {
+                        if coordinates.x<parent0.parent[1].coordinates.x {
+                            coordinates=parent0.parent[1].coordinates
+                        } else if coordinates.x>parent0.parent[0].coordinates.x {
+                            coordinates=parent0.parent[0].coordinates
+                        }
+                    } else if parent0.parent[0].coordinates.y<parent0.parent[1].coordinates.y {
+                        if coordinates.y<parent0.parent[0].coordinates.y {
+                            coordinates=parent0.parent[0].coordinates
+                        } else if coordinates.y>parent0.parent[1].coordinates.y {
+                            coordinates=parent0.parent[1].coordinates
+                        }
+                    } else if parent0.parent[0].coordinates.y>parent0.parent[1].coordinates.y {
+                        if coordinates.y<parent0.parent[1].coordinates.y {
+                            coordinates=parent0.parent[1].coordinates
+                        } else if coordinates.y>parent0.parent[0].coordinates.y {
+                            coordinates=parent0.parent[0].coordinates
+                        }
+                    }
+                }
+                if parent0.type==RAY {
+                    if parent0.parent[0].coordinates.x<parent0.parent[1].coordinates.x {
+                        if coordinates.x<parent0.parent[0].coordinates.x {
+                            coordinates=parent0.parent[0].coordinates
+                        }
+                    } else if parent0.parent[0].coordinates.x>parent0.parent[1].coordinates.x {
+                        if coordinates.x>parent0.parent[0].coordinates.x {
+                            coordinates=parent0.parent[0].coordinates
+                        }
+                    } else if parent0.parent[0].coordinates.y<parent0.parent[1].coordinates.y {
+                        if coordinates.y<parent0.parent[0].coordinates.y {
+                            coordinates=parent0.parent[0].coordinates
+                        }
+                    } else if parent0.parent[0].coordinates.y>parent0.parent[1].coordinates.y {
+                        if coordinates.y>parent0.parent[0].coordinates.y {
+                            coordinates=parent0.parent[0].coordinates
+                        }
+                    }
+                }
             }
             // here we need to check if parent is a segment or ray, and if so, whether the point is still on it...if not, set isReal=false
         }
@@ -884,7 +930,7 @@ class Segment: Line {                                                  // parent
             paragraphStyle.alignment = .center
             let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
             let string = "\(character[index%26])\(index/26)"
-            var xx=(coordinates.x+(parent[1].coordinates.x-coordinates.x)/3)+slope.y*15, yy=(coordinates.y+(parent[1].coordinates.y-coordinates.y)/3)-slope.x*15
+            let xx=(coordinates.x+(parent[1].coordinates.x-coordinates.x)/3)+slope.y*15, yy=(coordinates.y+(parent[1].coordinates.y-coordinates.y)/3)-slope.x*15
             string.draw(with: CGRect(x: xx, y: yy, width: 20, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
         }
     }
@@ -912,7 +958,7 @@ class Ray: Line {                                                  // parents: p
             paragraphStyle.alignment = .center
             let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
             let string = "\(character[index%26])\(index/26)"
-            var xx=(coordinates.x+1.4*(parent[1].coordinates.x-coordinates.x))+slope.y*15, yy=(coordinates.y+1.4*(parent[1].coordinates.y-coordinates.y))-slope.x*15
+            let xx=(coordinates.x+1.4*(parent[1].coordinates.x-coordinates.x))+slope.y*15, yy=(coordinates.y+1.4*(parent[1].coordinates.y-coordinates.y))-slope.x*15
             string.draw(with: CGRect(x: xx, y: yy, width: 20, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
         }
     }
