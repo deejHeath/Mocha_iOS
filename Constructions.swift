@@ -622,8 +622,6 @@ class Distance: Measure {       // parents: point, point (for unit distance), or
         update(point: CGPoint(x: (parent[0].coordinates.x+2*parent[1].coordinates.x)/3, y: (2*parent[0].coordinates.x+parent[1].coordinates.x)/3))
         parent[0].showLabel=true
         parent[1].showLabel=true
-        parent[0].isShown=true  // this is because it is possible that (unit) distance was defined
-        parent[1].isShown=true  // automatically from an invisible circle center (see CircleArea)
         showLabel=false
         textString="d(\(character[parent[0].index%26])\(parent[0].index/26),\(character[parent[1].index%26])\(parent[1].index/26))"
         if parent.count==3 {
@@ -1584,13 +1582,13 @@ class CircleArea: Measure { // parent: circle, (unit) distance
         }
         if parentsAllReal {
             isReal=true
-            let temp=Distance(ancestor: [parent[0].parent[0],parent[0].parent[1]], point: point, number: 0)
+            let temp=Distance(ancestor: [parent[0].parent[0],parent[0].parent[1],parent[1]], point: point, number: 0)
             value = 3.141592653589793*temp.value*temp.value
             coordinates=point
         }
     }
     override func draw(_ context: CGContext, _ isRed: Bool) {
-        context.setFillColor(UIColor.systemPink.withAlphaComponent(0.1).cgColor)
+        context.setFillColor(UIColor.systemGray2.withAlphaComponent(0.1).cgColor)
         let radius = sqrt(pow(parent[0].parent[0].coordinates.x-parent[0].parent[1].coordinates.x,2)+pow(parent[0].parent[0].coordinates.y-parent[0].parent[1].coordinates.y,2))
         let rect0 = CGRect(x: parent[0].coordinates.x-radius,
                            y: parent[0].coordinates.y-radius,

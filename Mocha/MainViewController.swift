@@ -45,7 +45,7 @@ class MainViewController: UIViewController {
         canvas.isUserInteractionEnabled = true
         canvas.isMultipleTouchEnabled = false // if we want to add dilation functionality this will need to be true
         view.addSubview(canvas)
-        NSLayoutConstraint.activate([canvas.centerXAnchor.constraint(equalTo: view.centerXAnchor),canvas.centerYAnchor.constraint(equalTo: view.centerYAnchor),canvas.widthAnchor.constraint(equalTo: view.widthAnchor),canvas.heightAnchor.constraint(equalToConstant: 480)])
+        NSLayoutConstraint.activate([canvas.centerXAnchor.constraint(equalTo: view.centerXAnchor),canvas.centerYAnchor.constraint(equalTo: view.centerYAnchor),canvas.widthAnchor.constraint(equalTo: view.widthAnchor),canvas.heightAnchor.constraint(equalToConstant: view.frame.height-200)])
     }
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
@@ -716,6 +716,10 @@ class MainViewController: UIViewController {
                         unitChosen=true
                         unitIndex=linkedList.count
                         linkedList.append(Distance(ancestor: [clickedList[0],clickedList[1]], point: location, number: linkedList.count))
+                        clickedList[0].isShown=true
+                        clickedList[0].showLabel=true
+                        clickedList[1].isShown=true
+                        clickedList[1].showLabel=true
                         update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 16*numberOfMeasures))
                         numberOfMeasures+=1
                     }
@@ -823,6 +827,10 @@ class MainViewController: UIViewController {
                         unitChosen=true
                         unitIndex=linkedList.count
                         linkedList.append(Distance(ancestor: [clickedList[0].parent[0],clickedList[0].parent[1]], point: location, number: linkedList.count))
+                        clickedList[0].parent[0].isShown=true
+                        clickedList[0].parent[0].showLabel=true
+                        clickedList[0].parent[1].isShown=true
+                        clickedList[0].parent[1].showLabel=true
                         update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 16*numberOfMeasures))
                         numberOfMeasures+=1
                     }

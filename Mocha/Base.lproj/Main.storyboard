@@ -52,13 +52,6 @@
                                     </button>
                                 </subviews>
                             </stackView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Draw or move POINTS." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GRV-lR-Pqn">
-                                <rect key="frame" x="0.0" y="610" width="375" height="17.5"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="119" translatesAutoresizingMaskIntoConstraints="NO" id="iIz-77-95N">
                                 <rect key="frame" x="0.0" y="625.5" width="375" height="31.5"/>
                                 <subviews>
@@ -90,6 +83,15 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Draw or move POINTS." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GRV-lR-Pqn">
+                                <rect key="frame" x="0.0" y="594" width="375" height="31.5"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="31.5" id="5WE-MD-Gmc"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -100,9 +102,12 @@
                             <constraint firstAttribute="bottom" secondItem="iIz-77-95N" secondAttribute="bottom" constant="10" id="FlK-Ae-FTk"/>
                             <constraint firstItem="n3b-JJ-JTj" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="KSy-7x-fbO"/>
                             <constraint firstItem="Fzt-Lf-QNd" firstAttribute="top" secondItem="n3b-JJ-JTj" secondAttribute="bottom" id="PfC-Z4-9JB"/>
+                            <constraint firstItem="GRV-lR-Pqn" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="SGb-t6-quQ"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="iIz-77-95N" secondAttribute="trailing" id="Tlg-PU-MWN"/>
                             <constraint firstItem="Fzt-Lf-QNd" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="Xj7-Ti-Rkp"/>
+                            <constraint firstItem="GRV-lR-Pqn" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="Yxd-nl-zN7"/>
                             <constraint firstItem="iIz-77-95N" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="c1u-Yl-KZF"/>
+                            <constraint firstItem="iIz-77-95N" firstAttribute="top" secondItem="GRV-lR-Pqn" secondAttribute="bottom" id="f3X-Es-yCE"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="n3b-JJ-JTj" secondAttribute="trailing" id="lab-Qg-tf5"/>
                         </constraints>
                     </view>
@@ -113,7 +118,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="114" y="-28"/>
+            <point key="canvasLocation" x="113.04347826086958" y="-28.532608695652176"/>
         </scene>
         <!--Creation View Controller-->
         <scene sceneID="ruh-PH-TLQ">
