@@ -590,6 +590,25 @@ class Measure: Point {
     override init(ancestor: [Construction], point: CGPoint, number: Int) {
         super.init(ancestor: ancestor, point: point, number: number)
     }
+    override func draw(_ context: CGContext,_ isRed: Bool) {
+        context.setFillColor(UIColor.clear.cgColor)
+        if isRed {
+            context.setStrokeColor(UIColor.red.cgColor)
+        } else {
+            context.setStrokeColor(UIColor.black.cgColor)
+        }
+        context.setLineWidth(2.0)
+        let currentRect = CGRect(x: coordinates.x-4.0,y:coordinates.y-4.0,
+                                 width: 8.0,
+                                 height: 8.0)
+        context.addEllipse(in: currentRect)
+        context.drawPath(using: .fillStroke)
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .center
+        let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
+        let string = textString+" ≈ \(round(1000000*(value)+0.3)/1000000)"
+        string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:300, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+    }
 }
 
 class Distance: Measure {       // parents: point, point (for unit distance), or
@@ -603,6 +622,8 @@ class Distance: Measure {       // parents: point, point (for unit distance), or
         update(point: CGPoint(x: (parent[0].coordinates.x+2*parent[1].coordinates.x)/3, y: (2*parent[0].coordinates.x+parent[1].coordinates.x)/3))
         parent[0].showLabel=true
         parent[1].showLabel=true
+        parent[0].isShown=true  // this is because it is possible that (unit) distance was defined
+        parent[1].isShown=true  // automatically from an invisible circle center (see CircleArea)
         showLabel=false
         textString="d(\(character[parent[0].index%26])\(parent[0].index/26),\(character[parent[1].index%26])\(parent[1].index/26))"
         if parent.count==3 {
@@ -647,25 +668,6 @@ class Distance: Measure {       // parents: point, point (for unit distance), or
             isReal=false
         }
     }
-    override func draw(_ context: CGContext,_ isRed: Bool) {
-        context.setFillColor(UIColor.clear.cgColor)
-        if isRed {
-            context.setStrokeColor(UIColor.red.cgColor)
-        } else {
-                context.setStrokeColor(UIColor.black.cgColor)
-        }
-        context.setLineWidth(2.0)
-        let currentRect = CGRect(x: coordinates.x-4.0,y:coordinates.y-4.0,
-                                 width: 8.0,
-                                 height: 8.0)
-        context.addEllipse(in: currentRect)
-        context.drawPath(using: .fillStroke)
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.alignment = .center
-        let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
-        let string = textString+" ≈ \(round(1000000*(value)+0.3)/1000000)"
-        string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:300, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
-    }
 }
 class Angle: Measure {
     override init(ancestor: [Construction], point: CGPoint, number: Int) {
@@ -696,29 +698,10 @@ class Angle: Measure {
             let uDotV=(p0.x-p1.x)*(p2.x-p1.x)+(p0.y-p1.y)*(p2.y-p1.y)
             let normU=sqrt(pow(p0.x-p1.x,2)+pow(p0.y-p1.y,2))
             let normV=sqrt(pow(p2.x-p1.x,2)+pow(p2.y-p1.y,2))
-            value=acos(uDotV/(normU*normV))*180/3.141592653589793
+            value=acos(uDotV/(normU*normV))*180/3.141592653589793*signum((p0.y-p1.y)*(p2.x-p1.x)-(p0.x-p1.x)*(p2.y-p1.y))
         } else {
             isReal=false
         }
-    }
-    override func draw(_ context: CGContext,_ isRed: Bool) {
-        context.setFillColor(UIColor.clear.cgColor)
-        if isRed {
-            context.setStrokeColor(UIColor.red.cgColor)
-        } else {
-                context.setStrokeColor(UIColor.black.cgColor)
-        }
-        context.setLineWidth(2.0)
-        let currentRect = CGRect(x: coordinates.x-4.0,y:coordinates.y-4.0,
-                                 width: 8.0,
-                                 height: 8.0)
-        context.addEllipse(in: currentRect)
-        context.drawPath(using: .fillStroke)
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.alignment = .center
-        let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
-        let string = textString+" ≈ \(round(1000000*(value)+0.3)/1000000)"
-        string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:200, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
     }
 }
 class Ratio: Distance {
@@ -805,8 +788,50 @@ class Difference: Distance {
         }
     }
 }
-
-    
+class Sine: Measure {
+    override init(ancestor: [Construction], point: CGPoint, number: Int) {
+        super.init(ancestor: ancestor, point: point, number: number)
+        coordinates=point
+        type = SINE
+        value=sin(parent[0].value)
+        index=number
+        update(point: point)
+        type=SINE
+        showLabel=false
+        textString="sin("+parent[0].textString+")"
+    }
+    override func update(point: CGPoint) {
+        if parent[0].isReal {
+            isReal=true
+            coordinates=point
+            value=sin(3.141592653589793*parent[0].value/180)
+        } else {
+            isReal=false
+        }
+    }
+}
+class Cosine: Measure {
+    override init(ancestor: [Construction], point: CGPoint, number: Int) {
+        super.init(ancestor: ancestor, point: point, number: number)
+        coordinates=point
+        type = SINE
+        value=cos(parent[0].value)
+        index=number
+        update(point: point)
+        type=COSINE
+        showLabel=false
+        textString="cos("+parent[0].textString+")"
+    }
+    override func update(point: CGPoint) {
+        if parent[0].isReal {
+            isReal=true
+            coordinates=point
+            value=cos(3.141592653589793*parent[0].value/180)
+        } else {
+            isReal=false
+        }
+    }
+}
     
     
     
@@ -1560,7 +1585,7 @@ class CircleArea: Measure { // parent: circle, (unit) distance
         if parentsAllReal {
             isReal=true
             let temp=Distance(ancestor: [parent[0].parent[0],parent[0].parent[1]], point: point, number: 0)
-            value = 3.1415926535*temp.value*temp.value
+            value = 3.141592653589793*temp.value*temp.value
             coordinates=point
         }
     }

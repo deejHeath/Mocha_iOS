@@ -93,3 +93,11 @@ func cubicSolve(a: Double, b: Double, c: Double, d: Double, threshold: Double = 
     }
     return roots
 }
+
+func signum(_ x: Double) -> Double {
+    if x>=0 {
+        return 1
+    } else {
+        return -1
+    }
+}

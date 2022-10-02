@@ -75,7 +75,7 @@ class MainViewController: UIViewController {
                 }
             }
             break
-        case makeLines,makeSegments,makeRays,measureDistance,makeCircles,makeMidpoint,make3PTCircle,measureAngle,measureTriArea:
+        case makeLines, makeSegments, makeRays, measureDistance, makeCircles, makeMidpoint, make3PTCircle, measureAngle, measureTriArea:
             getPoint(location)
             if !activeConstruct {
                 potentialClick=nil
@@ -87,7 +87,7 @@ class MainViewController: UIViewController {
                 potentialClick=nil
             }
             break
-        case foldPoints,makePerps,makeParallels:
+        case foldPoints, makePerps, makeParallels:
             if clickedList.count==0 {
                 getPoint(location)
             } else if clickedList.count==1 {
@@ -126,7 +126,7 @@ class MainViewController: UIViewController {
                 potentialClick=nil
             }
             break
-        case measureRatio, measureSum, measureProduct, measureDifference:
+        case measureRatio, measureSum, measureProduct, measureDifference, measureSine, measureCosine:
             getMeasure(location)
             if !activeConstruct {
                 potentialClick=nil
@@ -175,7 +175,8 @@ class MainViewController: UIViewController {
                 update(object: object, point: object.coordinates)
             }
             break
-        case makeLines,makeSegments,makeRays,measureDistance, makeCircles, makeMidpoint,make3PTCircle,measureAngle,measureTriArea:
+        case makeLines, makeSegments, makeRays, measureDistance, makeCircles,
+            makeMidpoint, make3PTCircle, measureAngle, measureTriArea:
             getRidOfActivesThatAreTooFar(location)
             if !activeConstruct {
                 getPoint(location)
@@ -187,7 +188,7 @@ class MainViewController: UIViewController {
                 getLine(location)
             }
             break
-        case foldPoints,makePerps,makeParallels:
+        case foldPoints, makePerps, makeParallels:
             getRidOfActivesThatAreTooFar(location)
             if clickedList.count==0 {
                 getPoint(location)
@@ -217,7 +218,7 @@ class MainViewController: UIViewController {
                 getLineOrCircle(location)
             }
             break
-        case measureRatio, measureSum, measureDifference,measureProduct:
+        case measureRatio, measureSum, measureDifference, measureProduct, measureSine, measureCosine:
             getRidOfActivesThatAreTooFar(location)
             if !activeConstruct {
                 getMeasure(location)
@@ -229,7 +230,7 @@ class MainViewController: UIViewController {
                 getCircle(location)
             }
             break
-        case hideObject,showLabel:
+        case hideObject, showLabel:
             getRidOfActivesThatAreTooFar(location)
             getPointOrLineOrCircle(location)
             break
@@ -661,7 +662,7 @@ class MainViewController: UIViewController {
                         unitIndex=linkedList.count
                     }
                     linkedList.append(Distance(ancestor: clickedList, point: location, number: linkedList.count))
-                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 14*numberOfMeasures))
+                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 16*numberOfMeasures))
                     numberOfMeasures+=1
                     clearAllPotentials()
                 }
@@ -686,7 +687,7 @@ class MainViewController: UIViewController {
                 }
                 if !alreadyExists {
                     linkedList.append(Angle(ancestor: clickedList, point: location, number: linkedList.count))
-                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 14*numberOfMeasures))
+                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 16*numberOfMeasures))
                     numberOfMeasures+=1
                     clearAllPotentials()
                 }
@@ -715,12 +716,12 @@ class MainViewController: UIViewController {
                         unitChosen=true
                         unitIndex=linkedList.count
                         linkedList.append(Distance(ancestor: [clickedList[0],clickedList[1]], point: location, number: linkedList.count))
-                        update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 14*numberOfMeasures))
+                        update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 16*numberOfMeasures))
                         numberOfMeasures+=1
                     }
                     clickedList.append(linkedList[unitIndex])
                     linkedList.append(Triangle(ancestor: clickedList, point: location, number: linkedList.count))
-                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 14*numberOfMeasures))
+                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 16*numberOfMeasures))
                     clearAllPotentials()
                     numberOfMeasures+=1
                 }
@@ -760,7 +761,41 @@ class MainViewController: UIViewController {
                     default:
                         print("measure default reached")
                     }
-                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 14*numberOfMeasures))
+                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 16*numberOfMeasures))
+                    numberOfMeasures+=1
+                    clearAllPotentials()
+                }
+            }
+            break
+        case measureSine, measureCosine:
+            getRidOfActivesThatAreTooFar(location)
+            clearActives()
+            getRidOfDuplicates()
+            if clickedList.count==1 {
+                var alreadyExists=false
+                for i in 0..<linkedList.count {
+                    if let temp=linkedList[i] as? Measure {
+                        if !alreadyExists {
+                            if temp.parent[0].index == clickedList[0].index && temp.type == whatToDo {
+                                alreadyExists=true
+                                linkedList[i].isShown=true
+                                clearAllPotentials()
+                            }
+                        }
+                    }
+                }
+                if !alreadyExists {
+                    switch(whatToDo) {
+                    case measureSine:
+                        linkedList.append(Sine(ancestor: clickedList, point: location, number: linkedList.count))
+                        break
+                    case measureCosine:
+                        linkedList.append(Cosine(ancestor: clickedList, point: location, number: linkedList.count))
+                        break
+                    default:
+                        print("measure default reached")
+                    }
+                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 16*numberOfMeasures))
                     numberOfMeasures+=1
                     clearAllPotentials()
                 }
@@ -788,12 +823,12 @@ class MainViewController: UIViewController {
                         unitChosen=true
                         unitIndex=linkedList.count
                         linkedList.append(Distance(ancestor: [clickedList[0].parent[0],clickedList[0].parent[1]], point: location, number: linkedList.count))
-                        update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 14*numberOfMeasures))
+                        update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 16*numberOfMeasures))
                         numberOfMeasures+=1
                     }
                     clickedList.append(linkedList[unitIndex])
                     linkedList.append(CircleArea(ancestor: clickedList, point: location, number: linkedList.count))
-                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 14*numberOfMeasures))
+                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 16*numberOfMeasures))
                     clearAllPotentials()
                     numberOfMeasures+=1
                 }
