@@ -11,7 +11,7 @@ class Construction {
     var character = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
     var isReal=true
     var isShown=true
-    var showLabel=true
+    var showLabel=false
     var value = -1.0
     var coordinates: CGPoint
     var slope=CGPoint(x: 1.0,y: 0.0)
@@ -23,7 +23,8 @@ class Construction {
     let CIRCintCIRC0 = 8,CIRCintCIRC1 = 9, LINEintCIRC0 = 10, LINEintCIRC1 = 11
     let BiPOINT = 12, THREEptCIRCLEcntr=13
     let TOOL6PT0 = 14, TOOL6PT1 = 15, TOOL6PT2 = 16
-    let DISTANCE = 20, ANGLE = 21, RATIO = 22, SUM = 23, PRODUCT = 24, DIFFERENCE = 25
+    let DISTANCE = 20, ANGLE = 21, TriAREA=22, CircAREA=23
+    let SUM = 24, DIFFERENCE = 25, PRODUCT = 26, RATIO = 27, SINE=28, COSINE=29
     let CIRCLE = 0
     let LINE = -1, PERP = -2, PARALLEL = -3, BISECTOR0 = -4, BISECTOR1 = -5, TOOL6LINE0 = -7
     let TOOL6LINE1 = -8, TOOL6LINE2 = -9, THREEptLINE = -10, SEGMENT = -11, RAY = -12
@@ -172,6 +173,8 @@ class PointOnLine: Point {                                                  // p
                 let x1=parent0.parent[0].coordinates.x, y1=parent0.parent[0].coordinates.y
                 let x0=point.x,y0=point.y,sx=parent0.slope.x,sy=parent0.slope.y
                 coordinates=CGPoint(x: (sx*sx*x0+sx*sy*y0-sx*sy*y1+sy*sy*x1)/(sx*sx+sy*sy), y: (sx*sx*y1+sx*sy*x0-sx*sy*x1+sy*sy*y0)/(sx*sx+sy*sy))
+                // next we check to see if the point is on the segment/ray, and if not,
+                // we put it at the closest point.
                 if parent0.type==SEGMENT {
                     if parent0.parent[0].coordinates.x<parent0.parent[1].coordinates.x {
                         if coordinates.x<parent0.parent[0].coordinates.x {
@@ -219,7 +222,6 @@ class PointOnLine: Point {                                                  // p
                     }
                 }
             }
-            // here we need to check if parent is a segment or ray, and if so, whether the point is still on it...if not, set isReal=false
         }
     }
 }
@@ -915,6 +917,11 @@ class Segment: Line {                                                  // parent
         type=SEGMENT
         index=number
     }
+    override func distance(_ point: CGPoint) -> Double {
+        let temp=PointOnLine(ancestor: [self], point: point, number: 0)
+        temp.update(point: point)
+        return sqrt(pow(temp.coordinates.x-point.x,2)+pow(temp.coordinates.y-point.y,2))
+    }
     override func draw(_ context: CGContext,_ isRed: Bool) {
         if isRed {
             context.setStrokeColor(UIColor.red.cgColor)
@@ -942,6 +949,11 @@ class Ray: Line {                                                  // parents: p
         update()
         type=RAY
         index=number
+    }
+    override func distance(_ point: CGPoint) -> Double {
+        let temp=PointOnLine(ancestor: [self], point: point, number: 0)
+        temp.update(point: point)
+        return sqrt(pow(temp.coordinates.x-point.x,2)+pow(temp.coordinates.y-point.y,2))
     }
     override func draw(_ context: CGContext,_ isRed: Bool) {
         if isRed {

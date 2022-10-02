@@ -11,19 +11,20 @@ class MainViewController: UIViewController {
     var futureList: [Construction] = []
     var clickedIndex: [Int] = []
     let actionText=["Create or move POINTS", "Create midpoint between 2 POINTS","Intersect 2 OBJECTS","Fold POINT over LINE","Invert POINT in CIRCLE", "Create segment on 2 POINTS", "Create ray on 2 POINTS","Create line on 2 POINTS","create line on POINT and ⊥ to LINE","create line on POINT and || to LINE","Create bisector from 2 LINES","Fold from 2 POINTS to 2 LINES","Create circle with center POINT and POINT on","Create 3 POINT circle"]
-    let measureText=["Measure distance between 2 POINTS","Measure angle from 3 POINTS", "Measure sum of two MEASURES","Measure difference of 2 MEASURES","Measure product of 2 MEASURES","Measure ratio of 2 MEASURES","FIND sine of MEASURE","Find cosine of MEASURE.","Hide OBJECT","Show or hide label of OBJECT"]
+    let measureText=["Measure distance between 2 POINTS","Measure angle from 3 POINTS","Measure area of triangle from 3 POINTS","Measure area of CIRCLE", "Measure sum of two MEASURES","Measure difference of 2 MEASURES","Measure product of 2 MEASURES","Measure ratio of 2 MEASURES","FIND sine of MEASURE","Find cosine of MEASURE.","Hide OBJECT","Show or hide label of OBJECT"]
     let makePoints=0, makeMidpoint=1, makeIntersections=2, foldPoints=3, invertPoints=4
     let makeSegments=5, makeRays=6, makeLines=7, makePerps=8, makeParallels=9
     let makeBisectors=10, useOrigamiSix=11, makeCircles=12, make3PTCircle=13
-    let measureDistance=20, measureAngle=21, measureSum=22, measureDifference=23
-    let measureProduct=24, measureRatio=25, measureSine=26, measureCosine=27
-    let hideObject=28, showLabel=29
+    let measureDistance=20, measureAngle=21, measureTriArea=22, measureCircArea=23
+    let measureSum=24, measureDifference=25, measureProduct=26, measureRatio=27
+    let measureSine=28, measureCosine=29, hideObject=30, showLabel=31
     let POINT = 1, PTonLINE = 2, PTonCIRCLE = 3, MIDPOINT = 4
     let LINEintLINE = 5, FOLDedPT = 6, INVERTedPT=7
     let CIRCintCIRC0 = 8,CIRCintCIRC1 = 9, LINEintCIRC0 = 10, LINEintCIRC1 = 11
     let BiPOINT = 12, THREEptCIRCLEcntr=13
     let TOOL6PT0 = 14, TOOL6PT1 = 15, TOOL6PT2 = 16
-    let DISTANCE = 20, ANGLE = 21, RATIO = 22, SUM = 23, PRODUCT = 24, DIFFERENCE = 25
+    let DISTANCE = 20, ANGLE = 21, TriAREA=22, CircAREA=23
+    let SUM = 24, DIFFERENCE = 25, PRODUCT = 26, RATIO = 27, SINE=28, COSINE=29
     let CIRCLE = 0
     let LINE = -1, PERP = -2, PARALLEL = -3, BISECTOR0 = -4, BISECTOR1 = -5, TOOL6LINE0 = -7
     let TOOL6LINE1 = -8, TOOL6LINE2 = -9, THREEptLINE = -10, SEGMENT = -11, RAY = -12
@@ -1013,39 +1014,39 @@ class MainViewController: UIViewController {
         present(activity, animated: true)
       }
     @IBAction func clearLastButtonPressed() {
-        if linkedList.count-1 == unitIndex {
-            unitChosen=false
-            unitIndex=0
-        }
-        if linkedList[linkedList.count-1].type>=DISTANCE {
-            numberOfMeasures-=1
-        }
-        if linkedList.count>1 {
-            if linkedList[linkedList.count-2].type==THREEptCIRCLEcntr || linkedList[linkedList.count-1].type==BISECTOR1 {
-                linkedList.removeLast()
-                linkedList.removeLast()
-            }
-            if linkedList[linkedList.count-1].type==CIRCintCIRC1 || linkedList[linkedList.count-1].type==LINEintCIRC1 {
-                linkedList.removeLast()                        // since there were two created at once
-            }
-            if linkedList[linkedList.count-1].type==TOOL6LINE2 {
-                linkedList.removeLast()
-                linkedList.removeLast()
-                linkedList.removeLast()
-                linkedList.removeLast()
-                linkedList.removeLast()
-            }
-        }
         if linkedList.count>0 {
-            linkedList.removeLast()
-        }
-        clearAllPotentials()
-        canvas.update(constructions: linkedList, indices: clickedIndex)
-        canvas.setNeedsDisplay()
-        if linkedList.count<2 {
-            self.whatToDo=self.makePoints
-            self.infoLabel.text = self.actionText[self.whatToDo]
-            self.infoXLabel.text = self.actionText[self.whatToDo]
+            if linkedList.count-1 == unitIndex {
+                unitChosen=false
+                unitIndex=0
+            }
+            if linkedList[linkedList.count-1].type>=DISTANCE {
+                numberOfMeasures-=1
+            }
+            if linkedList.count>1 {
+                if linkedList[linkedList.count-2].type==THREEptCIRCLEcntr || linkedList[linkedList.count-1].type==BISECTOR1 {
+                    linkedList.removeLast()
+                    linkedList.removeLast()         // since there were three created at once
+                }
+                if linkedList[linkedList.count-1].type==CIRCintCIRC1 || linkedList[linkedList.count-1].type==LINEintCIRC1 {
+                    linkedList.removeLast()         // since there were two created at once
+                }
+                if linkedList[linkedList.count-1].type==TOOL6LINE2 {
+                    linkedList.removeLast()
+                    linkedList.removeLast()         // since there were six created at once
+                    linkedList.removeLast()
+                    linkedList.removeLast()
+                    linkedList.removeLast()
+                }
+            }
+                linkedList.removeLast()
+            clearAllPotentials()
+            canvas.update(constructions: linkedList, indices: clickedIndex)
+            canvas.setNeedsDisplay()
+            if linkedList.count<2 {
+                self.whatToDo=self.makePoints
+                self.infoLabel.text = self.actionText[self.whatToDo]
+                self.infoXLabel.text = self.actionText[self.whatToDo]
+            }
         }
     }
     @IBAction func clearAllButtonPressed(_ sender: UIButton) {
