@@ -53,11 +53,7 @@ class Construction {
     }
     func update(ancestor: [Construction]) {
     }
-    func update(point: CGPoint,scaleFactor: Double) {
-    }
     func draw(_ context: CGContext, _ isRed: Bool) {
-    }
-    func draw(_ context: CGContext, _ isRed: Bool, scaleFactor: Double){
     }
     func distance(_ point: CGPoint) -> Double {
         return 1024
@@ -596,8 +592,8 @@ class Measure: Point {
     }
 }
 
-class Distance: Measure {
-    var measuredValue=1.0
+class Distance: Measure {       // parents: point, point (for unit distance), or
+    var measuredValue=1.0       // parents: point, point, (unit) distance.
     override init(ancestor: [Construction], point: CGPoint, number: Int) {
         super.init(ancestor: ancestor, point: point, number: number)
         coordinates=parent[0].coordinates
@@ -1490,5 +1486,107 @@ class Tool6Line2: Line {                                  // parents: T6P2, poin
             isReal=false
         }
         isReal = isReal && parent[0].isReal
+    }
+}
+
+class Triangle: Measure { // parent: point, point, point, (unit) distance
+    override init(ancestor: [Construction], point: CGPoint, number: Int) {
+        super.init(ancestor: ancestor, point: point, number: number)
+        type=TriAREA
+        textString="Δ(\(character[parent[0].index%26])\(parent[0].index/26),\(character[parent[1].index%26])\(parent[1].index/26),\(character[parent[2].index%26])\(parent[2].index/26))"
+        coordinates=point
+    }
+    override func update(point: CGPoint) {
+        var parentsAllReal=true
+        for object in parent {
+            if !object.isReal {
+                parentsAllReal=false
+            }
+        }
+        if parentsAllReal {
+            isReal=true
+            coordinates=point
+            let temp0=Line(ancestor: [parent[0],parent[1]], point: point, number: 0)
+            let temp1=PerpLine(ancestor: [parent[2],temp0], point: point, number: 1)
+            let temp2=LineIntLine(ancestor: [temp0,temp1], point: point, number: 2)
+            let temp3=Distance(ancestor: [parent[0],parent[1],parent[3]], point: point, number: 3)
+            let temp4=Distance(ancestor: [temp2,parent[2],parent[3]], point: point, number: 4)
+            value=temp4.value*temp3.value/2
+        }
+    }
+    override func draw(_ context: CGContext, _ isRed: Bool) {
+        context.setFillColor(UIColor.systemYellow.withAlphaComponent(0.2).cgColor)
+        context.move(to: parent[0].coordinates)
+        context.addLine(to: parent[1].coordinates)
+        context.addLine(to: parent[2].coordinates)
+        context.closePath()
+        context.fillPath()      // up to here highlighted the triangle
+        
+        context.setFillColor(UIColor.clear.cgColor)
+        if isRed {
+            context.setStrokeColor(UIColor.red.cgColor)
+        } else {
+                context.setStrokeColor(UIColor.black.cgColor)
+        }
+        context.setLineWidth(2.0)
+        let currentRect = CGRect(x: coordinates.x-4.0,y:coordinates.y-4.0,
+                                 width: 8.0,
+                                 height: 8.0)
+        context.addEllipse(in: currentRect)
+        context.drawPath(using: .fillStroke)
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .center
+        let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
+        let string = textString+" ≈ \(round(1000000*(value)+0.3)/1000000)"
+        string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:300, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+    }
+}
+
+class CircleArea: Measure { // parent: circle, (unit) distance
+    override init(ancestor: [Construction], point: CGPoint, number: Int) {
+        super.init(ancestor: ancestor, point: point, number: number)
+        type=CircAREA
+        parent[0].showLabel=true
+        textString="⦿(\(character[parent[0].index%26])\(parent[0].index/26))"
+        coordinates=point
+    }
+    override func update(point: CGPoint) {
+        var parentsAllReal=true
+        for object in parent {
+            if !object.isReal {
+                parentsAllReal=false
+            }
+        }
+        if parentsAllReal {
+            isReal=true
+            let temp=Distance(ancestor: [parent[0].parent[0],parent[0].parent[1]], point: point, number: 0)
+            value = 3.1415926535*temp.value*temp.value
+            coordinates=point
+        }
+    }
+    override func draw(_ context: CGContext, _ isRed: Bool) {
+        context.setFillColor(UIColor.systemPink.withAlphaComponent(0.1).cgColor)
+        let radius = sqrt(pow(parent[0].parent[0].coordinates.x-parent[0].parent[1].coordinates.x,2)+pow(parent[0].parent[0].coordinates.y-parent[0].parent[1].coordinates.y,2))
+        let rect0 = CGRect(x: parent[0].coordinates.x-radius,
+                           y: parent[0].coordinates.y-radius,
+                           width: 2*radius, height:2*radius)
+        context.fillEllipse(in: rect0)
+        context.setFillColor(UIColor.clear.cgColor)
+        if isRed {
+            context.setStrokeColor(UIColor.red.cgColor)
+        } else {
+                context.setStrokeColor(UIColor.black.cgColor)
+        }
+        context.setLineWidth(2.0)
+        let currentRect = CGRect(x: coordinates.x-4.0,y:coordinates.y-4.0,
+                                 width: 8.0,
+                                 height: 8.0)
+        context.addEllipse(in: currentRect)
+        context.drawPath(using: .fillStroke)
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .center
+        let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
+        let string = textString+" ≈ \(round(1000000*(value)+0.3)/1000000)"
+        string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:300, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
     }
 }

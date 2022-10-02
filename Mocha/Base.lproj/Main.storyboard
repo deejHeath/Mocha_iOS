@@ -436,7 +436,7 @@
                                             <action selector="settingsButtonPressed:" destination="mZU-iz-2BW" eventType="touchUpInside" id="wBg-YF-5ks"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" tag="22" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KAi-rE-LRW">
+                                    <button opaque="NO" tag="22" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KAi-rE-LRW">
                                         <rect key="frame" x="0.0" y="76.5" width="375" height="28"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Area of triangle from 3 POINTS">
@@ -446,7 +446,7 @@
                                             <action selector="settingsButtonPressed:" destination="mZU-iz-2BW" eventType="touchUpInside" id="dzG-w2-s1L"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" tag="23" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Hw9-KX-WDF">
+                                    <button opaque="NO" tag="23" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Hw9-KX-WDF">
                                         <rect key="frame" x="0.0" y="104.5" width="375" height="28"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Area of CIRCLE">

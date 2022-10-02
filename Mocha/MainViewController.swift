@@ -75,7 +75,7 @@ class MainViewController: UIViewController {
                 }
             }
             break
-        case makeLines,makeSegments,makeRays,measureDistance,makeCircles,makeMidpoint,make3PTCircle,measureAngle:
+        case makeLines,makeSegments,makeRays,measureDistance,makeCircles,makeMidpoint,make3PTCircle,measureAngle,measureTriArea:
             getPoint(location)
             if !activeConstruct {
                 potentialClick=nil
@@ -132,6 +132,12 @@ class MainViewController: UIViewController {
                 potentialClick=nil
             }
             break
+        case measureCircArea:
+            getCircle(location)
+            if !activeConstruct {
+                potentialClick=nil
+            }
+            break
         default:
             print("touchesBegan \(location)")
         }
@@ -169,7 +175,7 @@ class MainViewController: UIViewController {
                 update(object: object, point: object.coordinates)
             }
             break
-        case makeLines,makeSegments,makeRays,measureDistance, makeCircles, makeMidpoint,make3PTCircle,measureAngle:
+        case makeLines,makeSegments,makeRays,measureDistance, makeCircles, makeMidpoint,make3PTCircle,measureAngle,measureTriArea:
             getRidOfActivesThatAreTooFar(location)
             if !activeConstruct {
                 getPoint(location)
@@ -215,6 +221,12 @@ class MainViewController: UIViewController {
             getRidOfActivesThatAreTooFar(location)
             if !activeConstruct {
                 getMeasure(location)
+            }
+            break
+        case measureCircArea:
+            getRidOfActivesThatAreTooFar(location)
+            if !activeConstruct {
+                getCircle(location)
             }
             break
         case hideObject,showLabel:
@@ -680,6 +692,40 @@ class MainViewController: UIViewController {
                 }
             }
             break
+        case measureTriArea:
+            getRidOfActivesThatAreTooFar(location)
+            clearActives()
+            getRidOfDuplicates()
+            if clickedList.count==3 {
+                arrangeClickedObjectsByIndex()
+                var alreadyExists=false
+                for i in 0..<linkedList.count {
+                    if let temp=linkedList[i] as? Triangle {
+                        if !alreadyExists {
+                            if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index && temp.parent[2].index == clickedList[2].index {
+                                alreadyExists=true
+                                linkedList[i].isShown=true
+                                clearAllPotentials()
+                            }
+                        }
+                    }
+                }
+                if !alreadyExists {
+                    if !unitChosen { // if no unit length, create one
+                        unitChosen=true
+                        unitIndex=linkedList.count
+                        linkedList.append(Distance(ancestor: [clickedList[0],clickedList[1]], point: location, number: linkedList.count))
+                        update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 14*numberOfMeasures))
+                        numberOfMeasures+=1
+                    }
+                    clickedList.append(linkedList[unitIndex])
+                    linkedList.append(Triangle(ancestor: clickedList, point: location, number: linkedList.count))
+                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 14*numberOfMeasures))
+                    clearAllPotentials()
+                    numberOfMeasures+=1
+                }
+            }
+            break
         case measureRatio, measureSum, measureProduct, measureDifference:
             getRidOfActivesThatAreTooFar(location)
             clearActives()
@@ -689,14 +735,14 @@ class MainViewController: UIViewController {
                 for i in 0..<linkedList.count {
                     if let temp=linkedList[i] as? Measure {  // problem here!
                         if !alreadyExists {
-                            if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
+                            if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index && temp.type == whatToDo {
                                 alreadyExists=true
                                 linkedList[i].isShown=true
                                 clearAllPotentials()
                             }
                         }
-                    }   // this doesn't allow a ratio to be calculated if a sum of the same
-                }       // measures has already been calculated.  Need to redo.
+                    }
+                }
                 if !alreadyExists {
                     switch(whatToDo) {
                     case measureRatio:
@@ -717,6 +763,39 @@ class MainViewController: UIViewController {
                     update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 14*numberOfMeasures))
                     numberOfMeasures+=1
                     clearAllPotentials()
+                }
+            }
+            break
+        case measureCircArea:
+            getRidOfActivesThatAreTooFar(location)
+            clearActives()
+            getRidOfDuplicates()
+            if clickedList.count==1 {
+                var alreadyExists=false
+                for i in 0..<linkedList.count {
+                    if let temp=linkedList[i] as? CircleArea {
+                        if !alreadyExists {
+                            if temp.parent[0].index == clickedList[0].index {
+                                alreadyExists=true
+                                linkedList[i].isShown=true
+                                clearAllPotentials()
+                            }
+                        }
+                    }
+                }
+                if !alreadyExists {
+                    if !unitChosen { // if no unit length, create one
+                        unitChosen=true
+                        unitIndex=linkedList.count
+                        linkedList.append(Distance(ancestor: [clickedList[0].parent[0],clickedList[0].parent[1]], point: location, number: linkedList.count))
+                        update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 14*numberOfMeasures))
+                        numberOfMeasures+=1
+                    }
+                    clickedList.append(linkedList[unitIndex])
+                    linkedList.append(CircleArea(ancestor: clickedList, point: location, number: linkedList.count))
+                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 14*numberOfMeasures))
+                    clearAllPotentials()
+                    numberOfMeasures+=1
                 }
             }
             break
@@ -753,9 +832,6 @@ class MainViewController: UIViewController {
     }
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesCancelled(touches, with: event)
-        let touch=touches.first!
-        let location=touch.location(in: canvas)
-        print("touchesCancelled: \(location)")
         clearAllPotentials()
         canvas.update(constructions: linkedList, indices: clickedIndex)
         canvas.setNeedsDisplay()
@@ -851,17 +927,27 @@ class MainViewController: UIViewController {
     }
     func arrangeClickedObjectsByIndex() {
         if clickedIndex[0]>clickedIndex[1] {
-            clickedList.append(clickedList[0]);
-            clickedList.removeFirst();
+            clickedList.insert(clickedList[0], at: 2)
+            clickedList.removeFirst()
+            clickedIndex.insert(clickedIndex[0],at: 2)
+            clickedIndex.removeFirst()
         }
-        if clickedList.count==3 {
+        if clickedList.count>=3 {
             if clickedIndex[0]>clickedIndex[2] {
-                clickedList.append(clickedList[0]);
+                clickedList.insert(clickedList[0], at: 2)
+                clickedList.insert(clickedList[3], at: 1)
                 clickedList.removeFirst()
+                clickedList.removeLast()
+                clickedIndex.insert(clickedIndex[0], at: 2)
+                clickedIndex.insert(clickedIndex[3], at: 1)
+                clickedIndex.removeFirst()
+                clickedIndex.removeLast()
             }
             if clickedIndex[1]>clickedIndex[2] {
                 clickedList.append(clickedList[1])
                 clickedList.remove(at:1)
+                clickedIndex.append(clickedIndex[1])
+                clickedIndex.remove(at: 1)
             }
         }
     }
@@ -913,6 +999,8 @@ class MainViewController: UIViewController {
         } else if let temp = object as? Sum {
             temp.update(point: point)
         } else if let temp = object as? Difference {
+            temp.update(point: point)
+        } else if let temp = object as? Triangle {
             temp.update(point: point)
         } else if let temp = object as? PointOnLine {
             temp.update(point: point)
