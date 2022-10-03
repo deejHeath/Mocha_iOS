@@ -673,11 +673,17 @@ class MainViewController: UIViewController {
             clearActives()
             getRidOfDuplicates()
             if clickedList.count==3 {
+                if clickedList[0].index>clickedList[2].index {
+                    clickedList.insert(clickedList[0], at: 2)
+                    clickedList.insert(clickedList[3], at: 1)
+                    clickedList.removeFirst()
+                    clickedList.removeLast()
+                }
                 var alreadyExists=false
                 for i in 0..<linkedList.count {
                     if let temp=linkedList[i] as? Angle {
                         if !alreadyExists {
-                            if temp.parent[1].index == clickedList[1].index && ((temp.parent[0].index == clickedList[0].index && temp.parent[2].index == clickedList[2].index) || (temp.parent[0].index == clickedList[2].index && temp.parent[2].index == clickedList[0].index)) {
+                            if temp.parent[1].index == clickedList[1].index && temp.parent[0].index == clickedList[0].index && temp.parent[2].index == clickedList[2].index {
                                 alreadyExists=true
                                 linkedList[i].isShown=true
                                 clearAllPotentials()
@@ -731,42 +737,102 @@ class MainViewController: UIViewController {
                 }
             }
             break
-        case measureRatio, measureSum, measureProduct, measureDifference:
+        case measureSum:
+            getRidOfActivesThatAreTooFar(location)
+            clearActives()
+            getRidOfDuplicates()
+            if clickedList.count==2 {
+                arrangeClickedObjectsByIndex()
+                var alreadyExists=false
+                for i in 0..<linkedList.count {
+                    if let temp=linkedList[i] as? Sum {
+                        if !alreadyExists {
+                            if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
+                                alreadyExists=true
+                                linkedList[i].isShown=true
+                                clearAllPotentials()
+                            }
+                        }
+                    }
+                }
+                if !alreadyExists {
+                    linkedList.append(Sum(ancestor: clickedList, point: location, number: linkedList.count))
+                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 16*numberOfMeasures))
+                    numberOfMeasures+=1
+                    clearAllPotentials()
+                }
+            }
+            break
+        case measureProduct:
+            getRidOfActivesThatAreTooFar(location)
+            clearActives()
+            getRidOfDuplicates()
+            if clickedList.count==2 {
+                arrangeClickedObjectsByIndex()
+                var alreadyExists=false
+                for i in 0..<linkedList.count {
+                    if let temp=linkedList[i] as? Product {
+                        if !alreadyExists {
+                            if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
+                                alreadyExists=true
+                                linkedList[i].isShown=true
+                                clearAllPotentials()
+                            }
+                        }
+                    }
+                }
+                if !alreadyExists {
+                    linkedList.append(Product(ancestor: clickedList, point: location, number: linkedList.count))
+                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 16*numberOfMeasures))
+                    numberOfMeasures+=1
+                    clearAllPotentials()
+                }
+            }
+            break
+        case measureDifference:
             getRidOfActivesThatAreTooFar(location)
             clearActives()
             getRidOfDuplicates()
             if clickedList.count==2 {
                 var alreadyExists=false
                 for i in 0..<linkedList.count {
-                    if linkedList[i].type != SINE && linkedList[i].type != COSINE {
-                        if let temp=linkedList[i] as? Measure {  // problem here!
-                            if !alreadyExists {
-                                if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index && temp.type == whatToDo {
-                                    alreadyExists=true
-                                    linkedList[i].isShown=true
-                                    clearAllPotentials()
-                                }
+                    if let temp=linkedList[i] as? Difference {
+                        if !alreadyExists {
+                            if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
+                                alreadyExists=true
+                                linkedList[i].isShown=true
+                                clearAllPotentials()
                             }
                         }
                     }
                 }
                 if !alreadyExists {
-                    switch(whatToDo) {
-                    case measureRatio:
-                        linkedList.append(Ratio(ancestor: clickedList, point: location, number: linkedList.count))
-                        break
-                    case measureProduct:
-                        linkedList.append(Product(ancestor: clickedList, point: location, number: linkedList.count))
-                        break
-                    case measureSum:
-                        linkedList.append(Sum(ancestor: clickedList, point: location, number: linkedList.count))
-                        break
-                    case measureDifference:
-                        linkedList.append(Difference(ancestor: clickedList, point: location, number: linkedList.count))
-                        break
-                    default:
-                        print("measure default reached")
+                    linkedList.append(Difference(ancestor: clickedList, point: location, number: linkedList.count))
+                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 16*numberOfMeasures))
+                    numberOfMeasures+=1
+                    clearAllPotentials()
+                }
+            }
+            break
+        case measureRatio:
+            getRidOfActivesThatAreTooFar(location)
+            clearActives()
+            getRidOfDuplicates()
+            if clickedList.count==2 {
+                var alreadyExists=false
+                for i in 0..<linkedList.count {
+                    if let temp=linkedList[i] as? Ratio {
+                        if !alreadyExists {
+                            if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
+                                alreadyExists=true
+                                linkedList[i].isShown=true
+                                clearAllPotentials()
+                            }
+                        }
                     }
+                }
+                if !alreadyExists {
+                    linkedList.append(Ratio(ancestor: clickedList, point: location, number: linkedList.count))
                     update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 16*numberOfMeasures))
                     numberOfMeasures+=1
                     clearAllPotentials()
@@ -799,7 +865,7 @@ class MainViewController: UIViewController {
                         linkedList.append(Cosine(ancestor: clickedList, point: location, number: linkedList.count))
                         break
                     default:
-                        print("measure default reached")
+                        print("measure (co)sine default reached")
                     }
                     update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 16*numberOfMeasures))
                     numberOfMeasures+=1
@@ -828,7 +894,11 @@ class MainViewController: UIViewController {
                     if !unitChosen { // if no unit length, create one
                         unitChosen=true
                         unitIndex=linkedList.count
-                        linkedList.append(Distance(ancestor: [clickedList[0].parent[0],clickedList[0].parent[1]], point: location, number: linkedList.count))
+                        if clickedList[0].parent[0].index<clickedList[0].parent[1].index {
+                            linkedList.append(Distance(ancestor: [clickedList[0].parent[0],clickedList[0].parent[1]], point: location, number: linkedList.count))
+                        } else {
+                            linkedList.append(Distance(ancestor: [clickedList[0].parent[1],clickedList[0].parent[0]], point: location, number: linkedList.count))
+                        }
                         clickedList[0].parent[0].isShown=true
                         clickedList[0].parent[0].showLabel=true
                         clickedList[0].parent[1].isShown=true

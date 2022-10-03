@@ -682,7 +682,9 @@ class Angle: Measure {
             let uDotV=(p0.x-p1.x)*(p2.x-p1.x)+(p0.y-p1.y)*(p2.y-p1.y)
             let normU=sqrt(pow(p0.x-p1.x,2)+pow(p0.y-p1.y,2))
             let normV=sqrt(pow(p2.x-p1.x,2)+pow(p2.y-p1.y,2))
-            value=acos(uDotV/(normU*normV))*180/3.141592653589793*signum((p0.y-p1.y)*(p2.x-p1.x)-(p0.x-p1.x)*(p2.y-p1.y))
+            value=acos(uDotV/(normU*normV))*180/3.141592653589793
+            // value=value*signum((p0.y-p1.y)*(p2.x-p1.x)-(p0.x-p1.x)*(p2.y-p1.y))
+            // this last line makes left- and right-handed angles
         } else {
             isReal=false
         }
