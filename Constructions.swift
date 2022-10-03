@@ -1492,7 +1492,7 @@ class CircleArea: Measure { // parent: circle, (unit) distance
         }
     }
     override func draw(_ context: CGContext, _ isRed: Bool) {
-        context.setFillColor(UIColor.systemBlue.withAlphaComponent(0.1).cgColor)
+        context.setFillColor(UIColor.systemPink.withAlphaComponent(0.1).cgColor)
         let radius = sqrt(pow(parent[0].parent[0].coordinates.x-parent[0].parent[1].coordinates.x,2)+pow(parent[0].parent[0].coordinates.y-parent[0].parent[1].coordinates.y,2))
         let rect0 = CGRect(x: parent[0].coordinates.x-radius,
                            y: parent[0].coordinates.y-radius,

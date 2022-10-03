@@ -1253,6 +1253,8 @@ class MainViewController: UIViewController {
         }
     }
     @IBAction func clearAllButtonPressed(_ sender: UIButton) {
+        numberOfMeasures=1
+        unitChosen=false
         self.linkedList.removeAll()
         self.whatToDo=self.makePoints
         self.infoLabel.text = self.actionText[self.whatToDo]
