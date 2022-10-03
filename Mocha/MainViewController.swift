@@ -738,12 +738,14 @@ class MainViewController: UIViewController {
             if clickedList.count==2 {
                 var alreadyExists=false
                 for i in 0..<linkedList.count {
-                    if let temp=linkedList[i] as? Measure {  // problem here!
-                        if !alreadyExists {
-                            if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index && temp.type == whatToDo {
-                                alreadyExists=true
-                                linkedList[i].isShown=true
-                                clearAllPotentials()
+                    if linkedList[i].type != SINE && linkedList[i].type != COSINE {
+                        if let temp=linkedList[i] as? Measure {  // problem here!
+                            if !alreadyExists {
+                                if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index && temp.type == whatToDo {
+                                    alreadyExists=true
+                                    linkedList[i].isShown=true
+                                    clearAllPotentials()
+                                }
                             }
                         }
                     }

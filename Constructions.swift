@@ -156,7 +156,7 @@ class Point: Construction {                             // parents: []
 class PointOnLine: Point {                                                  // parents: line
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  //
         super.init(ancestor: ancestor, point: point, number: number)        // it needs a location
-        self.update(point: point)
+        update(point: point)
         type=PTonLINE
         index=number
     }
@@ -486,12 +486,12 @@ class LineIntCirc1: Point {                                       // parent: lin
 class FoldedPoint: Point {                                                  // parents: point, line
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  // fold point with crease
         super.init(ancestor: ancestor, point: point, number: number)        //
-        let point0=ancestor[0].coordinates                                  // the line
-        let point1=ancestor[1].parent[0].coordinates                        //
-        let mx=ancestor[1].slope.x, my=ancestor[1].slope.y
-        let C=(mx*mx-my*my)/(mx*mx+my*my), S=2*mx*my/(mx*mx+my*my)
-        let x0=point0.x, y0=point0.y, x1=point1.x, y1=point1.y
-        coordinates=CGPoint(x: x0*C+y0*S+x1-x1*C-y1*S,y: x0*S-y0*C+y1+y1*C-x1*S)
+//        let point0=ancestor[0].coordinates                                  // the line
+//        let point1=ancestor[1].parent[0].coordinates                        //
+//        let mx=ancestor[1].slope.x, my=ancestor[1].slope.y
+//        let C=(mx*mx-my*my)/(mx*mx+my*my), S=2*mx*my/(mx*mx+my*my)
+//        let x0=point0.x, y0=point0.y, x1=point1.x, y1=point1.y
+//        coordinates=CGPoint(x: x0*C+y0*S+x1-x1*C-y1*S,y: x0*S-y0*C+y1+y1*C-x1*S)
         update()
         type=FOLDedPT
         index=number
@@ -619,24 +619,11 @@ class Distance: Measure {       // parents: point, point (for unit distance), or
         type = DISTANCE
         index=number
         measuredValue=sqrt(pow(parent[0].coordinates.x-parent[1].coordinates.x,2)+pow(parent[0].coordinates.y-parent[1].coordinates.y,2))
-        update(point: CGPoint(x: (parent[0].coordinates.x+2*parent[1].coordinates.x)/3, y: (2*parent[0].coordinates.x+parent[1].coordinates.x)/3))
+        update(point: coordinates)
         parent[0].showLabel=true
         parent[1].showLabel=true
         showLabel=false
         textString="d(\(character[parent[0].index%26])\(parent[0].index/26),\(character[parent[1].index%26])\(parent[1].index/26))"
-        if parent.count==3 {
-            if let temp = parent[2] as? Distance {
-                if temp.measuredValue>epsilon {
-                    value=measuredValue/temp.measuredValue
-                } else {
-                    isReal=false
-                }
-            } else {
-                isReal=false
-            }
-        } else {
-            value=1.0
-        }
     }
     override func update(point: CGPoint) {
         var parentsAllReal=true
@@ -670,7 +657,6 @@ class Distance: Measure {       // parents: point, point (for unit distance), or
 class Angle: Measure {
     override init(ancestor: [Construction], point: CGPoint, number: Int) {
         super.init(ancestor: ancestor,point: point, number: number)
-        update(point: CGPoint(x: (parent[0].coordinates.x+2*parent[1].coordinates.x)/3, y: (2*parent[0].coordinates.x+parent[1].coordinates.x)/3))
         type = DISTANCE
         index=number
         value=sqrt(pow(parent[0].coordinates.x-parent[2].coordinates.x,2)+pow(parent[0].coordinates.y-parent[2].coordinates.y,2))
@@ -838,13 +824,6 @@ class Cosine: Measure {
         override init(ancestor: [Construction], point: CGPoint, number: Int) {  // (usually)
             let point0=ancestor[0].coordinates                                  // the first must be a
             super.init(ancestor: ancestor, point: point0, number: number)       // point
-            if ancestor.count>1 {
-                let point1=ancestor[1].coordinates
-                slope=CGPoint(x: point0.x-point1.x,y: point0.y-point1.y)
-                normalizeSlope()
-            } else {
-                slope=CGPoint(x: 1.0, y: 0.0)
-            }
             update()
             type=LINE
             index=number
@@ -996,14 +975,12 @@ class Ray: Line {                                                  // parents: p
 }
 
     
-    class PerpLine: Line {                                                      // parents: point, line
-        override init(ancestor: [Construction], point: CGPoint, number: Int) {  // the line on the point
-            let point0=ancestor[0].coordinates                                  // and perp to the given
-            let line1=ancestor[1].slope                                         // line.
+    class PerpLine: Line {                   // parents: point, line
+        override init(ancestor: [Construction], point: CGPoint, number: Int) {
+            let point0=ancestor[0].coordinates
+            let line1=ancestor[1].slope
             super.init(ancestor: ancestor, point: point0, number: number)
-            slope=CGPoint(x: -line1.y,y: line1.x)
-            normalizeSlope()
-            self.update()
+            update()
             type=PERP
             index=number
         }
@@ -1019,14 +996,11 @@ class Ray: Line {                                                  // parents: p
         }
     }
     
-    class ParallelLine: Line {                                                  // parents: point, line
-        override init(ancestor: [Construction], point: CGPoint, number: Int) {  // the line on the point
-            let point0=ancestor[0].coordinates                                  // and parallel to the
-            let line1=ancestor[1].slope                                         // given line.
+    class ParallelLine: Line {                         // parents: point, line
+        override init(ancestor: [Construction], point: CGPoint, number: Int) {
+            let point0=ancestor[0].coordinates
             super.init(ancestor: ancestor, point: point0, number: number)
-            slope=CGPoint(x: -line1.y,y: line1.x)
-            normalizeSlope()
-            self.update()
+            update()
             type=PARALLEL
             index=number
         }
@@ -1042,15 +1016,12 @@ class Ray: Line {                                                  // parents: p
         }
     }
     
-    
-    
-    class Circle: Construction {
-        override init(ancestor: [Construction], point: CGPoint, number: Int) {  // parent: point, point
-            let point0=ancestor[0].coordinates                                  // first: center
-            let point1=ancestor[1].coordinates                                  // second: point on
+    class Circle: Construction {                        // parent: point, point
+        override init(ancestor: [Construction], point: CGPoint, number: Int) {
+            let point0=ancestor[0].coordinates               // first: center
+            let point1=ancestor[1].coordinates               // second: point on
             super.init(ancestor: ancestor, point: point0, number: number)
-            coordinates=point0
-            slope=point1                             // Here we use slope for coordinates of second point
+            update()
             type=CIRCLE
             index=number
         }
@@ -1060,8 +1031,8 @@ class Ray: Line {                                                  // parents: p
             } else {
                 isReal=true
                 coordinates=parent[0].coordinates
-                slope=parent[1].coordinates
-            }
+                slope=parent[1].coordinates         // We use slope for coordinates
+            }                                       // of second point
         }
         override func draw(_ context: CGContext, _ isRed: Bool) {
             context.setFillColor(UIColor.clear.cgColor)
@@ -1128,29 +1099,11 @@ class Ray: Line {                                                  // parents: p
     
     
     
-    class Bisector0: Line {                                                // parents: point, line, line
+    class Bisector0: Line {                            // parents: point, line, line
         var lastSlope=CGPoint(x: 1.0, y: 0.0)
         override init(ancestor: [Construction], point: CGPoint, number: Int) {  //
             let point0=ancestor[0].coordinates                                  //
-            let line1=ancestor[1].slope                                         //
-            let line2=ancestor[2].slope                                         //
             super.init(ancestor: ancestor, point: point0, number: number)       //
-            let c0=line1.x, c1=line2.x
-            let s0=line1.y, s1=line2.y
-            if abs(s0+s1)<epsilon {
-                slope=CGPoint(x: 1.0, y: 0.0)
-            } else {
-                if abs(s0*c1-s1*c0)<epsilon {
-                    slope=line1
-                } else {
-                    slope=CGPoint(x: sqrt((1+c0*c1-s0*s1)/2), y: sqrt((1-c0*c1+s0*s1)/2)*abs(s0+s1)/(s0+s1))
-                    lastSlope=slope
-                    normalizeSlope()
-                }
-            }
-            for object in ancestor {
-                parent.append(object)
-            }
             update()
             type=BISECTOR0
             index=number
@@ -1187,60 +1140,42 @@ class Ray: Line {                                                  // parents: p
         }                                                                       //
     }
     
-    class Bisector1: Line {                                                // parents: point, line, line
-        var lastSlope = CGPoint(x: 1.0,y: 0.0)
-        override init(ancestor: [Construction], point: CGPoint, number: Int) {  //
-            let point0=ancestor[0].coordinates                                  //
-            let line1=ancestor[1].slope                                         //
-            let line2=ancestor[2].slope                                         //
-            super.init(ancestor: ancestor, point: point0, number: number)       //
-            let c0=line1.x, c1=line2.x
-            let s0=line1.y, s1=line2.y
-            if abs(s0*c1-s1*c0)<epsilon {
-                isReal=false
+class Bisector1: Line {                                                // parents: point, line, line
+    var lastSlope = CGPoint(x: 0.0,y: 1.0)
+    override init(ancestor: [Construction], point: CGPoint, number: Int) {  //
+        let point0=ancestor[0].coordinates                                  //
+        super.init(ancestor: ancestor, point: point0, number: number)       //
+        update()
+        type=BISECTOR1
+        index=number
+    }
+    override func update() {                                                //
+        coordinates=parent[0].coordinates                                   //
+        let c0=parent[1].slope.x, c1=parent[2].slope.x                      //
+        let s0=parent[1].slope.y, s1=parent[2].slope.y                      //
+        if !parent[0].isReal || !parent[1].isReal || !parent[2].isReal || abs(s0*c1-c0*s1)<epsilon {
+            isReal=false                                                    //
+        } else {                                                            //
+            isReal=true
+            if abs(s0+s1)<epsilon {
+                slope=CGPoint(x: 1.0, y: 0.0)
             } else {
-                if abs(s0+s1)<epsilon {
-                    slope=CGPoint(x: 0.0, y: 1.0)
+                let slope1=CGPoint(x: sqrt((1+c0*c1-s0*s1)/2), y: sqrt((1-c0*c1+s0*s1)/2)*abs(s0+s1)/(s0+s1))
+                let slope2=CGPoint(x: sqrt((1-c0*c1+s0*s1)/2), y: -sqrt((1+c0*c1-s0*s1)/2)*abs(s0+s1)/(s0+s1))
+                let point1=CGPoint(x: cos(2*atan2(slope1.x,slope1.y)),y: sin(2*atan2(slope1.x,slope1.y)))
+                let point2=CGPoint(x: cos(2*atan2(slope2.x,slope2.y)),y: sin(2*atan2(slope2.x,slope2.y)))
+                let point=CGPoint(x: cos(2*atan2(lastSlope.x,lastSlope.y)),y: sin(2*atan2(lastSlope.x,lastSlope.y)))
+                if sqrt(pow(point1.x-point.x,2)+pow(point1.y-point.y,2)) < sqrt(pow(point2.x-point.x,2)+pow(point2.y-point.y,2)) {
+                    slope=slope1
                 } else {
-                    slope=CGPoint(x: sqrt((1-c0*c1+s0*s1)/2), y: -sqrt((1+c0*c1-s0*s1)/2)*abs(s0+s1)/(s0+s1))
-                    normalizeSlope()
+                    slope=slope2
                 }
-                lastSlope=slope
-                for object in ancestor {
-                    parent.append(object)
-                }
-                update()
-                type=BISECTOR1
-                index=number
             }
-        }
-        override func update() {                                                //
-            coordinates=parent[0].coordinates                                   //
-            let c0=parent[1].slope.x, c1=parent[2].slope.x                      //
-            let s0=parent[1].slope.y, s1=parent[2].slope.y                      //
-            if !parent[0].isReal || !parent[1].isReal || !parent[2].isReal || abs(s0*c1-c0*s1)<epsilon {
-                isReal=false                                                    //
-            } else {                                                            //
-                isReal=true
-                if abs(s0+s1)<epsilon {
-                    slope=CGPoint(x: 1.0, y: 0.0)
-                } else {
-                    let slope1=CGPoint(x: sqrt((1+c0*c1-s0*s1)/2), y: sqrt((1-c0*c1+s0*s1)/2)*abs(s0+s1)/(s0+s1))
-                    let slope2=CGPoint(x: sqrt((1-c0*c1+s0*s1)/2), y: -sqrt((1+c0*c1-s0*s1)/2)*abs(s0+s1)/(s0+s1))
-                    let point1=CGPoint(x: cos(2*atan2(slope1.x,slope1.y)),y: sin(2*atan2(slope1.x,slope1.y)))
-                    let point2=CGPoint(x: cos(2*atan2(slope2.x,slope2.y)),y: sin(2*atan2(slope2.x,slope2.y)))
-                    let point=CGPoint(x: cos(2*atan2(lastSlope.x,lastSlope.y)),y: sin(2*atan2(lastSlope.x,lastSlope.y)))
-                    if sqrt(pow(point1.x-point.x,2)+pow(point1.y-point.y,2)) < sqrt(pow(point2.x-point.x,2)+pow(point2.y-point.y,2)) {
-                        slope=slope1
-                    } else {
-                        slope=slope2
-                    }
-                }
-                lastSlope=slope
-                normalizeSlope()
-            }
+            lastSlope=slope
+            normalizeSlope()
         }
     }
+}
     
     
     
@@ -1249,43 +1184,10 @@ class Ray: Line {                                                  // parents: p
         var lastSlopes=[CGPoint.zero,CGPoint.zero,CGPoint.zero]
         var slopes=[CGPoint.zero,CGPoint.zero,CGPoint.zero]
         var reals=[true,true,true]
-        
         override init(ancestor: [Construction], point: CGPoint, number: Int) {
-            let point0=ancestor[0].coordinates, point1=ancestor[1].coordinates
-            let point2=ancestor[2].parent[0].coordinates, line2=ancestor[2].slope
-            let point3=ancestor[3].parent[0].coordinates, line3=ancestor[3].slope
+            let point0=ancestor[0].coordinates
             super.init(ancestor: ancestor, point: point0, number: number)
-            for object in ancestor {
-                parent.append(object)
-            }
-            let x0 = point0.x, y0 = point0.y, x1 = point1.x, y1 = point1.y
-            let x2 = point2.x, y2 = point2.y, x3 = point3.x, y3 = point3.y
-            let mx = 1.0                                                        // and x4 = 0
-            let sx2 = line2.x, sy2 = line2.y, sx3 = line3.x, sy3 = line3.y
-            let d = mx*mx*mx*sx3*((y0+y2)*sx2+sy2*(x0-x2))-mx*mx*mx*sx2*((y1+y3)*sx3+sy3*(x1-x3))
-            let c = -2*mx*mx*sx3*(sx2*x0-sy2*y0)+sy3*((y0+y2)*sx2+sy2*(x0-x2))*mx*mx+2*mx*mx*sx2*(sx3*x1-sy3*y1)-sy2*((y1+y3)*sx3+sy3*(x1-x3))*mx*mx
-            let b = mx*sx3*(-(y0-y2)*sx2-sy2*(x0+x2))-2*sy3*(sx2*x0-sy2*y0)*mx-mx*sx2*(-(y1-y3)*sx3-sy3*(x1+x3))+2*sy2*(sx3*x1-sy3*y1)*mx
-            let a = sy3*(-(y0-y2)*sx2-sy2*(x0+x2))-sy2*(-(y1-y3)*sx3-sy3*(x1+x3))
-            let mySolutions = cubicSolve(a: a, b: b, c: c, d: d)
-            for i in 0..<3 {
-                if i<mySolutions.count {
-                    if abs(mySolutions[i].imaginary )<epsilon {
-                        reals[i]=true
-                        let my=mySolutions[i].real
-                        points[i]=CGPoint(x: 0.0,y: (((y0+y2)*sx2+sy2*(x0-x2))*mx*mx-2*my*(sx2*x0-sy2*y0)*mx-my*my*((y0-y2)*sx2+sy2*(x0+x2)))/(2*mx*(mx*sx2+my*sy2)))
-                        slopes[i]=CGPoint(x: 1.0, y: my)
-                        lastSlopes[i]=slopes[i]
-                    } else {
-                        reals[i]=false
-                    }
-                }
-            }
-            if reals[0]==true {
-                isReal=true
-                coordinates=points[0]
-            } else {
-                isReal=false
-            }
+            update()
             type=TOOL6PT0
             index=number
             update()
@@ -1588,7 +1490,7 @@ class CircleArea: Measure { // parent: circle, (unit) distance
         }
     }
     override func draw(_ context: CGContext, _ isRed: Bool) {
-        context.setFillColor(UIColor.systemGray2.withAlphaComponent(0.1).cgColor)
+        context.setFillColor(UIColor.systemBlue.withAlphaComponent(0.1).cgColor)
         let radius = sqrt(pow(parent[0].parent[0].coordinates.x-parent[0].parent[1].coordinates.x,2)+pow(parent[0].parent[0].coordinates.y-parent[0].parent[1].coordinates.y,2))
         let rect0 = CGRect(x: parent[0].coordinates.x-radius,
                            y: parent[0].coordinates.y-radius,
