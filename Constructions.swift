@@ -31,6 +31,7 @@ class Construction {
     let epsilon = 0.0000001
     var textString=""
     var canvasWidth = 200.0
+    let strokeWidth=3.0
     
     init(point: CGPoint, number: Int) {
         coordinates=point
@@ -95,9 +96,9 @@ class Point: Construction {                             // parents: []
             context.setStrokeColor(UIColor.black.cgColor)
         }
         context.setLineWidth(2.0)
-        let currentRect = CGRect(x: coordinates.x-5.0,y:coordinates.y-5.0,
-                                 width: 10.0,
-                                 height: 10.0)
+        let currentRect = CGRect(x: coordinates.x-6.0,y:coordinates.y-6.0,
+                                 width: 12.0,
+                                 height: 12.0).insetBy(dx: 1.0, dy: 1.0)
         if type<=PTonCIRCLE {
             context.fillEllipse(in: currentRect)
             context.drawPath(using: .fillStroke)
@@ -485,13 +486,7 @@ class LineIntCirc1: Point {                                       // parent: lin
 }
 class FoldedPoint: Point {                                                  // parents: point, line
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  // fold point with crease
-        super.init(ancestor: ancestor, point: point, number: number)        //
-//        let point0=ancestor[0].coordinates                                  // the line
-//        let point1=ancestor[1].parent[0].coordinates                        //
-//        let mx=ancestor[1].slope.x, my=ancestor[1].slope.y
-//        let C=(mx*mx-my*my)/(mx*mx+my*my), S=2*mx*my/(mx*mx+my*my)
-//        let x0=point0.x, y0=point0.y, x1=point1.x, y1=point1.y
-//        coordinates=CGPoint(x: x0*C+y0*S+x1-x1*C-y1*S,y: x0*S-y0*C+y1+y1*C-x1*S)
+        super.init(ancestor: ancestor, point: point, number: number)        // the line
         update()
         type=FOLDedPT
         index=number
@@ -618,7 +613,7 @@ class Distance: Measure {       // parents: point, point (for unit distance), or
         coordinates=parent[0].coordinates
         type = DISTANCE
         index=number
-        measuredValue=sqrt(pow(parent[0].coordinates.x-parent[1].coordinates.x,2)+pow(parent[0].coordinates.y-parent[1].coordinates.y,2))
+        //measuredValue=sqrt(pow(parent[0].coordinates.x-parent[1].coordinates.x,2)+pow(parent[0].coordinates.y-parent[1].coordinates.y,2))
         update(point: coordinates)
         parent[0].showLabel=true
         parent[1].showLabel=true
@@ -683,7 +678,7 @@ class Angle: Measure {
             let normU=sqrt(pow(p0.x-p1.x,2)+pow(p0.y-p1.y,2))
             let normV=sqrt(pow(p2.x-p1.x,2)+pow(p2.y-p1.y,2))
             value=acos(uDotV/(normU*normV))*180/3.141592653589793
-            // value=value*signum((p0.y-p1.y)*(p2.x-p1.x)-(p0.x-p1.x)*(p2.y-p1.y))
+            value=value*signum((p0.y-p1.y)*(p2.x-p1.x)-(p0.x-p1.x)*(p2.y-p1.y))
             // this last line makes left- and right-handed angles
         } else {
             isReal=false
@@ -800,8 +795,7 @@ class Cosine: Measure {
     override init(ancestor: [Construction], point: CGPoint, number: Int) {
         super.init(ancestor: ancestor, point: point, number: number)
         coordinates=point
-        type = SINE
-        value=cos(parent[0].value)
+        type = COSINE
         index=number
         update(point: point)
         type=COSINE
@@ -882,7 +876,7 @@ class Cosine: Measure {
                     context.setStrokeColor(UIColor.black.cgColor)
                 }
             }
-            context.setLineWidth(2.0)
+            context.setLineWidth(strokeWidth)
             context.move(to: CGPoint(x: coordinates.x+65536*slope.x,y: coordinates.y+65536*slope.y))
             context.addLine(to: CGPoint(x: coordinates.x-65536*slope.x,y: coordinates.y-65536*slope.y))
             context.strokePath()
@@ -928,7 +922,7 @@ class Segment: Line {                                                  // parent
         } else {
             context.setStrokeColor(UIColor.black.cgColor)
         }
-        context.setLineWidth(2.0)
+        context.setLineWidth(strokeWidth)
         context.move(to: CGPoint(x: parent[0].coordinates.x,y: parent[0].coordinates.y))
         context.addLine(to: CGPoint(x: parent[1].coordinates.x,y: parent[1].coordinates.y))
         context.strokePath()
@@ -961,7 +955,7 @@ class Ray: Line {                                                  // parents: p
         } else {
             context.setStrokeColor(UIColor.black.cgColor)
         }
-        context.setLineWidth(2.0)
+        context.setLineWidth(strokeWidth)
         context.move(to: CGPoint(x: coordinates.x,y: coordinates.y))
         context.addLine(to: CGPoint(x: coordinates.x+256*(parent[1].coordinates.x-coordinates.x), y: coordinates.y+256*(parent[1].coordinates.y-coordinates.y)))
         context.strokePath()
@@ -980,7 +974,6 @@ class Ray: Line {                                                  // parents: p
     class PerpLine: Line {                   // parents: point, line
         override init(ancestor: [Construction], point: CGPoint, number: Int) {
             let point0=ancestor[0].coordinates
-            let line1=ancestor[1].slope
             super.init(ancestor: ancestor, point: point0, number: number)
             update()
             type=PERP
@@ -1020,8 +1013,7 @@ class Ray: Line {                                                  // parents: p
     
     class Circle: Construction {                        // parent: point, point
         override init(ancestor: [Construction], point: CGPoint, number: Int) {
-            let point0=ancestor[0].coordinates               // first: center
-            let point1=ancestor[1].coordinates               // second: point on
+            let point0=ancestor[0].coordinates               // first: center, second: point on
             super.init(ancestor: ancestor, point: point0, number: number)
             update()
             type=CIRCLE
@@ -1043,7 +1035,7 @@ class Ray: Line {                                                  // parents: p
             } else {
                 context.setStrokeColor(UIColor.black.cgColor)
             }
-            context.setLineWidth(2.0)
+            context.setLineWidth(strokeWidth)
             let radius = sqrt(pow(coordinates.x-slope.x,2)+pow(coordinates.y-slope.y,2))
             let rect=CGRect(x: coordinates.x-radius, y: coordinates.y-radius, width: radius*2, height: radius*2)
             context.addEllipse(in: rect)
@@ -1222,8 +1214,8 @@ class Bisector1: Line {                                                // parent
                 coordinates=points[0]
             }
             // Next we need to check whether we should permute the points based on their proximity to lastPoints.
-            // However, we need to do this based off lastSlopes, since the distance is huge when the slope changes from close
-            // to negative pi/2 to close to pi/2...
+            // However, we need to do this based off lastSlopes, since the distance is huge when the slope changes
+            // from close to negative pi/2 to close to pi/2...
             var s = [CGPoint.zero,CGPoint.zero,CGPoint.zero]
             var ls = [CGPoint.zero,CGPoint.zero,CGPoint.zero]
             for i in 0..<3 {
@@ -1455,7 +1447,7 @@ class Triangle: Measure { // parent: point, point, point, (unit) distance
         } else {
                 context.setStrokeColor(UIColor.black.cgColor)
         }
-        context.setLineWidth(2.0)
+        context.setLineWidth(strokeWidth)
         let currentRect = CGRect(x: coordinates.x-4.0,y:coordinates.y-4.0,
                                  width: 8.0,
                                  height: 8.0)
@@ -1504,7 +1496,7 @@ class CircleArea: Measure { // parent: circle, (unit) distance
         } else {
                 context.setStrokeColor(UIColor.black.cgColor)
         }
-        context.setLineWidth(2.0)
+        context.setLineWidth(strokeWidth)
         let currentRect = CGRect(x: coordinates.x-4.0,y:coordinates.y-4.0,
                                  width: 8.0,
                                  height: 8.0)
