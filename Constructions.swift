@@ -440,7 +440,6 @@ class LineIntCirc0: Point {                                 // parent: circle, c
         }
         slope=coordinates
         alternateSlope=alternateCoordinates
-        
         // now we need to check if parent[0] is a segment or ray, and if so, whether the point of intersection is on it.  If not, set isReal=false. (And pass second root to LIC1)
         if parent[0].type==SEGMENT {
             invalidatePointOffSegment(i: 0, location: coordinates)
@@ -613,7 +612,6 @@ class Distance: Measure {       // parents: point, point (for unit distance), or
         coordinates=parent[0].coordinates
         type = DISTANCE
         index=number
-        //measuredValue=sqrt(pow(parent[0].coordinates.x-parent[1].coordinates.x,2)+pow(parent[0].coordinates.y-parent[1].coordinates.y,2))
         update(point: coordinates)
         parent[0].showLabel=true
         parent[1].showLabel=true
@@ -1447,7 +1445,7 @@ class Triangle: Measure { // parent: point, point, point, (unit) distance
         } else {
                 context.setStrokeColor(UIColor.black.cgColor)
         }
-        context.setLineWidth(strokeWidth)
+        context.setLineWidth(2.0)
         let currentRect = CGRect(x: coordinates.x-4.0,y:coordinates.y-4.0,
                                  width: 8.0,
                                  height: 8.0)
@@ -1496,7 +1494,7 @@ class CircleArea: Measure { // parent: circle, (unit) distance
         } else {
                 context.setStrokeColor(UIColor.black.cgColor)
         }
-        context.setLineWidth(strokeWidth)
+        context.setLineWidth(2.0)
         let currentRect = CGRect(x: coordinates.x-4.0,y:coordinates.y-4.0,
                                  width: 8.0,
                                  height: 8.0)
