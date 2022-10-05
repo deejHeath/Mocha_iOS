@@ -673,12 +673,12 @@ class MainViewController: UIViewController {
             clearActives()
             getRidOfDuplicates()
             if clickedList.count==3 {
-                if clickedList[0].index>clickedList[2].index {
-                    clickedList.insert(clickedList[0], at: 2)
-                    clickedList.insert(clickedList[3], at: 1)
-                    clickedList.removeFirst()
-                    clickedList.removeLast()
-                }
+//                if clickedList[0].index>clickedList[2].index {    // this code would be used
+//                    clickedList.insert(clickedList[0], at: 2)     // if we measured angles
+//                    clickedList.insert(clickedList[3], at: 1)     // without handedness, i.e.
+//                    clickedList.removeFirst()                     // only positive measures.
+//                    clickedList.removeLast()                      //
+//                }                                                 //
                 var alreadyExists=false
                 for i in 0..<linkedList.count {
                     if let temp=linkedList[i] as? Angle {
