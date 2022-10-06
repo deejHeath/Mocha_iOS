@@ -250,15 +250,17 @@ class MainViewController: UIViewController {
                 if clickedList[0].type>0 {
                     update(object: clickedList[0], point: location)
                 } else if clickedList[0].type<0 {
-                    let temp = PointOnLine(ancestor: clickedList, point: location, number: linkedList.count)
-                    update(object: temp, point: location)
                     linkedList.removeLast()
-                    linkedList.append(temp)
+                    //let temp = PointOnLine(ancestor: clickedList, point: location, number: linkedList.count)
+                    //update(object: temp, point: location)
+                    linkedList.append(PointOnLine(ancestor: clickedList, point: location, number: linkedList.count))
+                    update(object: linkedList[linkedList.count-1],point: location)
                 } else if clickedList[0].type==0 {
-                    let temp = PointOnCircle(ancestor: clickedList, point: location, number: linkedList.count)
-                    update(object: temp, point: location)
                     linkedList.removeLast()
-                    linkedList.append(temp)
+                    //let temp = PointOnCircle(ancestor: clickedList, point: location, number: linkedList.count)
+                    //update(object: temp, point: location)
+                    linkedList.append(PointOnLine(ancestor: clickedList, point: location, number: linkedList.count))
+                    update(object: linkedList[linkedList.count-1],point: location)
                 }
             } else {
                 linkedList.append(Point(point: location, number: linkedList.count))
