@@ -111,7 +111,7 @@ class Point: Construction {                             // parents: []
             paragraphStyle.alignment = .center
             let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
             let string = "\(character[index%26])\(index/26)"
-            string.draw(with: CGRect(x: coordinates.x+8, y: coordinates.y+8, width: 20, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+            string.draw(with: CGRect(x: coordinates.x+8, y: coordinates.y+8, width: 40, height: 15), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
         }
     }
     func invalidatePointOffSegment(i: Int, location: CGPoint) {
@@ -601,7 +601,7 @@ class Measure: Point {
         paragraphStyle.alignment = .center
         let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
         let string = textString+" ≈ \(round(1000000*(value)+0.3)/1000000)"
-        string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:300, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+        string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:300, height: 15), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
     }
 }
 
@@ -895,7 +895,7 @@ class Cosine: Measure {
                         xx=coordinates.x-slope.x/slope.y*(coordinates.y-20)-slope.y*20
                         yy=10+slope.x*20
                     }
-                    string.draw(with: CGRect(x: xx, y: yy+10, width: 20, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+                    string.draw(with: CGRect(x: xx, y: yy+10, width: 40, height: 15), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
                 }
             }
         }
@@ -930,7 +930,7 @@ class Segment: Line {                                                  // parent
             let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
             let string = "\(character[index%26])\(index/26)"
             let xx=(coordinates.x+(parent[1].coordinates.x-coordinates.x)/3)+slope.y*15, yy=(coordinates.y+(parent[1].coordinates.y-coordinates.y)/3)-slope.x*15
-            string.draw(with: CGRect(x: xx, y: yy, width: 20, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+            string.draw(with: CGRect(x: xx, y: yy, width: 40, height: 15), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
         }
     }
 }
@@ -963,7 +963,7 @@ class Ray: Line {                                                  // parents: p
             let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
             let string = "\(character[index%26])\(index/26)"
             let xx=(coordinates.x+1.4*(parent[1].coordinates.x-coordinates.x))+slope.y*15, yy=(coordinates.y+1.4*(parent[1].coordinates.y-coordinates.y))-slope.x*15
-            string.draw(with: CGRect(x: xx, y: yy, width: 20, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+            string.draw(with: CGRect(x: xx, y: yy, width: 40, height: 15), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
         }
     }
 }
@@ -1031,7 +1031,7 @@ class Ray: Line {                                                  // parents: p
             if isRed {
                 context.setStrokeColor(UIColor.red.cgColor)
             } else {
-                context.setStrokeColor(UIColor.black.cgColor)
+                context.setStrokeColor(UIColor.systemIndigo.cgColor)
             }
             context.setLineWidth(strokeWidth)
             let radius = sqrt(pow(coordinates.x-slope.x,2)+pow(coordinates.y-slope.y,2))
@@ -1044,7 +1044,7 @@ class Ray: Line {                                                  // parents: p
                 let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
                 let string = "\(character[index%26])\(index/26)"
                 let xx=slope.x-coordinates.x, yy=slope.y-coordinates.y, dd=sqrt(xx*xx+yy*yy)
-                string.draw(with: CGRect(x: yy/dd*(dd+18)+coordinates.x, y: -xx*(dd+18)/dd+coordinates.y, width: 20, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+                string.draw(with: CGRect(x: yy/dd*(dd+18)+coordinates.x, y: -xx*(dd+18)/dd+coordinates.y, width: 40, height: 15), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
             }
         }
         override func distance(_ point: CGPoint) -> Double {
@@ -1411,9 +1411,15 @@ class Triangle: Measure { // parent: point, point, point, (unit) distance
         super.init(ancestor: ancestor, point: point, number: number)
         type=TriAREA
         textString="Δ(\(character[parent[0].index%26])\(parent[0].index/26),\(character[parent[1].index%26])\(parent[1].index/26),\(character[parent[2].index%26])\(parent[2].index/26))"
+        for i in 0..<3 {
+            parent[i].showLabel=true
+        }
+        showLabel=false
         coordinates=point
+        print("init complete")
     }
     override func update(point: CGPoint) {
+        let labels=[parent[0].showLabel,parent[1].showLabel,parent[2].showLabel]
         var parentsAllReal=true
         for object in parent {
             if !object.isReal {
@@ -1429,6 +1435,12 @@ class Triangle: Measure { // parent: point, point, point, (unit) distance
             let temp3=Distance(ancestor: [parent[0],parent[1],parent[3]], point: point, number: 3)
             let temp4=Distance(ancestor: [temp2,parent[2],parent[3]], point: point, number: 4)
             value=temp4.value*temp3.value/2
+        }
+        else {
+            isReal=false
+        }
+        for i in 0..<3 {
+            parent[i].showLabel=labels[i]
         }
     }
     override func draw(_ context: CGContext, _ isRed: Bool) {
@@ -1455,7 +1467,7 @@ class Triangle: Measure { // parent: point, point, point, (unit) distance
         paragraphStyle.alignment = .center
         let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
         let string = textString+" ≈ \(round(1000000*(value)+0.3)/1000000)"
-        string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:300, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+        string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:300, height: 15), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
     }
 }
 
@@ -1468,6 +1480,7 @@ class CircleArea: Measure { // parent: circle, (unit) distance
         coordinates=point
     }
     override func update(point: CGPoint) {
+        let labels=[parent[0].parent[0].showLabel,parent[0].parent[1].showLabel]
         var parentsAllReal=true
         for object in parent {
             if !object.isReal {
@@ -1480,6 +1493,11 @@ class CircleArea: Measure { // parent: circle, (unit) distance
             value = 3.141592653589793*temp.value*temp.value
             coordinates=point
         }
+        else {
+            isReal=false
+        }
+        parent[0].parent[0].showLabel=labels[0]
+        parent[0].parent[1].showLabel=labels[1]
     }
     override func draw(_ context: CGContext, _ isRed: Bool) {
         context.setFillColor(UIColor.systemPink.withAlphaComponent(0.1).cgColor)
@@ -1504,6 +1522,6 @@ class CircleArea: Measure { // parent: circle, (unit) distance
         paragraphStyle.alignment = .center
         let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
         let string = textString+" ≈ \(round(1000000*(value)+0.3)/1000000)"
-        string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:300, height: 12), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+        string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:300, height: 15), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
     }
 }
