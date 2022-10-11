@@ -8,7 +8,6 @@ class MainViewController: UIViewController {
     var linkedList: [Construction] = []
     let canvas = Canvas()
     var clickedList: [Construction] = []
-    var futureList: [Construction] = []
     var clickedIndex: [Int] = []
     let actionText=["Create or move POINTS", "Create midpoint between 2 POINTS","Intersect 2 OBJECTS","Fold POINT over LINE","Invert POINT in CIRCLE", "Create segment on 2 POINTS", "Create ray on 2 POINTS","Create line on 2 POINTS","create line on POINT and ⊥ to LINE","create line on POINT and || to LINE","Create bisector from 2 LINES","Fold from 2 POINTS to 2 LINES","Create circle with center POINT and POINT on","Create 3 POINT circle"]
     let measureText=["Measure distance between 2 POINTS","Measure angle from 3 POINTS","Measure area of triangle from 3 POINTS","Measure area of CIRCLE", "Measure sum of two MEASURES","Measure difference of 2 MEASURES","Measure product of 2 MEASURES","Measure ratio of 2 MEASURES","FIND sine of MEASURE","Find cosine of MEASURE.","Hide OBJECT","Show or hide label of OBJECT"]
@@ -31,11 +30,12 @@ class MainViewController: UIViewController {
     private var whatToDo=0
     var firstTouch: CGPoint?
     var activeConstruct = false
-    let touchSense=16.0
+    let touchSense=18.0
     var unitChosen=false
     var unitIndex = -1
-    var newPoint=false, newPointMoved=false
+    var newPoint=false
     var numberOfMeasures=1
+    var firstMove=true
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,7 +54,7 @@ class MainViewController: UIViewController {
         firstTouch=location
         activeConstruct=false
         newPoint=false
-        newPointMoved=false
+        firstMove=true
         switch whatToDo {
         case makePoints:
             getPointOrMeasure(location)
@@ -75,7 +75,26 @@ class MainViewController: UIViewController {
                 }
             }
             break
-        case makeLines, makeSegments, makeRays, measureDistance, makeCircles, makeMidpoint, make3PTCircle, measureAngle, measureTriArea:
+        case makeSegments, makeRays, makeLines, makeCircles, makeMidpoint:
+            getPointOrLineOrCircle(location)
+            if activeConstruct {
+                if clickedList[0].type==0 {
+                    linkedList.append(PointOnCircle(ancestor: clickedList, point: location, number: linkedList.count))
+                    setActiveConstruct(linkedList.count-1)
+                    clickedList.removeFirst()
+                    clickedIndex.removeFirst()
+                } else if clickedList[0].type<0 {
+                    linkedList.append(PointOnLine(ancestor: clickedList, point: location, number: linkedList.count))
+                    setActiveConstruct(linkedList.count-1)
+                    clickedList.removeFirst()
+                    clickedIndex.removeFirst()
+                }
+            } else {
+                linkedList.append(Point(ancestor: [], point: location, number: linkedList.count))
+                setActiveConstruct(linkedList.count-1)
+            }
+            break
+        case measureDistance, make3PTCircle, measureAngle, measureTriArea:
             getPoint(location)
             if !activeConstruct {
                 potentialClick=nil
@@ -175,8 +194,61 @@ class MainViewController: UIViewController {
                 update(object: object, point: object.coordinates)
             }
             break
-        case makeLines, makeSegments, makeRays, measureDistance, makeCircles,
-            makeMidpoint, make3PTCircle, measureAngle, measureTriArea:
+        case makeSegments, makeRays, makeCircles, makeMidpoint, makeLines:
+            if firstMove {
+                firstMove=false
+            } else {
+                linkedList.removeLast() // remove temporary segment
+                clickedList.removeLast()
+                clickedIndex.removeLast()
+                if newPoint {
+                    linkedList.removeLast() // remove temporary point
+                    clickedList.removeLast()
+                    clickedIndex.removeLast()
+                    newPoint=false
+                }
+            }
+            activeConstruct=false
+            while clickedList.count>1 {
+                clickedList.removeLast()
+                clickedIndex.removeLast()
+            }
+            getPointOrLineOrCircle(location)
+            if activeConstruct {
+                if clickedList[clickedList.count-1].type>0 {
+                    newPoint=false
+                } else if clickedList[clickedList.count-1].type<0 {
+                    newPoint=true
+                    linkedList.append(PointOnLine(ancestor: [clickedList[clickedList.count-1]], point: location, number: linkedList.count))
+                    clickedList.remove(at: 1)
+                    clickedIndex.remove(at: 1)
+                    setActiveConstruct(linkedList.count-1)
+                } else {
+                    newPoint=true
+                    linkedList.append(PointOnCircle(ancestor: [clickedList[clickedList.count-1]], point: location, number: linkedList.count))
+                    clickedList.remove(at: 1)
+                    clickedIndex.remove(at: 1)
+                    setActiveConstruct(linkedList.count-1)
+                }
+            } else {
+                newPoint=true
+                linkedList.append(Point(ancestor: [], point: location, number: linkedList.count))
+                setActiveConstruct(linkedList.count-1)
+            }
+            switch whatToDo {
+            case makeSegments: linkedList.append(Segment(ancestor: clickedList, point: location, number: linkedList.count))
+                break
+            case makeRays: linkedList.append(Ray(ancestor: clickedList, point: location, number: linkedList.count))
+                break
+            case makeLines: linkedList.append(Line(ancestor: clickedList, point: location, number: linkedList.count))
+                break
+            case makeCircles: linkedList.append(Circle(ancestor: clickedList, point: location, number: linkedList.count))
+                break
+            default: linkedList.append(MidPoint(ancestor: clickedList, point: location, number: linkedList.count))
+            }
+            setActiveConstruct(linkedList.count-1)
+            break
+        case measureDistance, make3PTCircle, measureAngle, measureTriArea:
             getRidOfActivesThatAreTooFar(location)
             if !activeConstruct {
                 getPoint(location)
@@ -264,106 +336,58 @@ class MainViewController: UIViewController {
             }
             clearAllPotentials()
             break
-        case makeLines:
-            getRidOfActivesThatAreTooFar(location)
-            clearActives()
-            getRidOfDuplicates()
-            if clickedList.count==2 {
-                arrangeClickedObjectsByIndex()
-                var alreadyExists=false
-                for i in 0..<linkedList.count {
-                    if linkedList[i].type==LINE {
-                        if let temp=linkedList[i] as? Line {
-                            if !alreadyExists {
-                                if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
-                                    alreadyExists=true
-                                    linkedList[i].isShown=true
-                                    clearAllPotentials()
-                                }
-                            }
-                        }
-                    }
-                }
-                if !alreadyExists {
-                    linkedList.append(Line(ancestor: clickedList, point: location, number: linkedList.count))
-                    linkedList[linkedList.count-1].update(width: canvas.frame.width)
-                    clearAllPotentials()
+        case makeSegments, makeLines, makeRays, makeCircles, makeMidpoint:
+            if !firstMove {
+                linkedList.removeLast() // remove temporary segment/ray etc.
+                clickedList.removeLast()
+                clickedIndex.removeLast()
+                if newPoint {
+                    linkedList.removeLast() // remove temporary point
+                    clickedList.removeLast()
+                    clickedIndex.removeLast()
+                    newPoint=false
                 }
             }
-            break
-        case makeSegments:
-            getRidOfActivesThatAreTooFar(location)
-            clearActives()
-            getRidOfDuplicates()
-            if clickedList.count==2 {
-                arrangeClickedObjectsByIndex()
-                var alreadyExists=false
-                for i in 0..<linkedList.count {
-                    if let temp=linkedList[i] as? Segment {
-                        if !alreadyExists {
-                            if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
-                                alreadyExists=true
-                                linkedList[i].isShown=true
-                                clearAllPotentials()
-                            }
-                        }
-                    }
-                }
-                if !alreadyExists {
-                    linkedList.append(Segment(ancestor: clickedList, point: location, number: linkedList.count))
-                    linkedList[linkedList.count-1].update(width: canvas.frame.width)
-                    clearAllPotentials()
-                }
+            activeConstruct=false
+            while clickedList.count>1 {
+                clickedList.removeLast()
+                clickedIndex.removeLast()
             }
-            break
-        case makeRays:
-            getRidOfActivesThatAreTooFar(location)
-            clearActives()
-            getRidOfDuplicates()
-            if clickedList.count==2 {
-                var alreadyExists=false
-                for i in 0..<linkedList.count {
-                    if let temp=linkedList[i] as? Ray {
-                        if !alreadyExists {
-                            if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
-                                alreadyExists=true
-                                linkedList[i].isShown=true
-                                clearAllPotentials()
-                            }
-                        }
-                    }
+            getPointOrLineOrCircle(location)
+            if activeConstruct {
+                if clickedList[clickedList.count-1].type>0 {
+                    newPoint=false
+                } else if clickedList[clickedList.count-1].type<0 {
+                    newPoint=true
+                    linkedList.append(PointOnLine(ancestor: [clickedList[clickedList.count-1]], point: location, number: linkedList.count))
+                    clickedList.remove(at: 1)
+                    clickedIndex.remove(at: 1)
+                    setActiveConstruct(linkedList.count-1)
+                } else {
+                    newPoint=true
+                    linkedList.append(PointOnCircle(ancestor: [clickedList[clickedList.count-1]], point: location, number: linkedList.count))
+                    clickedList.remove(at: 1)
+                    clickedIndex.remove(at: 1)
+                    setActiveConstruct(linkedList.count-1)
                 }
-                if !alreadyExists {
-                    linkedList.append(Ray(ancestor: clickedList, point: location, number: linkedList.count))
-                    linkedList[linkedList.count-1].update(width: canvas.frame.width)
-                    clearAllPotentials()
-                }
+            } else {
+                newPoint=true
+                linkedList.append(Point(ancestor: [], point: location, number: linkedList.count))
+                setActiveConstruct(linkedList.count-1)
             }
-            break
-        case makeMidpoint:
-            getRidOfActivesThatAreTooFar(location)
-            clearActives()
-            getRidOfDuplicates()
-            if clickedList.count==2 {
-                arrangeClickedObjectsByIndex()
-                var alreadyExists=false
-                for i in 0..<linkedList.count {
-                    if let temp=linkedList[i] as? MidPoint {
-                        if !alreadyExists {
-                            if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
-                                alreadyExists=true
-                                linkedList[i].isShown=true
-                                clearAllPotentials()
-                            }
-                        }
-                    }
-                }
-                if !alreadyExists {
-                    linkedList.append(MidPoint(ancestor: clickedList, point: location, number: linkedList.count))
-                    linkedList[linkedList.count-1].update(width: canvas.frame.width)
-                    clearAllPotentials()
-                }
+            switch whatToDo {
+            case makeSegments: linkedList.append(Segment(ancestor: clickedList, point: location, number: linkedList.count))
+                break
+            case makeRays: linkedList.append(Ray(ancestor: clickedList, point: location, number: linkedList.count))
+                break
+            case makeLines: linkedList.append(Line(ancestor: clickedList, point: location, number: linkedList.count))
+                break
+            case makeCircles: linkedList.append(Circle(ancestor: clickedList, point: location, number: linkedList.count))
+                break
+            default: linkedList.append(MidPoint(ancestor: clickedList, point: location, number: linkedList.count))
             }
+            clearAllPotentials()
+            clearActives()
             break
         case makeBisectors:
             getRidOfActivesThatAreTooFar(location)
@@ -486,30 +510,6 @@ class MainViewController: UIViewController {
                 }
             }
             break
-        case makeCircles:
-            getRidOfActivesThatAreTooFar(location)
-            clearActives()
-            getRidOfDuplicates()
-            if clickedList.count==2 {
-                var alreadyExists=false
-                for i in 0..<linkedList.count {
-                    if let temp=linkedList[i] as? Circle {
-                        if !alreadyExists {
-                            if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index {
-                                alreadyExists=true
-                                linkedList[i].isShown=true
-                                clearAllPotentials()
-                            }
-                        }
-                    }
-                }
-                if !alreadyExists {
-                    linkedList.append(Circle(ancestor: clickedList, point: location, number: linkedList.count))
-                    linkedList[linkedList.count-1].update(ancestor: linkedList[linkedList.count-1].parent)
-                    clearAllPotentials()
-                }
-            }
-            break
         case make3PTCircle:
             getRidOfActivesThatAreTooFar(location)
             clearActives()
@@ -613,11 +613,11 @@ class MainViewController: UIViewController {
                         clearAllPotentials()
                     } else if clickedList[0].type==0 && clickedList[1].type==0 {    // both circles
                         linkedList.append(CircIntCirc0(ancestor: clickedList, point: location, number: linkedList.count))
-                        update(object: linkedList[linkedList.count-1],point: location)
+                        //update(object: linkedList[linkedList.count-1],point: location)
                         clickedList.append(linkedList[linkedList.count-1])
                                         // used this for getting CIC0 in there to pass information to CIC1
                         linkedList.append(CircIntCirc1(ancestor: clickedList, point: location, number: linkedList.count))
-                        update(object: linkedList[linkedList.count-1],point: location)
+                        //update(object: linkedList[linkedList.count-1],point: location)
                         clearAllPotentials()
                     } else {                                                        // one line, one circle
                         if clickedList[0].type==0 {                 // make sure line is [0], circle is [1]
@@ -625,11 +625,11 @@ class MainViewController: UIViewController {
                             clickedList.removeFirst()
                         }
                         linkedList.append(LineIntCirc0(ancestor: clickedList, point: location, number: linkedList.count))
-                        update(object: linkedList[linkedList.count-1],point: location)
+                        //update(object: linkedList[linkedList.count-1],point: location)
                         clickedList.append(linkedList[linkedList.count-1])
                                         // used this for getting LIC0 in there to pass information to LIC1
                         linkedList.append(LineIntCirc1(ancestor: clickedList, point: location, number: linkedList.count))
-                        update(object: linkedList[linkedList.count-1],point: location)
+                        //update(object: linkedList[linkedList.count-1],point: location)
                         clearAllPotentials()
                     }
                 }
@@ -661,7 +661,7 @@ class MainViewController: UIViewController {
                         unitIndex=linkedList.count
                     }
                     linkedList.append(Distance(ancestor: clickedList, point: location, number: linkedList.count))
-                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 16*numberOfMeasures))
+                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 20*numberOfMeasures))
                     numberOfMeasures+=1
                     clearAllPotentials()
                 }
@@ -692,7 +692,7 @@ class MainViewController: UIViewController {
                 }
                 if !alreadyExists {
                     linkedList.append(Angle(ancestor: clickedList, point: location, number: linkedList.count))
-                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 16*numberOfMeasures))
+                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 20*numberOfMeasures))
                     numberOfMeasures+=1
                     clearAllPotentials()
                 }
@@ -718,7 +718,7 @@ class MainViewController: UIViewController {
                 }
                 if !alreadyExists {
                     linkedList.append(Sum(ancestor: clickedList, point: location, number: linkedList.count))
-                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 16*numberOfMeasures))
+                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 20*numberOfMeasures))
                     numberOfMeasures+=1
                     clearAllPotentials()
                 }
@@ -744,7 +744,7 @@ class MainViewController: UIViewController {
                 }
                 if !alreadyExists {
                     linkedList.append(Product(ancestor: clickedList, point: location, number: linkedList.count))
-                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 16*numberOfMeasures))
+                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 20*numberOfMeasures))
                     numberOfMeasures+=1
                     clearAllPotentials()
                 }
@@ -769,7 +769,7 @@ class MainViewController: UIViewController {
                 }
                 if !alreadyExists {
                     linkedList.append(Difference(ancestor: clickedList, point: location, number: linkedList.count))
-                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 16*numberOfMeasures))
+                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 20*numberOfMeasures))
                     numberOfMeasures+=1
                     clearAllPotentials()
                 }
@@ -794,7 +794,7 @@ class MainViewController: UIViewController {
                 }
                 if !alreadyExists {
                     linkedList.append(Ratio(ancestor: clickedList, point: location, number: linkedList.count))
-                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 16*numberOfMeasures))
+                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 20*numberOfMeasures))
                     numberOfMeasures+=1
                     clearAllPotentials()
                 }
@@ -828,7 +828,7 @@ class MainViewController: UIViewController {
                     default:
                         print("measure (co)sine default reached")
                     }
-                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 16*numberOfMeasures))
+                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 20*numberOfMeasures))
                     numberOfMeasures+=1
                     clearAllPotentials()
                 }
@@ -857,12 +857,12 @@ class MainViewController: UIViewController {
                         unitChosen=true
                         unitIndex=linkedList.count
                         linkedList.append(Distance(ancestor: [clickedList[0],clickedList[1]], point: location, number: linkedList.count))
-                        update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 16*numberOfMeasures))
+                        update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 20*numberOfMeasures))
                         numberOfMeasures+=1
                     }
                     clickedList.append(linkedList[unitIndex])
                     linkedList.append(Triangle(ancestor: clickedList, point: location, number: linkedList.count))
-                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 16*numberOfMeasures))
+                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 20*numberOfMeasures))
                     clearAllPotentials()
                     numberOfMeasures+=1
                 }
@@ -896,12 +896,12 @@ class MainViewController: UIViewController {
                         }
                         clickedList[0].parent[0].isShown=true
                         clickedList[0].parent[1].isShown=true
-                        update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 16*numberOfMeasures))
+                        update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 20*numberOfMeasures))
                         numberOfMeasures+=1
                     }
                     clickedList.append(linkedList[unitIndex])
                     linkedList.append(CircleArea(ancestor: clickedList, point: location, number: linkedList.count))
-                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 16*numberOfMeasures))
+                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 20*numberOfMeasures))
                     clearAllPotentials()
                     numberOfMeasures+=1
                 }

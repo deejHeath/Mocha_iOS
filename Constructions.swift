@@ -109,9 +109,9 @@ class Point: Construction {                             // parents: []
         if showLabel {
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.alignment = .center
-            let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
+            let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!]
             let string = "\(character[index%26])\(index/26)"
-            string.draw(with: CGRect(x: coordinates.x+8, y: coordinates.y+8, width: 40, height: 15), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+            string.draw(with: CGRect(x: coordinates.x+8, y: coordinates.y+8, width: 50, height: 18), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
         }
     }
     func invalidatePointOffSegment(i: Int, location: CGPoint) {
@@ -599,9 +599,9 @@ class Measure: Point {
         context.drawPath(using: .fillStroke)
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
-        let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
+        let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!]
         let string = textString+" ≈ \(round(1000000*(value)+0.3)/1000000)"
-        string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:300, height: 15), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+        string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:350, height: 18), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
     }
 }
 
@@ -881,7 +881,7 @@ class Cosine: Measure {
             if showLabel {
                 let paragraphStyle = NSMutableParagraphStyle()
                 paragraphStyle.alignment = .center
-                let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
+                let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!]
                 let string = "\(character[index%26])\(index/26)"
                 var xx=10.0, yy=10.0
                 if abs(slope.x)>epsilon {
@@ -895,7 +895,7 @@ class Cosine: Measure {
                         xx=coordinates.x-slope.x/slope.y*(coordinates.y-20)-slope.y*20
                         yy=10+slope.x*20
                     }
-                    string.draw(with: CGRect(x: xx, y: yy+10, width: 40, height: 15), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+                    string.draw(with: CGRect(x: xx, y: yy+10, width: 50, height: 18), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
                 }
             }
         }
@@ -927,10 +927,10 @@ class Segment: Line {                                                  // parent
         if showLabel {
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.alignment = .center
-            let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
+            let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!]
             let string = "\(character[index%26])\(index/26)"
             let xx=(coordinates.x+(parent[1].coordinates.x-coordinates.x)/3)+slope.y*15, yy=(coordinates.y+(parent[1].coordinates.y-coordinates.y)/3)-slope.x*15
-            string.draw(with: CGRect(x: xx, y: yy, width: 40, height: 15), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+            string.draw(with: CGRect(x: xx, y: yy, width: 50, height: 18), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
         }
     }
 }
@@ -963,7 +963,7 @@ class Ray: Line {                                                  // parents: p
             let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
             let string = "\(character[index%26])\(index/26)"
             let xx=(coordinates.x+1.4*(parent[1].coordinates.x-coordinates.x))+slope.y*15, yy=(coordinates.y+1.4*(parent[1].coordinates.y-coordinates.y))-slope.x*15
-            string.draw(with: CGRect(x: xx, y: yy, width: 40, height: 15), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+            string.draw(with: CGRect(x: xx, y: yy, width: 50, height: 18), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
         }
     }
 }
@@ -1041,10 +1041,10 @@ class Ray: Line {                                                  // parents: p
             if showLabel {
                 let paragraphStyle = NSMutableParagraphStyle()
                 paragraphStyle.alignment = .center
-                let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
+                let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!]
                 let string = "\(character[index%26])\(index/26)"
                 let xx=slope.x-coordinates.x, yy=slope.y-coordinates.y, dd=sqrt(xx*xx+yy*yy)
-                string.draw(with: CGRect(x: yy/dd*(dd+18)+coordinates.x, y: -xx*(dd+18)/dd+coordinates.y, width: 40, height: 15), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+                string.draw(with: CGRect(x: yy/dd*(dd+18)+coordinates.x, y: -xx*(dd+18)/dd+coordinates.y, width: 50, height: 18), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
             }
         }
         override func distance(_ point: CGPoint) -> Double {
@@ -1465,9 +1465,9 @@ class Triangle: Measure { // parent: point, point, point, (unit) distance
         context.drawPath(using: .fillStroke)
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
-        let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
+        let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!]
         let string = textString+" ≈ \(round(1000000*(value)+0.3)/1000000)"
-        string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:300, height: 15), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+        string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:350, height: 18), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
     }
 }
 
@@ -1520,8 +1520,8 @@ class CircleArea: Measure { // parent: circle, (unit) distance
         context.drawPath(using: .fillStroke)
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
-        let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
+        let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!]
         let string = textString+" ≈ \(round(1000000*(value)+0.3)/1000000)"
-        string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:300, height: 15), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+        string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:350, height: 18), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
     }
 }
