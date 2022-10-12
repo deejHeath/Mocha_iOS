@@ -9,7 +9,7 @@ class MainViewController: UIViewController {
     let canvas = Canvas()
     var clickedList: [Construction] = []
     var clickedIndex: [Int] = []
-    let actionText=["Create or move POINTS", "Create midpoint between 2 POINTS","Intersect 2 OBJECTS","Fold POINT over LINE","Invert POINT in CIRCLE", "Create segment on 2 POINTS", "Create ray on 2 POINTS","Create line on 2 POINTS","create line on POINT and ⊥ to LINE","create line on POINT and || to LINE","Create bisector from 2 LINES","Fold from 2 POINTS to 2 LINES","Create circle with center POINT and POINT on","Create 3 POINT circle"]
+    let actionText=["Create or move POINTS", "Swipe between POINTS to create midpoint","Intersect 2 OBJECTS","Fold POINT over LINE","Invert POINT in CIRCLE", "Swipe between POINTS to create segment", "Swipe between POINTS to create ray","Swipe between POINTS to create line","Create line on POINT and ⊥ to LINE","Create line on POINT and || to LINE","Create bisector from 2 LINES","Fold from 2 POINTS to 2 LINES","Swipe between POINTS to create circle","Create 3 POINT circle"]
     let measureText=["Measure distance between 2 POINTS","Measure angle from 3 POINTS","Measure area of triangle from 3 POINTS","Measure area of CIRCLE", "Measure sum of two MEASURES","Measure difference of 2 MEASURES","Measure product of 2 MEASURES","Measure ratio of 2 MEASURES","FIND sine of MEASURE","Find cosine of MEASURE.","Hide OBJECT","Show or hide label of OBJECT","Swipe to move everything"]
     let makePoints=0, makeMidpoint=1, makeIntersections=2, foldPoints=3, invertPoints=4
     let makeSegments=5, makeRays=6, makeLines=7, makePerps=8, makeParallels=9
@@ -387,17 +387,21 @@ class MainViewController: UIViewController {
                 linkedList.append(Point(ancestor: [], point: location, number: linkedList.count))
                 setActiveConstruct(linkedList.count-1)
             }
-            var alreadyExists=false
-            for i in 0..<linkedList.count {
-                if linkedList[i].type==CIRCLE {
-                    if linkedList[i].parent[0].index==clickedList[0].index && linkedList[i].parent[1].index==clickedList[1].index {
-                        alreadyExists=true
-                        linkedList[i].isShown=true
+            if clickedList[0].distance(location) > 0.01 {
+                var alreadyExists=false
+                for i in 0..<linkedList.count {
+                    if linkedList[i].type==CIRCLE {
+                        if linkedList[i].parent[0].index==clickedList[0].index && linkedList[i].parent[1].index==clickedList[1].index {
+                            alreadyExists=true
+                            linkedList[i].isShown=true
+                        }
                     }
                 }
-            }
-            if !alreadyExists {
-                linkedList.append(Circle(ancestor: clickedList, point: location, number: linkedList.count))
+                if !alreadyExists {
+                    linkedList.append(Circle(ancestor: clickedList, point: location, number: linkedList.count))
+                }
+            } else if newPoint {
+                linkedList.removeLast()
             }
             clearAllPotentials()
             clearActives()
@@ -441,26 +445,32 @@ class MainViewController: UIViewController {
                 linkedList.append(Point(ancestor: [], point: location, number: linkedList.count))
                 setActiveConstruct(linkedList.count-1)
             }
-            arrangeClickedObjectsByIndex()
-            var alreadyExists=false
-            for i in 0..<linkedList.count {
-                if (linkedList[i].type==LINE && whatToDo==makeLines) || (linkedList[i].type==SEGMENT && whatToDo==makeSegments) || (linkedList[i].type==RAY && whatToDo==makeRays) || (linkedList[i].type==MIDPOINT && whatToDo==makeMidpoint) {
-                    if linkedList[i].parent[0].index==clickedList[0].index && linkedList[i].parent[1].index==clickedList[1].index {
-                        alreadyExists=true
-                        linkedList[i].isShown=true
+            if whatToDo != makeRays {
+                arrangeClickedObjectsByIndex()
+            }
+            if clickedList[0].distance(location) > 0.01 {
+                var alreadyExists=false
+                for i in 0..<linkedList.count {
+                    if (linkedList[i].type==LINE && whatToDo==makeLines) || (linkedList[i].type==SEGMENT && whatToDo==makeSegments) || (linkedList[i].type==RAY && whatToDo==makeRays) || (linkedList[i].type==MIDPOINT && whatToDo==makeMidpoint) {
+                        if linkedList[i].parent[0].index==clickedList[0].index && linkedList[i].parent[1].index==clickedList[1].index {
+                            alreadyExists=true
+                            linkedList[i].isShown=true
+                        }
                     }
                 }
-            }
-            if !alreadyExists {
-                switch whatToDo {
-                case makeSegments: linkedList.append(Segment(ancestor: clickedList, point: location, number: linkedList.count))
-                    break
-                case makeRays: linkedList.append(Ray(ancestor: clickedList, point: location, number: linkedList.count))
-                    break
-                case makeLines: linkedList.append(Line(ancestor: clickedList, point: location, number: linkedList.count))
-                    break
-                default: linkedList.append(MidPoint(ancestor: clickedList, point: location, number: linkedList.count))
+                if !alreadyExists {
+                    switch whatToDo {
+                    case makeSegments: linkedList.append(Segment(ancestor: clickedList, point: location, number: linkedList.count))
+                        break
+                    case makeRays: linkedList.append(Ray(ancestor: clickedList, point: location, number: linkedList.count))
+                        break
+                    case makeLines: linkedList.append(Line(ancestor: clickedList, point: location, number: linkedList.count))
+                        break
+                    default: linkedList.append(MidPoint(ancestor: clickedList, point: location, number: linkedList.count))
+                    }
                 }
+            } else if newPoint {
+                linkedList.removeLast()
             }
             clearAllPotentials()
             clearActives()
