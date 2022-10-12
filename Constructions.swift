@@ -616,7 +616,7 @@ class Distance: Measure {       // parents: point, point (for unit distance), or
         parent[0].showLabel=true
         parent[1].showLabel=true
         showLabel=false
-        textString="d(\(character[parent[0].index%26])\(parent[0].index/26),\(character[parent[1].index%26])\(parent[1].index/26))"
+        textString="\(character[index%26])\(index/26) : d(\(character[parent[0].index%26])\(parent[0].index/26),\(character[parent[1].index%26])\(parent[1].index/26))"
     }
     override func update(point: CGPoint) {
         var parentsAllReal=true
@@ -657,7 +657,7 @@ class Angle: Measure {
         parent[1].showLabel=true
         parent[2].showLabel=true
         showLabel=false
-        textString="∠(\(character[parent[0].index%26])\(parent[0].index/26),\(character[parent[1].index%26])\(parent[1].index/26),\(character[parent[2].index%26])\(parent[2].index/26))"
+        textString="\(character[index%26])\(index/26) : ∠(\(character[parent[0].index%26])\(parent[0].index/26),\(character[parent[1].index%26])\(parent[1].index/26),\(character[parent[2].index%26])\(parent[2].index/26))"
     }
     override func update(point: CGPoint) {
         var parentsAllReal=true
@@ -695,7 +695,7 @@ class Ratio: Distance {
             isReal=false
         }
         showLabel=false
-        textString="["+parent[0].textString+"]:["+parent[1].textString+"]"
+        textString="\(character[index%26])\(index/26) : \(character[parent[0].index%26])\(parent[0].index/26) / \(character[parent[1].index%26])\(parent[1].index/26)"
     }
     override func update(point: CGPoint) {
         if parent[0].isReal && parent[1].isReal && abs(parent[1].value)>epsilon {
@@ -715,7 +715,7 @@ class Product: Distance {
         index=number
         value=parent[0].value*parent[1].value
         showLabel=false
-        textString="["+parent[0].textString+"]:["+parent[1].textString+"]"
+        textString="\(character[index%26])\(index/26) : \(character[parent[0].index%26])\(parent[0].index/26) ⋅ \(character[parent[1].index%26])\(parent[1].index/26)"
     }
     override func update(point: CGPoint) {
         if parent[0].isReal && parent[1].isReal {
@@ -735,7 +735,7 @@ class Sum: Distance {
         index=number
         value=parent[0].value+parent[1].value
         showLabel=false
-        textString="["+parent[0].textString+"]:["+parent[1].textString+"]"
+        textString="\(character[index%26])\(index/26) : \(character[parent[0].index%26])\(parent[0].index/26) + \(character[parent[1].index%26])\(parent[1].index/26)"
     }
     override func update(point: CGPoint) {
         if parent[0].isReal && parent[1].isReal {
@@ -755,7 +755,7 @@ class Difference: Distance {
         index=number
         value=parent[0].value-parent[1].value
         showLabel=false
-        textString="["+parent[0].textString+"]:["+parent[1].textString+"]"
+        textString="\(character[index%26])\(index/26) : \(character[parent[0].index%26])\(parent[0].index/26) - \(character[parent[1].index%26])\(parent[1].index/26)"
     }
     override func update(point: CGPoint) {
         if parent[0].isReal && parent[1].isReal {
@@ -777,7 +777,7 @@ class Sine: Measure {
         update(point: point)
         type=SINE
         showLabel=false
-        textString="sin("+parent[0].textString+")"
+        textString="\(character[index%26])\(index/26) : sin(\(character[parent[0].index%26])\(parent[0].index/26))"
     }
     override func update(point: CGPoint) {
         if parent[0].isReal {
@@ -798,7 +798,7 @@ class Cosine: Measure {
         update(point: point)
         type=COSINE
         showLabel=false
-        textString="cos("+parent[0].textString+")"
+        textString="\(character[index%26])\(index/26) : cos(\(character[parent[0].index%26])\(parent[0].index/26))"
     }
     override func update(point: CGPoint) {
         if parent[0].isReal {
@@ -929,7 +929,7 @@ class Segment: Line {                                                  // parent
             paragraphStyle.alignment = .center
             let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!]
             let string = "\(character[index%26])\(index/26)"
-            let xx=(coordinates.x+(parent[1].coordinates.x-coordinates.x)/3)+slope.y*15, yy=(coordinates.y+(parent[1].coordinates.y-coordinates.y)/3)-slope.x*15
+            let xx=(coordinates.x+(parent[1].coordinates.x-coordinates.x)/3)+slope.y*20, yy=(coordinates.y+(parent[1].coordinates.y-coordinates.y)/3)-slope.x*20
             string.draw(with: CGRect(x: xx, y: yy, width: 50, height: 18), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
         }
     }
@@ -962,7 +962,7 @@ class Ray: Line {                                                  // parents: p
             paragraphStyle.alignment = .center
             let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
             let string = "\(character[index%26])\(index/26)"
-            let xx=(coordinates.x+1.4*(parent[1].coordinates.x-coordinates.x))+slope.y*15, yy=(coordinates.y+1.4*(parent[1].coordinates.y-coordinates.y))-slope.x*15
+            let xx=(coordinates.x+1.4*(parent[1].coordinates.x-coordinates.x))+slope.y*20, yy=(coordinates.y+1.4*(parent[1].coordinates.y-coordinates.y))-slope.x*20
             string.draw(with: CGRect(x: xx, y: yy, width: 50, height: 18), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
         }
     }
@@ -1044,7 +1044,7 @@ class Ray: Line {                                                  // parents: p
                 let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!]
                 let string = "\(character[index%26])\(index/26)"
                 let xx=slope.x-coordinates.x, yy=slope.y-coordinates.y, dd=sqrt(xx*xx+yy*yy)
-                string.draw(with: CGRect(x: yy/dd*(dd+18)+coordinates.x, y: -xx*(dd+18)/dd+coordinates.y, width: 50, height: 18), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+                string.draw(with: CGRect(x: yy/dd*(dd+20)+coordinates.x, y: -xx*(dd+20)/dd+coordinates.y, width: 50, height: 18), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
             }
         }
         override func distance(_ point: CGPoint) -> Double {
@@ -1410,13 +1410,12 @@ class Triangle: Measure { // parent: point, point, point, (unit) distance
     override init(ancestor: [Construction], point: CGPoint, number: Int) {
         super.init(ancestor: ancestor, point: point, number: number)
         type=TriAREA
-        textString="Δ(\(character[parent[0].index%26])\(parent[0].index/26),\(character[parent[1].index%26])\(parent[1].index/26),\(character[parent[2].index%26])\(parent[2].index/26))"
+        textString="\(character[index%26])\(index/26) :  Δ(\(character[parent[0].index%26])\(parent[0].index/26),\(character[parent[1].index%26])\(parent[1].index/26),\(character[parent[2].index%26])\(parent[2].index/26))"
         for i in 0..<3 {
             parent[i].showLabel=true
         }
         showLabel=false
         coordinates=point
-        print("init complete")
     }
     override func update(point: CGPoint) {
         let labels=[parent[0].showLabel,parent[1].showLabel,parent[2].showLabel]
@@ -1476,7 +1475,7 @@ class CircleArea: Measure { // parent: circle, (unit) distance
         super.init(ancestor: ancestor, point: point, number: number)
         type=CircAREA
         parent[0].showLabel=true
-        textString="⦿(\(character[parent[0].index%26])\(parent[0].index/26))"
+        textString="\(character[index%26])\(index/26) : ⦿(\(character[parent[0].index%26])\(parent[0].index/26))"
         coordinates=point
     }
     override func update(point: CGPoint) {

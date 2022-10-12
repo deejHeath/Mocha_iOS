@@ -1329,18 +1329,22 @@ class MainViewController: UIViewController {
             clearAllPotentials()
             canvas.update(constructions: linkedList, indices: clickedIndex)
             canvas.setNeedsDisplay()
-            if linkedList.count<2 {
+        }
+        if linkedList.count<2 {
+            if self.whatToDo != makePoints && self.whatToDo != makeLines && self.whatToDo != makeSegments && self.whatToDo != makeRays && self.whatToDo != makeCircles && self.whatToDo != makeMidpoint {
                 self.whatToDo=self.makePoints
-                self.infoLabel.text = self.actionText[self.whatToDo]
-                self.infoXLabel.text = self.actionText[self.whatToDo]
             }
+            self.infoLabel.text = self.actionText[self.whatToDo]
+            self.infoXLabel.text = self.actionText[self.whatToDo]
         }
     }
     @IBAction func clearAllButtonPressed(_ sender: UIButton) {
         numberOfMeasures=1
         unitChosen=false
         self.linkedList.removeAll()
-        self.whatToDo=self.makePoints
+        if self.whatToDo != makePoints && self.whatToDo != makeLines && self.whatToDo != makeSegments && self.whatToDo != makeRays && self.whatToDo != makeCircles && self.whatToDo != makeMidpoint {
+            self.whatToDo=self.makePoints
+        }
         self.infoLabel.text = self.actionText[self.whatToDo]
         self.infoXLabel.text = self.actionText[self.whatToDo]
         clearAllPotentials()
