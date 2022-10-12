@@ -10,13 +10,13 @@ class MainViewController: UIViewController {
     var clickedList: [Construction] = []
     var clickedIndex: [Int] = []
     let actionText=["Create or move POINTS", "Create midpoint between 2 POINTS","Intersect 2 OBJECTS","Fold POINT over LINE","Invert POINT in CIRCLE", "Create segment on 2 POINTS", "Create ray on 2 POINTS","Create line on 2 POINTS","create line on POINT and ⊥ to LINE","create line on POINT and || to LINE","Create bisector from 2 LINES","Fold from 2 POINTS to 2 LINES","Create circle with center POINT and POINT on","Create 3 POINT circle"]
-    let measureText=["Measure distance between 2 POINTS","Measure angle from 3 POINTS","Measure area of triangle from 3 POINTS","Measure area of CIRCLE", "Measure sum of two MEASURES","Measure difference of 2 MEASURES","Measure product of 2 MEASURES","Measure ratio of 2 MEASURES","FIND sine of MEASURE","Find cosine of MEASURE.","Hide OBJECT","Show or hide label of OBJECT"]
+    let measureText=["Measure distance between 2 POINTS","Measure angle from 3 POINTS","Measure area of triangle from 3 POINTS","Measure area of CIRCLE", "Measure sum of two MEASURES","Measure difference of 2 MEASURES","Measure product of 2 MEASURES","Measure ratio of 2 MEASURES","FIND sine of MEASURE","Find cosine of MEASURE.","Hide OBJECT","Show or hide label of OBJECT","Swipe to move everything"]
     let makePoints=0, makeMidpoint=1, makeIntersections=2, foldPoints=3, invertPoints=4
     let makeSegments=5, makeRays=6, makeLines=7, makePerps=8, makeParallels=9
     let makeBisectors=10, useOrigamiSix=11, makeCircles=12, make3PTCircle=13
     let measureDistance=20, measureAngle=21, measureTriArea=22, measureCircArea=23
     let measureSum=24, measureDifference=25, measureProduct=26, measureRatio=27
-    let measureSine=28, measureCosine=29, hideObject=30, toggleLabel=31
+    let measureSine=28, measureCosine=29, hideObject=30, toggleLabel=31, translateAll=32
     let POINT = 1, PTonLINE = 2, PTonCIRCLE = 3, MIDPOINT = 4
     let LINEintLINE = 5, FOLDedPT = 6, INVERTedPT=7
     let CIRCintCIRC0 = 8,CIRCintCIRC1 = 9, LINEintCIRC0 = 10, LINEintCIRC1 = 11
@@ -156,6 +156,8 @@ class MainViewController: UIViewController {
             if !activeConstruct {
                 potentialClick=nil
             }
+            break
+        case translateAll:
             break
         default:
             print("touchesBegan \(location)")
@@ -305,6 +307,16 @@ class MainViewController: UIViewController {
         case hideObject, toggleLabel:
             getRidOfActivesThatAreTooFar(location)
             getPointOrLineOrCircle(location)
+            break
+        case translateAll:
+            for i in 0..<linkedList.count {
+                if linkedList[i].type>0 && linkedList[i].type<=PTonCIRCLE {
+                    update(object: linkedList[i], point: CGPoint(x: linkedList[i].coordinates.x+location.x-firstTouch!.x,y: linkedList[i].coordinates.y+location.y-firstTouch!.y))
+                } else if linkedList[i].type<DISTANCE {
+                    update(object: linkedList[i], point: location)
+                }
+            }
+            firstTouch=location
             break
         default:
             print("touchesMoved: \(location)")
@@ -928,6 +940,8 @@ class MainViewController: UIViewController {
                 linkedList[clickedIndex[0]].showLabel = !linkedList[clickedIndex[0]].showLabel
                 clearAllPotentials()
             }
+            break
+        case translateAll:
             break
         default:
             print("touchesEnded: \(location)")
