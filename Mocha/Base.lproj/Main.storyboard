@@ -413,7 +413,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="16G-Yu-f1c">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="405"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="433"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-Measure-" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vIa-5T-UhZ">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="20.5"/>
@@ -557,11 +557,22 @@
                                             <action selector="settingsButtonPressed:" destination="mZU-iz-2BW" eventType="touchUpInside" id="hVo-af-CWe"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" tag="33" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IHU-b4-mIh">
+                                        <rect key="frame" x="0.0" y="405" width="375" height="28"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Scale everything">
+                                            <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
+                                        </buttonConfiguration>
+                                        <connections>
+                                            <action selector="settingsButtonPressed:" destination="mZU-iz-2BW" eventType="touchUpInside" id="hlC-g3-htm"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="3SN-jE-3gh" secondAttribute="trailing" id="3U7-Qc-c5u"/>
                                     <constraint firstAttribute="trailing" secondItem="e3f-EM-exB" secondAttribute="trailing" id="3ZR-up-8Ut"/>
                                     <constraint firstAttribute="trailing" secondItem="1ei-Yo-98g" secondAttribute="trailing" id="5Df-g6-pDS"/>
+                                    <constraint firstItem="IHU-b4-mIh" firstAttribute="leading" secondItem="16G-Yu-f1c" secondAttribute="leading" id="8Ne-tr-w4o"/>
                                     <constraint firstAttribute="trailing" secondItem="Htq-nV-K8C" secondAttribute="trailing" id="8cg-GW-OHq"/>
                                     <constraint firstItem="sjf-xj-ogT" firstAttribute="leading" secondItem="16G-Yu-f1c" secondAttribute="leading" id="9pK-YN-8Us"/>
                                     <constraint firstAttribute="trailing" secondItem="fB1-OG-Epf" secondAttribute="trailing" id="A3A-0U-WNP"/>
@@ -586,6 +597,7 @@
                                     <constraint firstAttribute="trailing" secondItem="KAi-rE-LRW" secondAttribute="trailing" id="lg5-ed-Q8l"/>
                                     <constraint firstAttribute="trailing" secondItem="Yox-5K-Vo9" secondAttribute="trailing" id="p9M-I1-7Xx"/>
                                     <constraint firstItem="umV-wt-fxt" firstAttribute="leading" secondItem="16G-Yu-f1c" secondAttribute="leading" id="pvM-Cg-O0v"/>
+                                    <constraint firstAttribute="trailing" secondItem="IHU-b4-mIh" secondAttribute="trailing" id="qae-0h-QoZ"/>
                                     <constraint firstAttribute="trailing" secondItem="Yox-5K-Vo9" secondAttribute="trailing" id="qyo-zn-1ke"/>
                                     <constraint firstAttribute="trailing" secondItem="vIa-5T-UhZ" secondAttribute="trailing" id="rKc-gD-N8w"/>
                                     <constraint firstItem="e3f-EM-exB" firstAttribute="leading" secondItem="16G-Yu-f1c" secondAttribute="leading" id="rV9-fY-rIX"/>

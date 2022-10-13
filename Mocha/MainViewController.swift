@@ -10,13 +10,14 @@ class MainViewController: UIViewController {
     var clickedList: [Construction] = []
     var clickedIndex: [Int] = []
     let actionText=["Create or move POINTS", "Swipe between POINTS to create midpoint","Intersect 2 OBJECTS","Fold POINT over LINE","Invert POINT in CIRCLE", "Swipe between POINTS to create segment", "Swipe between POINTS to create ray","Swipe between POINTS to create line","Create line on POINT and ⊥ to LINE","Create line on POINT and || to LINE","Create bisector from 2 LINES","Fold from 2 POINTS to 2 LINES","Swipe between POINTS to create circle","Create 3 POINT circle"]
-    let measureText=["Measure distance between 2 POINTS","Measure angle from 3 POINTS","Measure area of triangle from 3 POINTS","Measure area of CIRCLE", "Measure sum of two MEASURES","Measure difference of 2 MEASURES","Measure product of 2 MEASURES","Measure ratio of 2 MEASURES","FIND sine of MEASURE","Find cosine of MEASURE.","Hide OBJECT","Show or hide label of OBJECT","Swipe to move everything"]
+    let measureText=["Measure distance between 2 POINTS","Measure angle from 3 POINTS","Measure area of triangle from 3 POINTS","Measure area of CIRCLE", "Measure sum of two MEASURES","Measure difference of 2 MEASURES","Measure product of 2 MEASURES","Measure ratio of 2 MEASURES","FIND sine of MEASURE","Find cosine of MEASURE.","Hide OBJECT","Show or hide label of OBJECT","Swipe to move everything","Pinch to scale everything"]
     let makePoints=0, makeMidpoint=1, makeIntersections=2, foldPoints=3, invertPoints=4
     let makeSegments=5, makeRays=6, makeLines=7, makePerps=8, makeParallels=9
     let makeBisectors=10, useOrigamiSix=11, makeCircles=12, make3PTCircle=13
     let measureDistance=20, measureAngle=21, measureTriArea=22, measureCircArea=23
     let measureSum=24, measureDifference=25, measureProduct=26, measureRatio=27
     let measureSine=28, measureCosine=29, hideObject=30, toggleLabel=31, translateAll=32
+    let scaleEverything=33
     let POINT = 1, PTonLINE = 2, PTonCIRCLE = 3, MIDPOINT = 4
     let LINEintLINE = 5, FOLDedPT = 6, INVERTedPT=7
     let CIRCintCIRC0 = 8,CIRCintCIRC1 = 9, LINEintCIRC0 = 10, LINEintCIRC1 = 11
@@ -36,6 +37,7 @@ class MainViewController: UIViewController {
     var newPoint=false
     var numberOfMeasures=1
     var firstMove=true
+    var pinchScale=1.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,9 +45,27 @@ class MainViewController: UIViewController {
         canvas.translatesAutoresizingMaskIntoConstraints = false
         canvas.backgroundColor = .white
         canvas.isUserInteractionEnabled = true
-        canvas.isMultipleTouchEnabled = false // if we want to add dilation functionality this will need to be true
+        canvas.isMultipleTouchEnabled = true // if we want to add dilation functionality this will need to be true
+        let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(didPinch(_:)))
+        canvas.addGestureRecognizer(pinchGesture)
         view.addSubview(canvas)
         NSLayoutConstraint.activate([canvas.centerXAnchor.constraint(equalTo: view.centerXAnchor),canvas.centerYAnchor.constraint(equalTo: view.centerYAnchor),canvas.widthAnchor.constraint(equalTo: view.widthAnchor),canvas.heightAnchor.constraint(equalToConstant: view.frame.height-200)])
+    }
+    @objc private func didPinch(_ gesture: UIPinchGestureRecognizer) {
+        if gesture.state == .changed && whatToDo==scaleEverything {
+            pinchScale=gesture.scale
+            print(pinchScale)
+            gesture.scale=1.0
+            for i in 0..<linkedList.count {
+                if linkedList[i].type>0 && linkedList[i].type<=PTonCIRCLE {
+                    update(object: linkedList[i], point: CGPoint(x: pinchScale*(linkedList[i].coordinates.x-canvas.frame.width/2.0)+canvas.frame.width/2.0,y: pinchScale*(linkedList[i].coordinates.y-canvas.frame.height/2.0)+canvas.frame.height/2.0))
+                } else if linkedList[i].type<DISTANCE {
+                    update(object: linkedList[i], point: linkedList[i].coordinates)
+                }
+            }
+            canvas.update(constructions: linkedList, indices: clickedIndex)
+            canvas.setNeedsDisplay()
+        }
     }
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
@@ -912,7 +932,7 @@ class MainViewController: UIViewController {
                         linkedList.append(Cosine(ancestor: clickedList, point: location, number: linkedList.count))
                         break
                     default:
-                        print("measure (co)sine default reached")
+                        break
                     }
                     update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 20*numberOfMeasures))
                     numberOfMeasures+=1
