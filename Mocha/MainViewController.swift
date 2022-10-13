@@ -47,20 +47,21 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         canvas.isMultipleTouchEnabled = true
         let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(didPinch(_:)))
         let rotateGesture = UIRotationGestureRecognizer.init(target: self, action: #selector(didRotate(_:)))
-        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(didPan(_:)))
+        let translateGesture = UIPanGestureRecognizer(target: self, action: #selector(didTranslate(_:)))
         pinchGesture.delegate=self
         rotateGesture.delegate=self
-        panGesture.delegate=self
+        translateGesture.delegate=self
+        translateGesture.minimumNumberOfTouches = 2
         canvas.addGestureRecognizer(pinchGesture)
         canvas.addGestureRecognizer(rotateGesture)
-        canvas.addGestureRecognizer(panGesture)
+        canvas.addGestureRecognizer(translateGesture)
         view.addSubview(canvas)
         NSLayoutConstraint.activate([canvas.centerXAnchor.constraint(equalTo: view.centerXAnchor),canvas.centerYAnchor.constraint(equalTo: view.centerYAnchor),canvas.widthAnchor.constraint(equalTo: view.widthAnchor),canvas.heightAnchor.constraint(equalToConstant: view.frame.height-200)])
     }
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
             return true
         }
-    @objc func didPan(_ recognizer : UIPanGestureRecognizer) {
+    @objc func didTranslate(_ recognizer : UIPanGestureRecognizer) {
         if whatToDo==scaleEverything {
             let translation = recognizer.translation(in: self.view)
             for i in 0..<linkedList.count {
