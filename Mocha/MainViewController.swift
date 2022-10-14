@@ -33,7 +33,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
     let touchSense=18.0
     var unitChosen=false
     var unitIndex = -1
-    var newPoint=false
+    var newPoint=false, newFirstPoint=false
     var numberOfMeasures=1
     var firstMove=true
     var pinchScale=1.0
@@ -115,6 +115,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         firstTouch=location
         activeConstruct=false
         newPoint=false
+        newFirstPoint=false
         firstMove=true
         switch whatToDo {
         case makePoints:
@@ -140,17 +141,20 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
             getPointOrLineOrCircle(location)
             if activeConstruct {
                 if clickedList[0].type==0 {
+                    newFirstPoint=true
                     linkedList.append(PointOnCircle(ancestor: clickedList, point: location, number: linkedList.count))
                     setActiveConstruct(linkedList.count-1)
                     clickedList.removeFirst()
                     clickedIndex.removeFirst()
                 } else if clickedList[0].type<0 {
+                    newFirstPoint=true
                     linkedList.append(PointOnLine(ancestor: clickedList, point: location, number: linkedList.count))
                     setActiveConstruct(linkedList.count-1)
                     clickedList.removeFirst()
                     clickedIndex.removeFirst()
                 }
             } else {
+                newFirstPoint=true
                 linkedList.append(Point(ancestor: [], point: location, number: linkedList.count))
                 setActiveConstruct(linkedList.count-1)
             }
@@ -397,64 +401,6 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
             }
             clearAllPotentials()
             break
-        case makeCircles:
-            if !firstMove {
-                linkedList.removeLast() // remove temporary segment/ray etc.
-                clickedList.removeLast()
-                clickedIndex.removeLast()
-                if newPoint {
-                    linkedList.removeLast() // remove temporary point
-                    clickedList.removeLast()
-                    clickedIndex.removeLast()
-                    newPoint=false
-                }
-            }
-            activeConstruct=false
-            while clickedList.count>1 {
-                clickedList.removeLast()
-                clickedIndex.removeLast()
-            }
-            getPointOrLineOrCircle(location)
-            if activeConstruct {
-                if clickedList[clickedList.count-1].type>0 {
-                    newPoint=false
-                } else if clickedList[clickedList.count-1].type<0 {
-                    newPoint=true
-                    linkedList.append(PointOnLine(ancestor: [clickedList[clickedList.count-1]], point: location, number: linkedList.count))
-                    clickedList.remove(at: 1)
-                    clickedIndex.remove(at: 1)
-                    setActiveConstruct(linkedList.count-1)
-                } else {
-                    newPoint=true
-                    linkedList.append(PointOnCircle(ancestor: [clickedList[clickedList.count-1]], point: location, number: linkedList.count))
-                    clickedList.remove(at: 1)
-                    clickedIndex.remove(at: 1)
-                    setActiveConstruct(linkedList.count-1)
-                }
-            } else {
-                newPoint=true
-                linkedList.append(Point(ancestor: [], point: location, number: linkedList.count))
-                setActiveConstruct(linkedList.count-1)
-            }
-            if clickedList[0].distance(location) > 0.01 {
-                var alreadyExists=false
-                for i in 0..<linkedList.count {
-                    if linkedList[i].type==CIRCLE {
-                        if linkedList[i].parent[0].index==clickedList[0].index && linkedList[i].parent[1].index==clickedList[1].index {
-                            alreadyExists=true
-                            linkedList[i].isShown=true
-                        }
-                    }
-                }
-                if !alreadyExists {
-                    linkedList.append(Circle(ancestor: clickedList, point: location, number: linkedList.count))
-                }
-            } else if newPoint {
-                linkedList.removeLast()
-            }
-            clearAllPotentials()
-            clearActives()
-            break
         case makeSegments, makeLines, makeRays, makeCircles, makeMidpoint:
             if !firstMove {
                 linkedList.removeLast() // remove temporary segment/ray etc.
@@ -494,13 +440,13 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                 linkedList.append(Point(ancestor: [], point: location, number: linkedList.count))
                 setActiveConstruct(linkedList.count-1)
             }
-            if whatToDo != makeRays {
+            if whatToDo != makeRays && whatToDo != makeCircles {
                 arrangeClickedObjectsByIndex()
             }
             if clickedList[0].distance(location) > 0.01 {
                 var alreadyExists=false
                 for i in 0..<linkedList.count {
-                    if (linkedList[i].type==LINE && whatToDo==makeLines) || (linkedList[i].type==SEGMENT && whatToDo==makeSegments) || (linkedList[i].type==RAY && whatToDo==makeRays) || (linkedList[i].type==MIDPOINT && whatToDo==makeMidpoint) {
+                    if (linkedList[i].type==LINE && whatToDo==makeLines) || (linkedList[i].type==SEGMENT && whatToDo==makeSegments) || (linkedList[i].type==RAY && whatToDo==makeRays) || (linkedList[i].type==CIRCLE && whatToDo==makeCircles) || (linkedList[i].type==MIDPOINT && whatToDo==makeMidpoint) {
                         if linkedList[i].parent[0].index==clickedList[0].index && linkedList[i].parent[1].index==clickedList[1].index {
                             alreadyExists=true
                             linkedList[i].isShown=true
@@ -515,11 +461,16 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                         break
                     case makeLines: linkedList.append(Line(ancestor: clickedList, point: location, number: linkedList.count))
                         break
+                    case makeCircles: linkedList.append(Circle(ancestor: clickedList, point: location, number: linkedList.count))
+                        break
                     default: linkedList.append(MidPoint(ancestor: clickedList, point: location, number: linkedList.count))
                     }
                 }
             } else if newPoint {
                 linkedList.removeLast()
+                if newFirstPoint {
+                    linkedList.removeLast()
+                }
             }
             clearAllPotentials()
             clearActives()
