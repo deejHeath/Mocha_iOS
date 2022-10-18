@@ -8,7 +8,7 @@
 import UIKit
 
 class Construction {
-    var character = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
+    var character = ["A","B","C","D","E","F","G","H","J","K","L","M","N","P","Q","R","S","T","U","V","W","X","Y","Z"]
     var isReal=true
     var isShown=true
     var showLabel=false
@@ -62,9 +62,9 @@ class Construction {
     func distance(_ point1: CGPoint,_ point2: CGPoint) -> Double {
         return sqrt(pow(point1.x-point2.x,2)+pow(point1.y-point2.y,2))
     }
-    func setShown(_ x: Bool) {
-        isShown = x
-    }
+//    func setShown(_ x: Bool) {
+//        isShown = x
+//    }
 }
 
 class Point: Construction {                             // parents: []
@@ -84,17 +84,13 @@ class Point: Construction {                             // parents: []
     }
     override func draw(_ context: CGContext,_ isRed: Bool) {
         if isRed {
-            context.setFillColor(UIColor.red.cgColor)
+            context.setFillColor(UIColor.red.withAlphaComponent(1.0).cgColor)
         } else if type<=PTonCIRCLE {
-            context.setFillColor(UIColor.black.cgColor)
+            context.setFillColor(UIColor.yellow.cgColor)
         } else {
             context.setFillColor(UIColor.clear.cgColor)
         }
-        if type>=CIRCintCIRC0 && type<=LINEintCIRC1 {
-            context.setStrokeColor(UIColor.blue.cgColor)
-        } else {
-            context.setStrokeColor(UIColor.black.cgColor)
-        }
+        context.setStrokeColor(UIColor.yellow.cgColor)
         context.setLineWidth(2.0)
         let currentRect = CGRect(x: coordinates.x-6.0,y:coordinates.y-6.0,
                                  width: 12.0,
@@ -109,8 +105,8 @@ class Point: Construction {                             // parents: []
         if showLabel {
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.alignment = .center
-            let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!]
-            let string = "\(character[index%26])\(index/26)"
+            let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!, NSAttributedString.Key.foregroundColor: UIColor.white]
+            let string = "\(character[index%24])\(index/24)"
             string.draw(with: CGRect(x: coordinates.x+8, y: coordinates.y+8, width: 50, height: 18), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
         }
     }
@@ -589,7 +585,7 @@ class Measure: Point {
         if isRed {
             context.setStrokeColor(UIColor.red.cgColor)
         } else {
-            context.setStrokeColor(UIColor.black.cgColor)
+            context.setStrokeColor(UIColor.white.cgColor)
         }
         context.setLineWidth(2.0)
         let currentRect = CGRect(x: coordinates.x-4.0,y:coordinates.y-4.0,
@@ -599,7 +595,7 @@ class Measure: Point {
         context.drawPath(using: .fillStroke)
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
-        let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!]
+        let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!, NSAttributedString.Key.foregroundColor: UIColor.white]
         let string = textString+" ≈ \(round(1000000*(value)+0.3)/1000000)"
         string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:350, height: 18), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
     }
@@ -616,7 +612,7 @@ class Distance: Measure {       // parents: point, point (for unit distance), or
         parent[0].showLabel=true
         parent[1].showLabel=true
         showLabel=false
-        textString="\(character[index%26])\(index/26) : d(\(character[parent[0].index%26])\(parent[0].index/26),\(character[parent[1].index%26])\(parent[1].index/26))"
+        textString="\(character[index%24])\(index/24) : d(\(character[parent[0].index%24])\(parent[0].index/24),\(character[parent[1].index%24])\(parent[1].index/24))"
     }
     override func update(point: CGPoint) {
         var parentsAllReal=true
@@ -657,7 +653,7 @@ class Angle: Measure {
         parent[1].showLabel=true
         parent[2].showLabel=true
         showLabel=false
-        textString="\(character[index%26])\(index/26) : ∠(\(character[parent[0].index%26])\(parent[0].index/26),\(character[parent[1].index%26])\(parent[1].index/26),\(character[parent[2].index%26])\(parent[2].index/26))"
+        textString="\(character[index%24])\(index/24) : ∠(\(character[parent[0].index%24])\(parent[0].index/24),\(character[parent[1].index%24])\(parent[1].index/24),\(character[parent[2].index%24])\(parent[2].index/24))"
     }
     override func update(point: CGPoint) {
         var parentsAllReal=true
@@ -695,7 +691,7 @@ class Ratio: Distance {
             isReal=false
         }
         showLabel=false
-        textString="\(character[index%26])\(index/26) : \(character[parent[0].index%26])\(parent[0].index/26) / \(character[parent[1].index%26])\(parent[1].index/26)"
+        textString="\(character[index%24])\(index/24) : \(character[parent[0].index%24])\(parent[0].index/24) / \(character[parent[1].index%24])\(parent[1].index/24)"
     }
     override func update(point: CGPoint) {
         if parent[0].isReal && parent[1].isReal && abs(parent[1].value)>epsilon {
@@ -715,7 +711,7 @@ class Product: Distance {
         index=number
         value=parent[0].value*parent[1].value
         showLabel=false
-        textString="\(character[index%26])\(index/26) : \(character[parent[0].index%26])\(parent[0].index/26) ⋅ \(character[parent[1].index%26])\(parent[1].index/26)"
+        textString="\(character[index%24])\(index/24) : \(character[parent[0].index%24])\(parent[0].index/24) ⋅ \(character[parent[1].index%24])\(parent[1].index/24)"
     }
     override func update(point: CGPoint) {
         if parent[0].isReal && parent[1].isReal {
@@ -735,7 +731,7 @@ class Sum: Distance {
         index=number
         value=parent[0].value+parent[1].value
         showLabel=false
-        textString="\(character[index%26])\(index/26) : \(character[parent[0].index%26])\(parent[0].index/26) + \(character[parent[1].index%26])\(parent[1].index/26)"
+        textString="\(character[index%24])\(index/24) : \(character[parent[0].index%24])\(parent[0].index/24) + \(character[parent[1].index%24])\(parent[1].index/24)"
     }
     override func update(point: CGPoint) {
         if parent[0].isReal && parent[1].isReal {
@@ -755,7 +751,7 @@ class Difference: Distance {
         index=number
         value=parent[0].value-parent[1].value
         showLabel=false
-        textString="\(character[index%26])\(index/26) : \(character[parent[0].index%26])\(parent[0].index/26) - \(character[parent[1].index%26])\(parent[1].index/26)"
+        textString="\(character[index%24])\(index/24) : \(character[parent[0].index%24])\(parent[0].index/24) - \(character[parent[1].index%24])\(parent[1].index/24)"
     }
     override func update(point: CGPoint) {
         if parent[0].isReal && parent[1].isReal {
@@ -777,7 +773,7 @@ class Sine: Measure {
         update(point: point)
         type=SINE
         showLabel=false
-        textString="\(character[index%26])\(index/26) : sin(\(character[parent[0].index%26])\(parent[0].index/26))"
+        textString="\(character[index%24])\(index/24) : sin(\(character[parent[0].index%24])\(parent[0].index/24))"
     }
     override func update(point: CGPoint) {
         if parent[0].isReal {
@@ -798,7 +794,7 @@ class Cosine: Measure {
         update(point: point)
         type=COSINE
         showLabel=false
-        textString="\(character[index%26])\(index/26) : cos(\(character[parent[0].index%26])\(parent[0].index/26))"
+        textString="\(character[index%24])\(index/24) : cos(\(character[parent[0].index%24])\(parent[0].index/24))"
     }
     override func update(point: CGPoint) {
         if parent[0].isReal {
@@ -871,7 +867,7 @@ class Cosine: Measure {
                 } else if type==TOOL6LINE0 || type==TOOL6LINE1 || type==TOOL6LINE2 {
                     context.setStrokeColor(UIColor.systemGreen.cgColor)
                 } else {
-                    context.setStrokeColor(UIColor.black.cgColor)
+                    context.setStrokeColor(UIColor.white.cgColor)
                 }
             }
             context.setLineWidth(strokeWidth)
@@ -881,8 +877,8 @@ class Cosine: Measure {
             if showLabel {
                 let paragraphStyle = NSMutableParagraphStyle()
                 paragraphStyle.alignment = .center
-                let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!]
-                let string = "\(character[index%26])\(index/26)"
+                let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!, NSAttributedString.Key.foregroundColor: UIColor.white]
+                let string = "\(character[index%24])\(index/24)"
                 var xx=10.0, yy=10.0
                 if abs(slope.x)>epsilon {
                     if coordinates.y+slope.y/slope.x*(20-coordinates.x)>20 && coordinates.y+slope.y/slope.x*(20-coordinates.x)<520 {
@@ -918,7 +914,7 @@ class Segment: Line {                                                  // parent
         if isRed {
             context.setStrokeColor(UIColor.red.cgColor)
         } else {
-            context.setStrokeColor(UIColor.black.cgColor)
+            context.setStrokeColor(UIColor.white.cgColor)
         }
         context.setLineWidth(strokeWidth)
         context.move(to: CGPoint(x: parent[0].coordinates.x,y: parent[0].coordinates.y))
@@ -927,8 +923,8 @@ class Segment: Line {                                                  // parent
         if showLabel {
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.alignment = .center
-            let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!]
-            let string = "\(character[index%26])\(index/26)"
+            let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!, NSAttributedString.Key.foregroundColor: UIColor.white]
+            let string = "\(character[index%24])\(index/24)"
             let xx=(coordinates.x+(parent[1].coordinates.x-coordinates.x)/3)+slope.y*20, yy=(coordinates.y+(parent[1].coordinates.y-coordinates.y)/3)-slope.x*20
             string.draw(with: CGRect(x: xx, y: yy, width: 50, height: 18), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
         }
@@ -951,7 +947,7 @@ class Ray: Line {                                                  // parents: p
         if isRed {
             context.setStrokeColor(UIColor.red.cgColor)
         } else {
-            context.setStrokeColor(UIColor.black.cgColor)
+            context.setStrokeColor(UIColor.white.cgColor)
         }
         context.setLineWidth(strokeWidth)
         context.move(to: CGPoint(x: coordinates.x,y: coordinates.y))
@@ -960,8 +956,8 @@ class Ray: Line {                                                  // parents: p
         if showLabel {
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.alignment = .center
-            let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 12)!]
-            let string = "\(character[index%26])\(index/26)"
+            let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!, NSAttributedString.Key.foregroundColor: UIColor.white]
+            let string = "\(character[index%24])\(index/24)"
             let xx=(coordinates.x+1.4*(parent[1].coordinates.x-coordinates.x))+slope.y*20, yy=(coordinates.y+1.4*(parent[1].coordinates.y-coordinates.y))-slope.x*20
             string.draw(with: CGRect(x: xx, y: yy, width: 50, height: 18), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
         }
@@ -1031,7 +1027,7 @@ class Ray: Line {                                                  // parents: p
             if isRed {
                 context.setStrokeColor(UIColor.red.cgColor)
             } else {
-                context.setStrokeColor(UIColor.systemIndigo.cgColor)
+                context.setStrokeColor(UIColor.blue.cgColor)
             }
             context.setLineWidth(strokeWidth)
             let radius = sqrt(pow(coordinates.x-slope.x,2)+pow(coordinates.y-slope.y,2))
@@ -1041,8 +1037,8 @@ class Ray: Line {                                                  // parents: p
             if showLabel {
                 let paragraphStyle = NSMutableParagraphStyle()
                 paragraphStyle.alignment = .center
-                let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!]
-                let string = "\(character[index%26])\(index/26)"
+                let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!, NSAttributedString.Key.foregroundColor: UIColor.white]
+                let string = "\(character[index%24])\(index/24)"
                 let xx=slope.x-coordinates.x, yy=slope.y-coordinates.y, dd=sqrt(xx*xx+yy*yy)
                 string.draw(with: CGRect(x: yy/dd*(dd+20)+coordinates.x, y: -xx*(dd+20)/dd+coordinates.y, width: 50, height: 18), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
             }
@@ -1410,7 +1406,7 @@ class Triangle: Measure { // parent: point, point, point, (unit) distance
     override init(ancestor: [Construction], point: CGPoint, number: Int) {
         super.init(ancestor: ancestor, point: point, number: number)
         type=TriAREA
-        textString="\(character[index%26])\(index/26) :  Δ(\(character[parent[0].index%26])\(parent[0].index/26),\(character[parent[1].index%26])\(parent[1].index/26),\(character[parent[2].index%26])\(parent[2].index/26))"
+        textString="\(character[index%24])\(index/24) :  Δ(\(character[parent[0].index%24])\(parent[0].index/24),\(character[parent[1].index%24])\(parent[1].index/24),\(character[parent[2].index%24])\(parent[2].index/24))"
         for i in 0..<3 {
             parent[i].showLabel=true
         }
@@ -1454,7 +1450,7 @@ class Triangle: Measure { // parent: point, point, point, (unit) distance
         if isRed {
             context.setStrokeColor(UIColor.red.cgColor)
         } else {
-                context.setStrokeColor(UIColor.black.cgColor)
+                context.setStrokeColor(UIColor.white.cgColor)
         }
         context.setLineWidth(2.0)
         let currentRect = CGRect(x: coordinates.x-4.0,y:coordinates.y-4.0,
@@ -1464,7 +1460,7 @@ class Triangle: Measure { // parent: point, point, point, (unit) distance
         context.drawPath(using: .fillStroke)
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
-        let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!]
+        let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!, NSAttributedString.Key.foregroundColor: UIColor.white]
         let string = textString+" ≈ \(round(1000000*(value)+0.3)/1000000)"
         string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:350, height: 18), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
     }
@@ -1475,7 +1471,7 @@ class CircleArea: Measure { // parent: circle, (unit) distance
         super.init(ancestor: ancestor, point: point, number: number)
         type=CircAREA
         parent[0].showLabel=true
-        textString="\(character[index%26])\(index/26) : ⦿(\(character[parent[0].index%26])\(parent[0].index/26))"
+        textString="\(character[index%24])\(index/24) : ⦿(\(character[parent[0].index%24])\(parent[0].index/24))"
         coordinates=point
     }
     override func update(point: CGPoint) {
@@ -1499,7 +1495,7 @@ class CircleArea: Measure { // parent: circle, (unit) distance
         parent[0].parent[1].showLabel=labels[1]
     }
     override func draw(_ context: CGContext, _ isRed: Bool) {
-        context.setFillColor(UIColor.systemPink.withAlphaComponent(0.1).cgColor)
+        context.setFillColor(UIColor.systemPink.withAlphaComponent(0.2).cgColor)
         let radius = sqrt(pow(parent[0].parent[0].coordinates.x-parent[0].parent[1].coordinates.x,2)+pow(parent[0].parent[0].coordinates.y-parent[0].parent[1].coordinates.y,2))
         let rect0 = CGRect(x: parent[0].coordinates.x-radius,
                            y: parent[0].coordinates.y-radius,
@@ -1509,7 +1505,7 @@ class CircleArea: Measure { // parent: circle, (unit) distance
         if isRed {
             context.setStrokeColor(UIColor.red.cgColor)
         } else {
-                context.setStrokeColor(UIColor.black.cgColor)
+                context.setStrokeColor(UIColor.white.cgColor)
         }
         context.setLineWidth(2.0)
         let currentRect = CGRect(x: coordinates.x-4.0,y:coordinates.y-4.0,
@@ -1519,7 +1515,7 @@ class CircleArea: Measure { // parent: circle, (unit) distance
         context.drawPath(using: .fillStroke)
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
-        let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!]
+        let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!, NSAttributedString.Key.foregroundColor: UIColor.white]
         let string = textString+" ≈ \(round(1000000*(value)+0.3)/1000000)"
         string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:350, height: 18), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
     }

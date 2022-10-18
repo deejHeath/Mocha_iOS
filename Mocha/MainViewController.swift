@@ -27,7 +27,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
     let CIRCLE = 0
     let LINE = -1, PERP = -2, PARALLEL = -3, BISECTOR0 = -4, BISECTOR1 = -5, TOOL6LINE0 = -7
     let TOOL6LINE1 = -8, TOOL6LINE2 = -9, THREEptLINE = -10, SEGMENT = -11, RAY = -12
-    private var whatToDo=0
+    private var whatToDo=7
     var firstTouch: CGPoint?
     var activeConstruct = false
     let touchSense=18.0
@@ -42,7 +42,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         super.viewDidLoad()
         view.backgroundColor = .systemGray6
         canvas.translatesAutoresizingMaskIntoConstraints = false
-        canvas.backgroundColor = .white
+        canvas.backgroundColor = .black
         canvas.isUserInteractionEnabled = true
         canvas.isMultipleTouchEnabled = true
         let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(didPinch(_:)))
@@ -57,6 +57,8 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         canvas.addGestureRecognizer(translateGesture)
         view.addSubview(canvas)
         NSLayoutConstraint.activate([canvas.centerXAnchor.constraint(equalTo: view.centerXAnchor),canvas.centerYAnchor.constraint(equalTo: view.centerYAnchor),canvas.widthAnchor.constraint(equalTo: view.widthAnchor),canvas.heightAnchor.constraint(equalToConstant: view.frame.height-200)])
+        infoLabel.text=actionText[whatToDo]
+        infoXLabel.text=actionText[whatToDo]
     }
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
             return true
@@ -1474,7 +1476,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         }
         if linkedList.count<2 {
             if self.whatToDo != makePoints && self.whatToDo != makeLines && self.whatToDo != makeSegments && self.whatToDo != makeRays && self.whatToDo != makeCircles && self.whatToDo != makeMidpoint {
-                self.whatToDo=self.makePoints
+                self.whatToDo=self.makeLines
             }
             self.infoLabel.text = self.actionText[self.whatToDo]
             self.infoXLabel.text = self.actionText[self.whatToDo]
@@ -1485,7 +1487,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         unitChosen=false
         self.linkedList.removeAll()
         if self.whatToDo != makePoints && self.whatToDo != makeLines && self.whatToDo != makeSegments && self.whatToDo != makeRays && self.whatToDo != makeCircles && self.whatToDo != makeMidpoint {
-            self.whatToDo=self.makePoints
+            self.whatToDo=self.makeLines
         }
         self.infoLabel.text = self.actionText[self.whatToDo]
         self.infoXLabel.text = self.actionText[self.whatToDo]

@@ -25,9 +25,17 @@ class Canvas: UIView {
 
     override func draw(_ rect: CGRect) {
         guard let context = UIGraphicsGetCurrentContext() else {return}
-        context.setStrokeColor(UIColor.black.cgColor)
         for i in 0..<linkedList.count {
-            if linkedList[i].isReal && linkedList[i].isShown {
+            if linkedList[i].isReal && linkedList[i].isShown && linkedList[i].type<=0 {
+                if clickedIndex.contains(i) {
+                        linkedList[i].draw(context,true)
+                } else {
+                    linkedList[i].draw(context,false)
+                }
+            }
+        }
+        for i in 0..<linkedList.count {
+            if linkedList[i].isReal && linkedList[i].isShown && linkedList[i].type>0 {
                 if clickedIndex.contains(i) {
                         linkedList[i].draw(context,true)
                 } else {
