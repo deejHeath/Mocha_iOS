@@ -867,7 +867,7 @@ class Cosine: Measure {
                 } else if type==TOOL6LINE0 || type==TOOL6LINE1 || type==TOOL6LINE2 {
                     context.setStrokeColor(UIColor.systemGreen.cgColor)
                 } else {
-                    context.setStrokeColor(UIColor.white.cgColor)
+                    context.setStrokeColor(UIColor.systemGray3.cgColor)
                 }
             }
             context.setLineWidth(strokeWidth)
@@ -914,7 +914,7 @@ class Segment: Line {                                                  // parent
         if isRed {
             context.setStrokeColor(UIColor.red.cgColor)
         } else {
-            context.setStrokeColor(UIColor.white.cgColor)
+            context.setStrokeColor(UIColor.systemGray3.cgColor)
         }
         context.setLineWidth(strokeWidth)
         context.move(to: CGPoint(x: parent[0].coordinates.x,y: parent[0].coordinates.y))
@@ -947,7 +947,7 @@ class Ray: Line {                                                  // parents: p
         if isRed {
             context.setStrokeColor(UIColor.red.cgColor)
         } else {
-            context.setStrokeColor(UIColor.white.cgColor)
+            context.setStrokeColor(UIColor.systemGray3.cgColor)
         }
         context.setLineWidth(strokeWidth)
         context.move(to: CGPoint(x: coordinates.x,y: coordinates.y))
