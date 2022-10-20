@@ -1439,7 +1439,7 @@ class Triangle: Measure { // parent: point, point, point, (unit) distance
         }
     }
     override func draw(_ context: CGContext, _ isRed: Bool) {
-        context.setFillColor(UIColor(hue:(CGFloat(7*index)/24.0), saturation: 1.0, brightness: 1.0, alpha: 0.25).cgColor)
+        context.setFillColor(UIColor(hue:(CGFloat(3*index)/22.0), saturation: 1.0, brightness: 1.0, alpha: 0.25).cgColor)
         context.move(to: parent[0].coordinates)
         context.addLine(to: parent[1].coordinates)
         context.addLine(to: parent[2].coordinates)
@@ -1450,7 +1450,7 @@ class Triangle: Measure { // parent: point, point, point, (unit) distance
         if isRed {
             context.setStrokeColor(UIColor.red.cgColor)
         } else {
-            context.setStrokeColor(UIColor(hue:(CGFloat(7*index)/24.0), saturation: 1.0, brightness: 1.0, alpha: 0.5).cgColor)
+            context.setStrokeColor(UIColor(hue:(CGFloat(3*index)/22.0), saturation: 1.0, brightness: 1.0, alpha: 0.5).cgColor)
         }
         context.setLineWidth(2.0)
         let currentRect = CGRect(x: coordinates.x-4.0,y:coordinates.y-4.0,
@@ -1495,7 +1495,7 @@ class CircleArea: Measure { // parent: circle, (unit) distance
         parent[0].parent[1].showLabel=labels[1]
     }
     override func draw(_ context: CGContext, _ isRed: Bool) {
-        context.setFillColor(UIColor(hue:(CGFloat(7*index)/24.0), saturation: 1.0, brightness: 1.0, alpha: 0.25).cgColor)
+        context.setFillColor(UIColor(hue:(CGFloat(3*index)/22.0), saturation: 1.0, brightness: 1.0, alpha: 0.25).cgColor)
         let radius = sqrt(pow(parent[0].parent[0].coordinates.x-parent[0].parent[1].coordinates.x,2)+pow(parent[0].parent[0].coordinates.y-parent[0].parent[1].coordinates.y,2))
         let rect0 = CGRect(x: parent[0].coordinates.x-radius,
                            y: parent[0].coordinates.y-radius,
@@ -1505,7 +1505,7 @@ class CircleArea: Measure { // parent: circle, (unit) distance
         if isRed {
             context.setStrokeColor(UIColor.red.cgColor)
         } else {
-            context.setStrokeColor(UIColor(hue:(CGFloat(7*index)/24.0), saturation: 1.0, brightness: 1.0, alpha: 0.5).cgColor)
+            context.setStrokeColor(UIColor(hue:(CGFloat(3*index)/22.0), saturation: 1.0, brightness: 1.0, alpha: 0.5).cgColor)
         }
         context.setLineWidth(2.0)
         let currentRect = CGRect(x: coordinates.x-4.0,y:coordinates.y-4.0,
