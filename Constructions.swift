@@ -31,7 +31,7 @@ class Construction {
     let epsilon = 0.0000001
     var textString=""
     var canvasWidth = 200.0
-    let strokeWidth=3.0
+    let strokeWidth=1.5
     
     init(point: CGPoint, number: Int) {
         coordinates=point
@@ -91,7 +91,7 @@ class Point: Construction {                             // parents: []
             context.setFillColor(UIColor.clear.cgColor)
         }
         context.setStrokeColor(UIColor.yellow.cgColor)
-        context.setLineWidth(2.0)
+        context.setLineWidth(strokeWidth)
         let currentRect = CGRect(x: coordinates.x-6.0,y:coordinates.y-6.0,
                                  width: 12.0,
                                  height: 12.0).insetBy(dx: 1.0, dy: 1.0)
@@ -587,7 +587,7 @@ class Measure: Point {
         } else {
             context.setStrokeColor(UIColor.white.cgColor)
         }
-        context.setLineWidth(2.0)
+        context.setLineWidth(strokeWidth)
         let currentRect = CGRect(x: coordinates.x-4.0,y:coordinates.y-4.0,
                                  width: 8.0,
                                  height: 8.0)
@@ -867,7 +867,7 @@ class Cosine: Measure {
                 } else if type==TOOL6LINE0 || type==TOOL6LINE1 || type==TOOL6LINE2 {
                     context.setStrokeColor(UIColor.systemGreen.cgColor)
                 } else {
-                    context.setStrokeColor(UIColor.systemGray3.cgColor)
+                    context.setStrokeColor(UIColor.systemGray2.cgColor)
                 }
             }
             context.setLineWidth(strokeWidth)
@@ -914,7 +914,7 @@ class Segment: Line {                                                  // parent
         if isRed {
             context.setStrokeColor(UIColor.red.cgColor)
         } else {
-            context.setStrokeColor(UIColor.systemGray3.cgColor)
+            context.setStrokeColor(UIColor.systemGray2.cgColor)
         }
         context.setLineWidth(strokeWidth)
         context.move(to: CGPoint(x: parent[0].coordinates.x,y: parent[0].coordinates.y))
@@ -947,7 +947,7 @@ class Ray: Line {                                                  // parents: p
         if isRed {
             context.setStrokeColor(UIColor.red.cgColor)
         } else {
-            context.setStrokeColor(UIColor.systemGray3.cgColor)
+            context.setStrokeColor(UIColor.systemGray2.cgColor)
         }
         context.setLineWidth(strokeWidth)
         context.move(to: CGPoint(x: coordinates.x,y: coordinates.y))
@@ -1452,7 +1452,7 @@ class Triangle: Measure { // parent: point, point, point, (unit) distance
         } else {
             context.setStrokeColor(UIColor(hue:(CGFloat(3*index)/22.0), saturation: 1.0, brightness: 1.0, alpha: 0.5).cgColor)
         }
-        context.setLineWidth(2.0)
+        context.setLineWidth(strokeWidth)
         let currentRect = CGRect(x: coordinates.x-4.0,y:coordinates.y-4.0,
                                  width: 8.0,
                                  height: 8.0)
@@ -1507,7 +1507,7 @@ class CircleArea: Measure { // parent: circle, (unit) distance
         } else {
             context.setStrokeColor(UIColor(hue:(CGFloat(3*index)/22.0), saturation: 1.0, brightness: 1.0, alpha: 0.5).cgColor)
         }
-        context.setLineWidth(2.0)
+        context.setLineWidth(strokeWidth)
         let currentRect = CGRect(x: coordinates.x-4.0,y:coordinates.y-4.0,
                                  width: 8.0,
                                  height: 8.0)

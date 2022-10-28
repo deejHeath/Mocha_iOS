@@ -769,11 +769,8 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                         if !alreadyExists {
                             if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index && temp.parent[2].index==clickedList[2].index && temp.parent[3].index==clickedList[3].index {
                                 alreadyExists=true
-                                linkedList[i].isShown=true
                                 linkedList[i+1].isShown=true
-                                linkedList[i+2].isShown=true
                                 linkedList[i+3].isShown=true
-                                linkedList[i+4].isShown=true
                                 linkedList[i+5].isShown=true
                                 
                             }
