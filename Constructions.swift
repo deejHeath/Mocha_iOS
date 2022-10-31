@@ -1066,6 +1066,7 @@ class Ray: Line {                                                  // parents: p
                     isReal=true
                     temp0.update()
                     slope=temp0.slope
+                    coordinates=parent[0].coordinates
                 } else {
                     isReal=false
                     let point=CGPoint.zero
