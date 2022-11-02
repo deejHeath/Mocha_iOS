@@ -37,6 +37,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
     var numberOfMeasures=1
     var firstMove=true
     var pinchScale=1.0
+    var totalScaleFactor=1.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -99,12 +100,15 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         if gesture.state == .changed && whatToDo==scaleEverything {
             pinchScale=gesture.scale
             gesture.scale=1.0
-            for i in 0..<linkedList.count {
-                if linkedList[i].type>0 && linkedList[i].type<=PTonCIRCLE {
-                    update(object: linkedList[i], point: CGPoint(x: pinchScale*(linkedList[i].coordinates.x-canvas.frame.width/2.0)+canvas.frame.width/2.0,y: pinchScale*(linkedList[i].coordinates.y-canvas.frame.height/2.0)+canvas.frame.height/2.0))
-                } else if linkedList[i].type<DISTANCE {
-                    update(object: linkedList[i], point: linkedList[i].coordinates)
+            if (totalScaleFactor<32.0 && pinchScale>1.0) || (totalScaleFactor>0.03125 && pinchScale<1.0) {
+                for i in 0..<linkedList.count {
+                    if linkedList[i].type>0 && linkedList[i].type<=PTonCIRCLE {
+                        update(object: linkedList[i], point: CGPoint(x: pinchScale*(linkedList[i].coordinates.x-canvas.frame.width/2.0)+canvas.frame.width/2.0,y: pinchScale*(linkedList[i].coordinates.y-canvas.frame.height/2.0)+canvas.frame.height/2.0))
+                    } else if linkedList[i].type<DISTANCE {
+                        update(object: linkedList[i], point: linkedList[i].coordinates)
+                    }
                 }
+                totalScaleFactor*=pinchScale
             }
             canvas.update(constructions: linkedList, indices: clickedIndex)
             canvas.setNeedsDisplay()
