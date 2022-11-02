@@ -1482,10 +1482,14 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
             self.infoLabel.text = self.actionText[self.whatToDo]
             self.infoXLabel.text = self.actionText[self.whatToDo]
         }
+        if linkedList.count==0 {
+            totalScaleFactor=1.0
+        }
     }
     @IBAction func clearAllButtonPressed(_ sender: UIButton) {
         numberOfMeasures=1
         unitChosen=false
+        totalScaleFactor=1.0
         self.linkedList.removeAll()
         if self.whatToDo != makePoints && self.whatToDo != makeLines && self.whatToDo != makeSegments && self.whatToDo != makeRays && self.whatToDo != makeCircles && self.whatToDo != makeMidpoint {
             self.whatToDo=self.makeLines
