@@ -30,7 +30,7 @@ class Construction {
     let TOOL6LINE1 = -8, TOOL6LINE2 = -9, THREEptLINE = -10, SEGMENT = -11, RAY = -12
     let epsilon = 0.0000001
     var textString=""
-    var canvasWidth = 200.0
+    var canvasWidth = 200.0, canvasHeight = 200.0
     let strokeWidth=1.5
     
     init(point: CGPoint, number: Int) {
@@ -44,8 +44,9 @@ class Construction {
         coordinates=point
         index=number
     }
-    func update(width: CGFloat) {
+    func update(width: CGFloat, height: CGFloat) {
         canvasWidth = width
+        canvasHeight = height
     }
     func update(point: CGPoint) {
         coordinates=point
@@ -62,9 +63,6 @@ class Construction {
     func distance(_ point1: CGPoint,_ point2: CGPoint) -> Double {
         return sqrt(pow(point1.x-point2.x,2)+pow(point1.y-point2.y,2))
     }
-//    func setShown(_ x: Bool) {
-//        isShown = x
-//    }
 }
 
 class Point: Construction {                             // parents: []
@@ -105,7 +103,7 @@ class Point: Construction {                             // parents: []
         if showLabel {
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.alignment = .center
-            let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!, NSAttributedString.Key.foregroundColor: UIColor.white]
+            let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!, NSAttributedString.Key.foregroundColor: UIColor.yellow]
             let string = "\(character[index%24])\(index/24)"
             string.draw(with: CGRect(x: coordinates.x+8, y: coordinates.y+8, width: 50, height: 18), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
         }
@@ -810,92 +808,98 @@ class Cosine: Measure {
     
     
     
-    class Line: Construction {                                                  // parents: point, point
-        override init(ancestor: [Construction], point: CGPoint, number: Int) {  // (usually)
-            let point0=ancestor[0].coordinates                                  // the first must be a
-            super.init(ancestor: ancestor, point: point0, number: number)       // point
-            update()
-            type=LINE
-            index=number
-        }
-        func normalizeSlope() {
-            let ds=sqrt(pow(slope.x,2)+pow(slope.y,2))
-            if ds < epsilon {
-                isReal=false
+class Line: Construction {                                                  // parents: point, point
+    override init(ancestor: [Construction], point: CGPoint, number: Int) {  // (usually)
+        let point0=ancestor[0].coordinates                                  // the first must be a
+        super.init(ancestor: ancestor, point: point0, number: number)       // point
+        update()
+        type=LINE
+        index=number
+    }
+    func normalizeSlope() {
+        let ds=sqrt(pow(slope.x,2)+pow(slope.y,2))
+        if ds < epsilon {
+            isReal=false
+        } else {
+            isReal=true
+            if slope.x<0 {
+                slope = CGPoint(x: -slope.x/ds, y: -slope.y/ds)
             } else {
-                isReal=true
-                if slope.x<0 {
-                    slope = CGPoint(x: -slope.x/ds, y: -slope.y/ds)
-                } else {
-                    slope = CGPoint(x: slope.x/ds, y: slope.y/ds)
-                }
-            }
-        }
-        override func distance(_ point: CGPoint) -> Double {
-            if isReal {
-                let x1 = parent[0].coordinates.x, y1=parent[0].coordinates.y
-                let sx = slope.x, sy=slope.y
-                let x0=point.x, y0=point.y
-                if sx*sx+sy*sy < epsilon {
-                    isReal=false
-                    return 1024
-                } else {
-                    isReal=true
-                    return sqrt((sx*y0-sx*y1-sy*x0+sy*x1)*(sx*y0-sx*y1-sy*x0+sy*x1)/(sx*sx+sy*sy))
-                }
-            } else {
-                return 1024
-            }
-        }
-        func update(){
-            if !parent[0].isReal || !parent[1].isReal {
-                isReal=false
-            } else {
-                isReal=true
-                coordinates=parent[0].coordinates
-                slope=CGPoint(x: coordinates.x-parent[1].coordinates.x,y: coordinates.y-parent[1].coordinates.y)
-                normalizeSlope()
-            }
-            
-        }
-        override func draw(_ context: CGContext,_ isRed: Bool) {
-            if isRed {
-                context.setStrokeColor(UIColor.red.cgColor)
-            } else {
-                if type==BISECTOR0 || type==BISECTOR1 {
-                    context.setStrokeColor(UIColor.blue.cgColor)
-                } else if type==TOOL6LINE0 || type==TOOL6LINE1 || type==TOOL6LINE2 {
-                    context.setStrokeColor(UIColor.systemGreen.cgColor)
-                } else {
-                    context.setStrokeColor(UIColor.systemGray2.cgColor)
-                }
-            }
-            context.setLineWidth(strokeWidth)
-            context.move(to: CGPoint(x: coordinates.x+65536*slope.x,y: coordinates.y+65536*slope.y))
-            context.addLine(to: CGPoint(x: coordinates.x-65536*slope.x,y: coordinates.y-65536*slope.y))
-            context.strokePath()
-            if showLabel {
-                let paragraphStyle = NSMutableParagraphStyle()
-                paragraphStyle.alignment = .center
-                let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!, NSAttributedString.Key.foregroundColor: UIColor.white]
-                let string = "\(character[index%24])\(index/24)"
-                var xx=10.0, yy=10.0
-                if abs(slope.x)>epsilon {
-                    if coordinates.y+slope.y/slope.x*(20-coordinates.x)>20 && coordinates.y+slope.y/slope.x*(20-coordinates.x)<520 {
-                        xx=20-slope.y*20
-                        yy=coordinates.y+slope.y/slope.x*(10-coordinates.x)+slope.x*20
-                    } else if coordinates.y+slope.y/slope.x*(canvasWidth-40-coordinates.x)>20 && coordinates.y+slope.y/slope.x*(canvasWidth-40-coordinates.x)<520 {
-                        xx=canvasWidth-40-slope.y*20
-                        yy=coordinates.y+slope.y/slope.x*(canvasWidth-40-coordinates.x)+slope.x*20
-                    } else if abs(slope.y)>epsilon {
-                        xx=coordinates.x-slope.x/slope.y*(coordinates.y-20)-slope.y*20
-                        yy=10+slope.x*20
-                    }
-                    string.draw(with: CGRect(x: xx, y: yy+10, width: 50, height: 18), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
-                }
+                slope = CGPoint(x: slope.x/ds, y: slope.y/ds)
             }
         }
     }
+    override func distance(_ point: CGPoint) -> Double {
+        if isReal {
+            let x1 = parent[0].coordinates.x, y1=parent[0].coordinates.y
+            let sx = slope.x, sy=slope.y
+            let x0=point.x, y0=point.y
+            if sx*sx+sy*sy < epsilon {
+                isReal=false
+                return 1024
+            } else {
+                isReal=true
+                return sqrt((sx*y0-sx*y1-sy*x0+sy*x1)*(sx*y0-sx*y1-sy*x0+sy*x1)/(sx*sx+sy*sy))
+            }
+        } else {
+            return 1024
+        }
+    }
+    func update(){
+        if !parent[0].isReal || !parent[1].isReal {
+            isReal=false
+        } else {
+            isReal=true
+            coordinates=parent[0].coordinates
+            slope=CGPoint(x: coordinates.x-parent[1].coordinates.x,y: coordinates.y-parent[1].coordinates.y)
+            normalizeSlope()
+        }
+        
+    }
+    override func draw(_ context: CGContext,_ isRed: Bool) {
+        if isRed {
+            context.setStrokeColor(UIColor.red.cgColor)
+        } else {
+            if type==BISECTOR0 || type==BISECTOR1 {
+                context.setStrokeColor(UIColor.blue.cgColor)
+            } else if type==TOOL6LINE0 || type==TOOL6LINE1 || type==TOOL6LINE2 {
+                context.setStrokeColor(UIColor.systemGreen.cgColor)
+            } else {
+                context.setStrokeColor(UIColor.systemGray2.cgColor)
+            }
+        }
+        context.setLineWidth(strokeWidth)
+        context.move(to: CGPoint(x: coordinates.x+65536*slope.x,y: coordinates.y+65536*slope.y))
+        context.addLine(to: CGPoint(x: coordinates.x-65536*slope.x,y: coordinates.y-65536*slope.y))
+        context.strokePath()
+        if showLabel {
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.alignment = .center
+            var attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!, NSAttributedString.Key.foregroundColor: UIColor.white]
+            if type==BISECTOR0 || type==BISECTOR1 {
+                attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!, NSAttributedString.Key.foregroundColor: UIColor.systemBlue]
+            }
+            if type==TOOL6LINE0 || type==TOOL6LINE1 || type==TOOL6LINE2 {
+                attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!, NSAttributedString.Key.foregroundColor: UIColor.systemGreen]
+            }
+            let string = "\(character[index%24])\(index/24)"
+            var xx=10.0, yy=10.0
+            if abs(slope.x)>epsilon {
+                if coordinates.y+slope.y/slope.x*(20-coordinates.x)>20 && coordinates.y+slope.y/slope.x*(20-coordinates.x)<canvasHeight-40 {
+                    xx=20-slope.y*10
+                    yy=coordinates.y+slope.y/slope.x*(20-coordinates.x)+slope.x*0
+                } else if coordinates.y+slope.y/slope.x*(canvasWidth-40-coordinates.x)>20 && coordinates.y+slope.y/slope.x*(canvasWidth-40-coordinates.x)<canvasHeight-40 {
+                    xx=canvasWidth-40-slope.y*10
+                    yy=coordinates.y+slope.y/slope.x*(canvasWidth-40-coordinates.x)+slope.x*0
+                } else if abs(slope.y)>epsilon {
+                    xx=coordinates.x-slope.x/slope.y*(coordinates.y-20)-slope.y*10
+                    yy=10+slope.x*0
+                }
+                string.draw(with: CGRect(x: xx, y: yy+10, width: 50, height: 18), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+            }
+        }
+    }
+}
 
 class Segment: Line {                                                  // parents: point, point
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  // (usually)

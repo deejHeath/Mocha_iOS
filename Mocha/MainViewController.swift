@@ -543,6 +543,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                     case makeRays: linkedList.append(Ray(ancestor: clickedList, point: location, number: linkedList.count))
                         break
                     case makeLines: linkedList.append(Line(ancestor: clickedList, point: location, number: linkedList.count))
+                        linkedList[linkedList.count-1].update(width: canvas.frame.width, height: canvas.frame.height)
                         break
                     case makeCircles: linkedList.append(Circle(ancestor: clickedList, point: location, number: linkedList.count))
                         break
@@ -620,8 +621,10 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                 if !alreadyExists {
                     switch whatToDo {
                     case makePerps: linkedList.append(PerpLine(ancestor: newList, point: location, number: linkedList.count))
+                        linkedList[linkedList.count-1].update(width: canvas.frame.width, height: canvas.frame.height)
                         break
                     case makeParallels: linkedList.append(ParallelLine(ancestor: newList, point: location, number: linkedList.count))
+                        linkedList[linkedList.count-1].update(width: canvas.frame.width, height: canvas.frame.height)
                         break
                     default: linkedList.append(FoldedPoint(ancestor: newList, point: location, number: linkedList.count))
                         break
@@ -719,9 +722,9 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                     linkedList[linkedList.count-1].isShown=false
                     clickedList.insert(linkedList[linkedList.count-1], at: 0)
                     linkedList.append(Bisector0(ancestor: clickedList, point: location, number: linkedList.count))
-                    linkedList[linkedList.count-1].update(width: canvas.frame.width)
+                    linkedList[linkedList.count-1].update(width: canvas.frame.width, height: canvas.frame.height)
                     linkedList.append(Bisector1(ancestor: clickedList, point: location, number: linkedList.count))
-                    linkedList[linkedList.count-1].update(width: canvas.frame.width)
+                    linkedList[linkedList.count-1].update(width: canvas.frame.width, height: canvas.frame.height)
                     clearAllPotentials()
                 }
             }
@@ -747,7 +750,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                 }
                 if !alreadyExists {
                     linkedList.append(ThreePointLine(ancestor: clickedList, point: location, number: linkedList.count))
-                    linkedList[linkedList.count-1].update(width: canvas.frame.width)
+                    linkedList[linkedList.count-1].update(width: canvas.frame.width, height: canvas.frame.height)
                     clickedList.append(linkedList[linkedList.count-1])
                     linkedList.append(ThreePointCircleCntr(ancestor: clickedList, point: location, number: linkedList.count))
                     linkedList[linkedList.count-1].isShown=false
@@ -787,15 +790,18 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                     clickedList.removeAll()
                     clickedList.append(linkedList[linkedList.count-1])
                     linkedList.append(Tool6Line0(ancestor: clickedList, point: location, number: linkedList.count))
+                    linkedList[linkedList.count-1].update(width: canvas.frame.width, height: canvas.frame.height)
                     linkedList.append(Tool6Point1(ancestor: clickedList, point: location, number: linkedList.count))
                     linkedList[linkedList.count-1].isShown=false
                     clickedList.insert(linkedList[linkedList.count-1], at: 0)
                     linkedList.append(Tool6Line1(ancestor: clickedList, point: location, number: linkedList.count))
+                    linkedList[linkedList.count-1].update(width: canvas.frame.width, height: canvas.frame.height)
                     clickedList.remove(at: 0)
                     linkedList.append(Tool6Point2(ancestor: clickedList, point: location, number: linkedList.count))
                     linkedList[linkedList.count-1].isShown=false
                     clickedList.insert(linkedList[linkedList.count-1], at: 0)
                     linkedList.append(Tool6Line2(ancestor: clickedList, point: location, number: linkedList.count))
+                    linkedList[linkedList.count-1].update(width: canvas.frame.width, height: canvas.frame.height)
 
                 }
                 clearAllPotentials()
@@ -1320,7 +1326,6 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         clickedIndex.removeAll()
         clickedList.removeAll()
     }
-    
     func setActiveConstruct(_ i: Int) {
         activeConstruct=true
         potentialClick=linkedList[i]
