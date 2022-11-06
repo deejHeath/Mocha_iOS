@@ -171,19 +171,13 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                 potentialClick=nil
             }
             break
-        case makeBisectors:
+        case foldPoints, makePerps, makeParallels, makeBisectors:
             getLine(location)
             if !activeConstruct {
                 potentialClick=nil
             }
             break
-        case foldPoints, makePerps, makeParallels:
-            getLine(location)
-            if !activeConstruct {
-                potentialClick=nil
-            }
-            break
-        case invertPoints:
+        case invertPoints, measureCircArea:
             getCircle(location)
             if !activeConstruct {
                 potentialClick=nil
@@ -210,12 +204,6 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
             break
         case measureRatio, measureSum, measureProduct, measureDifference, measureSine, measureCosine:
             getMeasure(location)
-            if !activeConstruct {
-                potentialClick=nil
-            }
-            break
-        case measureCircArea:
-            getCircle(location)
             if !activeConstruct {
                 potentialClick=nil
             }
@@ -323,7 +311,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                 getLine(location)
             }
             break
-        case foldPoints, makePerps, makeParallels:
+        case foldPoints, makePerps, makeParallels,invertPoints:
             if firstMove {
                 firstMove=false
             } else if clickedList.count>0 {
@@ -343,7 +331,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                 clickedIndex.removeLast()
             }
             if clickedList.count==1 {
-                getPointOrLineOrCircleAllowingRepeatLines(location)
+                getPointOrLineOrCircleAllowingRepeatConstructions(location)
                 if activeConstruct {
                     if clickedList[clickedList.count-1].type>0 {
                         newPoint=false
@@ -371,56 +359,11 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                     break
                 case makeParallels: linkedList.append(ParallelLine(ancestor: newList, point: location, number: linkedList.count))
                     break
+                case invertPoints: linkedList.append(InvertedPoint(ancestor: newList, point: location, number: linkedList.count))
+                    break
                 default: linkedList.append(FoldedPoint(ancestor: newList, point: location, number: linkedList.count))
                     break
                 }
-                setActiveConstruct(linkedList.count-1)
-            }
-            break
-        case invertPoints:
-            if firstMove {
-                firstMove=false
-            } else if clickedList.count>0 {
-                linkedList.removeLast() // remove temporary segment
-                clickedList.removeLast()
-                clickedIndex.removeLast()
-                if newPoint {
-                    linkedList.removeLast() // remove temporary point
-                    clickedList.removeLast()
-                    clickedIndex.removeLast()
-                    newPoint=false
-                }
-            }
-            activeConstruct=false
-            while clickedList.count>1 {
-                clickedList.removeLast()
-                clickedIndex.removeLast()
-            }
-            if clickedList.count==1 {
-                getPointOrLineOrCircleAllowingRepeatCircles(location)
-                if activeConstruct {
-                    if clickedList[clickedList.count-1].type>0 {
-                        newPoint=false
-                    } else if clickedList[clickedList.count-1].type<0 {
-                        newPoint=true
-                        linkedList.append(PointOnLine(ancestor: [clickedList[clickedList.count-1]], point: location, number: linkedList.count))
-                        clickedList.remove(at: 1)
-                        clickedIndex.remove(at: 1)
-                        setActiveConstruct(linkedList.count-1)
-                    } else {
-                        newPoint=true
-                        linkedList.append(PointOnCircle(ancestor: [clickedList[clickedList.count-1]], point: location, number: linkedList.count))
-                        clickedList.remove(at: 1)
-                        clickedIndex.remove(at: 1)
-                        setActiveConstruct(linkedList.count-1)
-                    }
-                } else {
-                    newPoint=true
-                    linkedList.append(Point(ancestor: [], point: location, number: linkedList.count))
-                    setActiveConstruct(linkedList.count-1)
-                }
-                let newList = [clickedList[1],clickedList[0]]
-                linkedList.append(InvertedPoint(ancestor: newList, point: location, number: linkedList.count))
                 setActiveConstruct(linkedList.count-1)
             }
             break
@@ -559,7 +502,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
             clearAllPotentials()
             clearActives()
             break
-        case makePerps,makeParallels,foldPoints:
+        case makePerps,makeParallels,foldPoints,invertPoints:
             if firstMove {
                 firstMove=false
             } else if clickedList.count>0 {
@@ -579,7 +522,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                 clickedIndex.removeLast()
             }
             if clickedList.count==1 {
-                getPointOrLineOrCircleAllowingRepeatLines(location)
+                getPointOrLineOrCircleAllowingRepeatConstructions(location)
                 if activeConstruct {
                     if clickedList[clickedList.count-1].type>0 {
                         newPoint=false
@@ -626,73 +569,14 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                     case makeParallels: linkedList.append(ParallelLine(ancestor: newList, point: location, number: linkedList.count))
                         linkedList[linkedList.count-1].update(width: canvas.frame.width, height: canvas.frame.height)
                         break
+                    case invertPoints:linkedList.append(InvertedPoint(ancestor: newList, point: location, number: linkedList.count))
+                        break
                     default: linkedList.append(FoldedPoint(ancestor: newList, point: location, number: linkedList.count))
                         break
                     }
                 }
                 if newPoint && alreadyExists {
                     linkedList.removeLast()
-                }
-            }
-            clearAllPotentials()
-            clearActives()
-            break
-        case invertPoints:
-            if firstMove {
-                firstMove=false
-            } else if clickedList.count>0 {
-                linkedList.removeLast() // remove temporary segment
-                clickedList.removeLast()
-                clickedIndex.removeLast()
-                if newPoint {
-                    linkedList.removeLast() // remove temporary point
-                    clickedList.removeLast()
-                    clickedIndex.removeLast()
-                    newPoint=false
-                }
-            }
-            activeConstruct=false
-            while clickedList.count>1 {
-                clickedList.removeLast()
-                clickedIndex.removeLast()
-            }
-            if clickedList.count==1 {
-                getPointOrLineOrCircleAllowingRepeatCircles(location)
-                if activeConstruct {
-                    if clickedList[clickedList.count-1].type>0 {
-                        newPoint=false
-                    } else if clickedList[clickedList.count-1].type<0 {
-                        newPoint=true
-                        linkedList.append(PointOnLine(ancestor: [clickedList[clickedList.count-1]], point: location, number: linkedList.count))
-                        clickedList.remove(at: 1)
-                        clickedIndex.remove(at: 1)
-                        setActiveConstruct(linkedList.count-1)
-                    } else {
-                        newPoint=true
-                        linkedList.append(PointOnCircle(ancestor: [clickedList[clickedList.count-1]], point: location, number: linkedList.count))
-                        clickedList.remove(at: 1)
-                        clickedIndex.remove(at: 1)
-                        setActiveConstruct(linkedList.count-1)
-                    }
-                } else {
-                    newPoint=true
-                    linkedList.append(Point(ancestor: [], point: location, number: linkedList.count))
-                    setActiveConstruct(linkedList.count-1)
-                }
-                var alreadyExists=false
-                if clickedList.count==2 {
-                    for i in 0..<linkedList.count {
-                        if !alreadyExists && linkedList[i].type==INVERTedPT {
-                            if linkedList[i].parent[0].index==clickedList[1].index && linkedList[i].parent[1].index==clickedList[0].index {
-                                alreadyExists=true
-                                linkedList[i].isShown=true
-                            }
-                        }
-                    }
-                }
-                let newList = [clickedList[1],clickedList[0]]
-                if !alreadyExists {
-                    linkedList.append(InvertedPoint(ancestor: newList, point: location, number: linkedList.count))
                 }
             }
             clearAllPotentials()
@@ -1231,7 +1115,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
             getLineOrCircle(location)
         }
     }
-    func getPointOrLineOrCircleAllowingRepeatLines(_ location: CGPoint) {
+    func getPointOrLineOrCircleAllowingRepeatConstructions(_ location: CGPoint) {
         getPoint(location)
         if !activeConstruct {
             for i in 0..<linkedList.count {
@@ -1243,18 +1127,18 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
             }
         }
     }
-    func getPointOrLineOrCircleAllowingRepeatCircles(_ location: CGPoint) {
-        getPoint(location)
-        if !activeConstruct {
-            for i in 0..<linkedList.count {
-                if distance(linkedList[i],location)<touchSense && !activeConstruct && linkedList[i].isShown && linkedList[i].isReal {
-                    if linkedList[i].type == 0 {
-                        setActiveConstruct(i)
-                    }
-                }
-            }
-        }
-    }
+//    func getPointOrLineOrCircleAllowingRepeatCircles(_ location: CGPoint) {
+//        getPoint(location)
+//        if !activeConstruct {
+//            for i in 0..<linkedList.count {
+//                if distance(linkedList[i],location)<touchSense && !activeConstruct && linkedList[i].isShown && linkedList[i].isReal {
+//                    if linkedList[i].type == 0 {
+//                        setActiveConstruct(i)
+//                    }
+//                }
+//            }
+//        }
+//    }
     func getRidOfActivesThatAreTooFar(_ location: CGPoint) {
         if activeConstruct {
             if let temp = potentialClick as? Point {
