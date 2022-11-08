@@ -637,7 +637,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                     linkedList[linkedList.count-1].update(width: canvas.frame.width, height: canvas.frame.height)
                     clickedList.append(linkedList[linkedList.count-1])
                     linkedList.append(ThreePointCircleCntr(ancestor: clickedList, point: location, number: linkedList.count))
-                    linkedList[linkedList.count-1].isShown=false
+                    //linkedList[linkedList.count-1].isShown=false
                     let temp=clickedList[0]
                     clearAllPotentials()
                     clickedList.append(linkedList[linkedList.count-1])

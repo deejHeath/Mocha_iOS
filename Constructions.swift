@@ -547,7 +547,7 @@ class BisectorPoint: Point {                                                // p
                     if abs(sx0*sy1-sx1*sy0)<epsilon {           // if the two lines are parallel
                         let temp0 = PerpLine(ancestor: [p0.parent[0],p1], point: p1.coordinates, number: 0)
                         let temp1 = LineIntLine(ancestor: [temp0,p1], point: p1.coordinates, number: 1)
-                        let temp2 = MidPoint(ancestor: [p0.parent[0],temp1], point: temp1.coordinates, number: MIDPOINT)
+                        let temp2 = MidPoint(ancestor: [p0.parent[0],temp1], point: temp1.coordinates, number: 2)
                         coordinates=temp2.coordinates
                         
                     } else {                                    // otherwise they intersect
