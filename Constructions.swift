@@ -644,9 +644,9 @@ class Distance: Measure {       // parents: point, point (for unit distance), or
 class Angle: Measure {
     override init(ancestor: [Construction], point: CGPoint, number: Int) {
         super.init(ancestor: ancestor,point: point, number: number)
-        type = DISTANCE
+        type = ANGLE
         index=number
-        value=sqrt(pow(parent[0].coordinates.x-parent[2].coordinates.x,2)+pow(parent[0].coordinates.y-parent[2].coordinates.y,2))
+        update(point: point);
         parent[0].showLabel=true
         parent[1].showLabel=true
         parent[2].showLabel=true
