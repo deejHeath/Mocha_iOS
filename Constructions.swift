@@ -1166,6 +1166,7 @@ class Bisector1: Line {                                                // parent
     
 class Tool6Point0: Point {                   // parents: point, point, line, line
     var points=[CGPoint.zero,CGPoint.zero,CGPoint.zero]
+    //var lastPoints=[CGPoint.zero,CGPoint.zero,CGPoint.zero]
     var lastSlopes=[CGPoint.zero,CGPoint.zero,CGPoint.zero]
     var slopes=[CGPoint.zero,CGPoint.zero,CGPoint.zero]
     var reals=[true,true,true]
@@ -1177,7 +1178,6 @@ class Tool6Point0: Point {                   // parents: point, point, line, lin
         index=number
         update()
     }
-    
     func update() {
         if parent[0].isReal && parent[1].isReal && parent[2].isReal && parent[3].isReal {
             let point0=parent[0].coordinates, point1=parent[1].coordinates
@@ -1195,69 +1195,39 @@ class Tool6Point0: Point {                   // parents: point, point, line, lin
             for i in 0..<3 {
                 if i<mySolutions.count {
                     reals[i]=true
-                    let my=mySolutions[i].real
-                    points[i]=CGPoint(x: 0.0,y: (((y0+y2)*sx2+sy2*(x0-x2))*mx*mx-2*my*(sx2*x0-sy2*y0)*mx-my*my*((y0-y2)*sx2+sy2*(x0+x2)))/(2*mx*(mx*sx2+my*sy2)))
-                    slopes[i]=CGPoint(x: 1.0, y: my)
+                    let imaginaryPart=mySolutions[i].imaginary;
+                    if abs(imaginaryPart)>0.0 {
+                        reals[i]=false
+                    } //else {
+                        let my=mySolutions[i].real
+                        points[i]=CGPoint(x: 0.0,y: (((y0+y2)*sx2+sy2*(x0-x2))*mx*mx-2*my*(sx2*x0-sy2*y0)*mx-my*my*((y0-y2)*sx2+sy2*(x0+x2)))/(2*mx*(mx*sx2+my*sy2)))
+                        slopes[i]=CGPoint(x: 1.0, y: my)
+                    //}
                 } else {
                     reals[i]=false
                 }
             }
             coordinates=points[0]
         }
-        // Next we need to check whether we should permute the points based on their proximity to lastPoints.
-        // However, we need to do this based off lastSlopes, since the distance is huge when the slope changes
-        // from close to negative pi/2 to close to pi/2...
+        // Next we need to check whether we should permute the points/slopes based on their proximity to lastSlopes.
+        
         var s = [CGPoint.zero,CGPoint.zero,CGPoint.zero]
         var ls = [CGPoint.zero,CGPoint.zero,CGPoint.zero]
-        for i in 0..<3 {
-            s[i]=CGPoint(x: cos(2*atan2(slopes[i].x,slopes[i].y)),y: sin(2*atan2(slopes[i].x,slopes[i].y)))
-            ls[i]=CGPoint(x: cos(2*atan2(lastSlopes[i].x,lastSlopes[i].y)),y: sin(2*atan2(lastSlopes[i].x,lastSlopes[i].y)))
-        }
-        if pow(s[0].x-ls[0].x,2)+pow(s[0].y-ls[0].y,2)+pow(s[1].x-ls[1].x,2)+pow(s[1].y-ls[1].y,2) > pow(s[0].x-ls[1].x,2)+pow(s[0].y-ls[1].y,2)+pow(s[1].x-ls[0].x,2)+pow(s[1].y-ls[0].y,2) {
-            let temp0=points[0], temp1=slopes[0], temp2=reals[0]
-            points[0]=points[1]
-            slopes[0]=slopes[1]
-            reals[0]=reals[1]
-            points[1]=temp0
-            slopes[1]=temp1
-            reals[1]=temp2
-        }
-        for i in 0..<3 {
-            s[i]=CGPoint(x: cos(2*atan2(slopes[i].x,slopes[i].y)),y: sin(2*atan2(slopes[i].x,slopes[i].y)))
-            ls[i]=CGPoint(x: cos(2*atan2(lastSlopes[i].x,lastSlopes[i].y)),y: sin(2*atan2(lastSlopes[i].x,lastSlopes[i].y)))
-        }
-        if pow(s[1].x-ls[1].x,2)+pow(s[1].y-ls[1].y,2)+pow(s[2].x-ls[2].x,2)+pow(s[2].y-ls[2].y,2) > pow(s[1].x-ls[2].x,2)+pow(s[1].y-ls[2].y,2)+pow(s[2].x-ls[1].x,2)+pow(s[2].y-ls[1].y,2)  {
-            let temp0=points[2], temp1=slopes[2], temp2=reals[2]
-            points[2]=points[1]
-            slopes[2]=slopes[1]
-            reals[2]=reals[1]
-            points[1]=temp0
-            slopes[1]=temp1
-            reals[1]=temp2
-        }
-        for i in 0..<3 {
-            s[i]=CGPoint(x: cos(2*atan2(slopes[i].x,slopes[i].y)),y: sin(2*atan2(slopes[i].x,slopes[i].y)))
-            ls[i]=CGPoint(x: cos(2*atan2(lastSlopes[i].x,lastSlopes[i].y)),y: sin(2*atan2(lastSlopes[i].x,lastSlopes[i].y)))
-        }
-        if pow(s[0].x-ls[0].x,2)+pow(s[0].y-ls[0].y,2)+pow(s[1].x-ls[1].x,2)+pow(s[1].y-ls[1].y,2) > pow(s[0].x-ls[1].x,2)+pow(s[0].y-ls[1].y,2)+pow(s[1].x-ls[0].x,2)+pow(s[1].y-ls[0].y,2)  {
-            let temp0=points[0], temp1=slopes[0], temp2=reals[0]
-            points[0]=points[1]
-            slopes[0]=slopes[1]
-            reals[0]=reals[1]
-            points[1]=temp0
-            slopes[1]=temp1
-            reals[1]=temp2
-        }
-        for i in 0..<3 {    // here we check to make sure the fold moves pt0 & pt1 to line2 & line3
-            if reals[i] {let temp=Point(point: points[i], number: 0)
-                let temp0=Point(point: CGPoint(x: points[i].x + slopes[i].x, y: points[i].y + slopes[i].y), number: 1)
-                let temp1=Line(ancestor: [temp,temp0], point: coordinates, number: 2)
-                let temp2=FoldedPoint(ancestor:[parent[0],temp1],point: parent[0].coordinates, number: 3)
-                let temp3=FoldedPoint(ancestor:[parent[1],temp1],point: parent[1].coordinates, number: 4)
-                if parent[2].distance(temp2.coordinates)+parent[3].distance(temp3.coordinates)>epsilon {
-                    reals[i]=false
-                } else {
-                    reals[i]=true
+        for i in 0...1 {
+            for j in i+1...2 {
+                s[i]=CGPoint(x: cos(2*atan2(slopes[i].x,slopes[i].y)),y: sin(2*atan2(slopes[i].x,slopes[i].y)))
+                ls[i]=CGPoint(x: cos(2*atan2(lastSlopes[i].x,lastSlopes[i].y)),y: sin(2*atan2(lastSlopes[i].x,lastSlopes[i].y)))
+                s[j]=CGPoint(x: cos(2*atan2(slopes[j].x,slopes[j].y)),y: sin(2*atan2(slopes[j].x,slopes[j].y)))
+                ls[j]=CGPoint(x: cos(2*atan2(lastSlopes[j].x,lastSlopes[j].y)),y: sin(2*atan2(lastSlopes[j].x,lastSlopes[j].y)))
+                if sqrt(pow(s[i].x-ls[i].x,2)+pow(s[i].y-ls[i].y,2)+pow(s[j].x-ls[j].x,2)+pow(s[j].y-ls[j].y,2)) >
+                    sqrt(pow(s[i].x-ls[j].x,2)+pow(s[i].y-ls[j].y,2)+pow(s[j].x-ls[i].x,2)+pow(s[j].y-ls[i].y,2)) {
+                    let temp0=points[i], temp1=slopes[i], temp2=reals[i]
+                    points[i]=points[j]
+                    slopes[i]=slopes[j]
+                    reals[i]=reals[j]
+                    points[j]=temp0
+                    slopes[j]=temp1
+                    reals[j]=temp2
                 }
             }
         }
@@ -1266,6 +1236,7 @@ class Tool6Point0: Point {                   // parents: point, point, line, lin
         for i in 0..<3 {
             if reals[i] {
                 lastSlopes[i]=slopes[i]
+                //lastPoints[i]=points[i]
             }
         }
     }
