@@ -1166,7 +1166,6 @@ class Bisector1: Line {                                                // parent
     
 class Tool6Point0: Point {                   // parents: point, point, line, line
     var points=[CGPoint.zero,CGPoint.zero,CGPoint.zero]
-    //var lastPoints=[CGPoint.zero,CGPoint.zero,CGPoint.zero]
     var lastSlopes=[CGPoint.zero,CGPoint.zero,CGPoint.zero]
     var slopes=[CGPoint.zero,CGPoint.zero,CGPoint.zero]
     var reals=[true,true,true]
@@ -1202,11 +1201,10 @@ class Tool6Point0: Point {                   // parents: point, point, line, lin
                     let my=mySolutions[i].real
                     if abs((((y0+y2)*sx2+sy2*(x0-x2))*mx*mx-2*my*(sx2*x0-sy2*y0)*mx-my*my*((y0-y2)*sx2+sy2*(x0+x2)))/(2*mx*(mx*sx2+my*sy2))) < 65536.0 {
                         points[i]=CGPoint(x: 0.0,y: (((y0+y2)*sx2+sy2*(x0-x2))*mx*mx-2*my*(sx2*x0-sy2*y0)*mx-my*my*((y0-y2)*sx2+sy2*(x0+x2)))/(2*mx*(mx*sx2+my*sy2)))
-                        slopes[i]=CGPoint(x: 1.0, y: my)
                     } else {
                         points[i]=CGPoint(x: (((y0-y2)*sx2+sy2*(x0+x2))*my*my+2*mx*(sx2*x0-sy2*y0)*my-((y0+y2)*sx2+sy2*(x0-x2))*mx*mx)/(2*my*(mx*sx2+my*sy2)),y: 0.0)
-                        slopes[i]=CGPoint(x: 1.0, y: my)
                     }
+                    slopes[i]=CGPoint(x: 1.0, y: my)
                 } else {
                     reals[i]=false
                 }
@@ -1239,7 +1237,6 @@ class Tool6Point0: Point {                   // parents: point, point, line, lin
         for i in 0..<3 {
             if reals[i] {
                 lastSlopes[i]=slopes[i]
-                //lastPoints[i]=points[i]
             }
         }
     }
