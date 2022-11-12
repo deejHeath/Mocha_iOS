@@ -49,7 +49,7 @@ class Construction {
         canvasHeight = height
     }
     func update(point: CGPoint) {
-        coordinates=point
+        coordinates = CGPoint(x: point.x,y: point.y)
     }
     func update(point: CGPoint, unitValue: Double) {
     }
@@ -1196,13 +1196,17 @@ class Tool6Point0: Point {                   // parents: point, point, line, lin
                 if i<mySolutions.count {
                     reals[i]=true
                     let imaginaryPart=mySolutions[i].imaginary;
-                    if abs(imaginaryPart)>0.0 {
-                        reals[i]=false
-                    } //else {
-                        let my=mySolutions[i].real
+                    if abs(imaginaryPart)>0.0 { // This solution isn't real.
+                        reals[i]=false          //
+                    }                           // Otherwise it is
+                    let my=mySolutions[i].real
+                    if abs((((y0+y2)*sx2+sy2*(x0-x2))*mx*mx-2*my*(sx2*x0-sy2*y0)*mx-my*my*((y0-y2)*sx2+sy2*(x0+x2)))/(2*mx*(mx*sx2+my*sy2))) < 65536.0 {
                         points[i]=CGPoint(x: 0.0,y: (((y0+y2)*sx2+sy2*(x0-x2))*mx*mx-2*my*(sx2*x0-sy2*y0)*mx-my*my*((y0-y2)*sx2+sy2*(x0+x2)))/(2*mx*(mx*sx2+my*sy2)))
                         slopes[i]=CGPoint(x: 1.0, y: my)
-                    //}
+                    } else {
+                        points[i]=CGPoint(x: (((y0-y2)*sx2+sy2*(x0+x2))*my*my+2*mx*(sx2*x0-sy2*y0)*my-((y0+y2)*sx2+sy2*(x0-x2))*mx*mx)/(2*my*(mx*sx2+my*sy2)),y: 0.0)
+                        slopes[i]=CGPoint(x: 1.0, y: my)
+                    }
                 } else {
                     reals[i]=false
                 }
@@ -1210,7 +1214,6 @@ class Tool6Point0: Point {                   // parents: point, point, line, lin
             coordinates=points[0]
         }
         // Next we need to check whether we should permute the points/slopes based on their proximity to lastSlopes.
-        
         var s = [CGPoint.zero,CGPoint.zero,CGPoint.zero]
         var ls = [CGPoint.zero,CGPoint.zero,CGPoint.zero]
         for i in 0...1 {

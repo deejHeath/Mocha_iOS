@@ -209,7 +209,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
             }
             break
         default:
-            print("touchesBegan \(location)")
+            break
         }
         canvas.update(constructions: linkedList, indices: clickedIndex)
         canvas.setNeedsDisplay()
@@ -398,7 +398,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
             getPointOrLineOrCircle(location)
             break
         default:
-            print("touchesMoved: \(location)")
+            break
         }
         canvas.update(constructions: linkedList, indices: clickedIndex)
         canvas.setNeedsDisplay()
@@ -637,7 +637,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                     linkedList[linkedList.count-1].update(width: canvas.frame.width, height: canvas.frame.height)
                     clickedList.append(linkedList[linkedList.count-1])
                     linkedList.append(ThreePointCircleCntr(ancestor: clickedList, point: location, number: linkedList.count))
-                    //linkedList[linkedList.count-1].isShown=false
+                    linkedList[linkedList.count-1].isShown=false
                     let temp=clickedList[0]
                     clearAllPotentials()
                     clickedList.append(linkedList[linkedList.count-1])
@@ -1029,7 +1029,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
             }
             break
         default:
-            print("touchesEnded: \(location)")
+            break
         }
         for object in linkedList {
             update(object: object, point: object.coordinates)
@@ -1127,18 +1127,6 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
             }
         }
     }
-//    func getPointOrLineOrCircleAllowingRepeatCircles(_ location: CGPoint) {
-//        getPoint(location)
-//        if !activeConstruct {
-//            for i in 0..<linkedList.count {
-//                if distance(linkedList[i],location)<touchSense && !activeConstruct && linkedList[i].isShown && linkedList[i].isReal {
-//                    if linkedList[i].type == 0 {
-//                        setActiveConstruct(i)
-//                    }
-//                }
-//            }
-//        }
-//    }
     func getRidOfActivesThatAreTooFar(_ location: CGPoint) {
         if activeConstruct {
             if let temp = potentialClick as? Point {
@@ -1216,7 +1204,6 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         clickedList.append(linkedList[i])
         clickedIndex.append(i)
     }
-    
     func update(object: Construction, point: CGPoint) {
         if let temp = object as? Distance {
             temp.update(point: point)
@@ -1298,7 +1285,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBAction func actionButtonPressed(_ sender: UIButton) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let creationController = storyboard.instantiateViewController(withIdentifier: "creation_VC") as! CreationViewController
-        creationController.view.backgroundColor = .white.withAlphaComponent(0.9)
+        creationController.view.backgroundColor = .white.withAlphaComponent(0.875)
         //creationController.modalPresentationStyle = .fullScreen
         creationController.completionHandler = {tag in
             self.whatToDo=tag
@@ -1314,7 +1301,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBAction func measureButtonPressed() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let measureController = storyboard.instantiateViewController(withIdentifier: "measure_VC") as! MeasureViewController
-        measureController.view.backgroundColor = .white.withAlphaComponent(0.9)
+        measureController.view.backgroundColor = .white.withAlphaComponent(0.875)
         //measureController.modalPresentationStyle = .fullScreen
         measureController.completionHandler = {tag in
             self.whatToDo=tag
