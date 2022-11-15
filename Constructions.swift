@@ -22,7 +22,7 @@ class Construction {
     let LINEintLINE = 5, FOLDedPT = 6, INVERTedPT=7
     let CIRCintCIRC0 = 8,CIRCintCIRC1 = 9, LINEintCIRC0 = 10, LINEintCIRC1 = 11
     let BiPOINT = 12, THREEptCIRCLEcntr=13
-    let TOOL6PT0 = 14, TOOL6PT1 = 15, TOOL6PT2 = 16, HIDDENthing = 17
+    let TOOL6PT0 = 14, TOOL6PT1 = 15, TOOL6PT2 = 16, HIDDENthing = 17, MOVedPT = 18
     let DISTANCE = 20, ANGLE = 21, TriAREA=22, CircAREA=23
     let SUM = 24, DIFFERENCE = 25, PRODUCT = 26, RATIO = 27, SINE=28, COSINE=29
     let CIRCLE = 0
@@ -1493,5 +1493,15 @@ class HiddenThing : Construction {
         super.init(ancestor: ancestor, point: point, number: number)
         type=HIDDENthing
         index=number
+    }
+}
+
+class MovedPoint : Construction {
+    var lastCoordinates = CGPoint.zero
+    override init(ancestor: [Construction], point: CGPoint, number: Int) {
+        super.init(ancestor: ancestor, point: point, number: number)
+        type=MOVedPT
+        index=number
+        lastCoordinates=point
     }
 }
