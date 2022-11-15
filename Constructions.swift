@@ -22,7 +22,7 @@ class Construction {
     let LINEintLINE = 5, FOLDedPT = 6, INVERTedPT=7
     let CIRCintCIRC0 = 8,CIRCintCIRC1 = 9, LINEintCIRC0 = 10, LINEintCIRC1 = 11
     let BiPOINT = 12, THREEptCIRCLEcntr=13
-    let TOOL6PT0 = 14, TOOL6PT1 = 15, TOOL6PT2 = 16
+    let TOOL6PT0 = 14, TOOL6PT1 = 15, TOOL6PT2 = 16, HIDDENthing = 17
     let DISTANCE = 20, ANGLE = 21, TriAREA=22, CircAREA=23
     let SUM = 24, DIFFERENCE = 25, PRODUCT = 26, RATIO = 27, SINE=28, COSINE=29
     let CIRCLE = 0
@@ -1175,7 +1175,6 @@ class Tool6Point0: Point {                   // parents: point, point, line, lin
         update()
         type=TOOL6PT0
         index=number
-        update()
     }
     func update() {
         if parent[0].isReal && parent[1].isReal && parent[2].isReal && parent[3].isReal {
@@ -1199,7 +1198,7 @@ class Tool6Point0: Point {                   // parents: point, point, line, lin
                         reals[i]=false          //
                     }                           // Otherwise it is
                     let my=mySolutions[i].real
-                    if abs((((y0+y2)*sx2+sy2*(x0-x2))*mx*mx-2*my*(sx2*x0-sy2*y0)*mx-my*my*((y0-y2)*sx2+sy2*(x0+x2)))/(2*mx*(mx*sx2+my*sy2))) < 65536.0 {
+                    if abs((((y0+y2)*sx2+sy2*(x0-x2))*mx*mx-2*my*(sx2*x0-sy2*y0)*mx-my*my*((y0-y2)*sx2+sy2*(x0+x2)))/(2*mx*(mx*sx2+my*sy2))) < 4096.0 {
                         points[i]=CGPoint(x: 0.0,y: (((y0+y2)*sx2+sy2*(x0-x2))*mx*mx-2*my*(sx2*x0-sy2*y0)*mx-my*my*((y0-y2)*sx2+sy2*(x0+x2)))/(2*mx*(mx*sx2+my*sy2)))
                     } else {
                         points[i]=CGPoint(x: (((y0-y2)*sx2+sy2*(x0+x2))*my*my+2*mx*(sx2*x0-sy2*y0)*my-((y0+y2)*sx2+sy2*(x0-x2))*mx*mx)/(2*my*(mx*sx2+my*sy2)),y: 0.0)
@@ -1486,5 +1485,13 @@ class CircleArea: Measure { // parent: circle, (unit) distance
         let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!, NSAttributedString.Key.foregroundColor: UIColor.white]
         let string = textString+" ≈ \(round(1000000*(value)+0.3)/1000000)"
         string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:350, height: 18), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+    }
+}
+
+class HiddenThing : Construction {
+    override init(ancestor: [Construction], point: CGPoint, number: Int) {
+        super.init(ancestor: ancestor, point: point, number: number)
+        type=HIDDENthing
+        index=number
     }
 }

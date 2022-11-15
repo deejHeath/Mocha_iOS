@@ -21,7 +21,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
     let LINEintLINE = 5, FOLDedPT = 6, INVERTedPT=7
     let CIRCintCIRC0 = 8,CIRCintCIRC1 = 9, LINEintCIRC0 = 10, LINEintCIRC1 = 11
     let BiPOINT = 12, THREEptCIRCLEcntr=13
-    let TOOL6PT0 = 14, TOOL6PT1 = 15, TOOL6PT2 = 16
+    let TOOL6PT0 = 14, TOOL6PT1 = 15, TOOL6PT2 = 16, HIDDENthing=17
     let DISTANCE = 20, ANGLE = 21, TriAREA=22, CircAREA=23
     let SUM = 24, DIFFERENCE = 25, PRODUCT = 26, RATIO = 27, SINE=28, COSINE=29
     let CIRCLE = 0
@@ -1014,6 +1014,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
             }
             if clickedList.count==1 {
                 linkedList[clickedIndex[0]].isShown=false
+                linkedList.append(HiddenThing(ancestor: clickedList, point: location, number: linkedList.count))
                 clearAllPotentials()
             }
             break
@@ -1329,6 +1330,9 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
             }
             if linkedList[linkedList.count-1].type>=DISTANCE {
                 numberOfMeasures-=1
+            }
+            if linkedList[linkedList.count-1].type==HIDDENthing {
+                linkedList[linkedList.count-1].parent[0].isShown=true
             }
             if linkedList.count>1 {
                 if linkedList[linkedList.count-2].type==THREEptCIRCLEcntr || linkedList[linkedList.count-1].type==BISECTOR1 {
