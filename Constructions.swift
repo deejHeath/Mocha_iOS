@@ -22,12 +22,12 @@ class Construction {
     let LINEintLINE = 5, FOLDedPT = 6, INVERTedPT=7
     let CIRCintCIRC0 = 8,CIRCintCIRC1 = 9, LINEintCIRC0 = 10, LINEintCIRC1 = 11
     let BiPOINT = 12, THREEptCIRCLEcntr=13
-    let TOOL6PT0 = 14, TOOL6PT1 = 15, TOOL6PT2 = 16, HIDDENthing = 17, MOVedPT = 18
+    let BELOCHpt0 = 14, BELOCHpt1 = 15, BELOCHpt2 = 16, HIDDENthing = 17, MOVedPT = 18
     let DISTANCE = 20, ANGLE = 21, TriAREA=22, CircAREA=23
     let SUM = 24, DIFFERENCE = 25, PRODUCT = 26, RATIO = 27, SINE=28, COSINE=29
     let CIRCLE = 0
-    let LINE = -1, PERP = -2, PARALLEL = -3, BISECTOR0 = -4, BISECTOR1 = -5, TOOL6LINE0 = -7
-    let TOOL6LINE1 = -8, TOOL6LINE2 = -9, THREEptLINE = -10, SEGMENT = -11, RAY = -12
+    let LINE = -1, PERP = -2, PARALLEL = -3, BISECTOR0 = -4, BISECTOR1 = -5, BELOCHline0 = -7
+    let BELOCHline1 = -8, BELOCHline2 = -9, THREEptLINE = -10, SEGMENT = -11, RAY = -12
     let epsilon = 0.0000001
     var textString=""
     var canvasWidth = 200.0, canvasHeight = 200.0
@@ -862,7 +862,7 @@ class Line: Construction {                                                  // p
         } else {
             if type==BISECTOR0 || type==BISECTOR1 {
                 context.setStrokeColor(UIColor.blue.cgColor)
-            } else if type==TOOL6LINE0 || type==TOOL6LINE1 || type==TOOL6LINE2 {
+            } else if type==BELOCHline0 || type==BELOCHline1 || type==BELOCHline2 {
                 context.setStrokeColor(UIColor.systemGreen.cgColor)
             } else {
                 context.setStrokeColor(UIColor.systemGray2.cgColor)
@@ -879,7 +879,7 @@ class Line: Construction {                                                  // p
             if type==BISECTOR0 || type==BISECTOR1 {
                 attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!, NSAttributedString.Key.foregroundColor: UIColor.systemBlue]
             }
-            if type==TOOL6LINE0 || type==TOOL6LINE1 || type==TOOL6LINE2 {
+            if type==BELOCHline0 || type==BELOCHline1 || type==BELOCHline2 {
                 attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!, NSAttributedString.Key.foregroundColor: UIColor.systemGreen]
             }
             let string = "\(character[index%24])\(index/24)"
@@ -1164,7 +1164,7 @@ class Bisector1: Line {                                                // parent
     }
 }
     
-class Tool6Point0: Point {                   // parents: point, point, line, line
+class BelochPoint0: Point {                   // parents: point, point, line, line
     var points=[CGPoint.zero,CGPoint.zero,CGPoint.zero]
     var lastSlopes=[CGPoint.zero,CGPoint.zero,CGPoint.zero]
     var slopes=[CGPoint.zero,CGPoint.zero,CGPoint.zero]
@@ -1173,7 +1173,7 @@ class Tool6Point0: Point {                   // parents: point, point, line, lin
         let point0=ancestor[0].coordinates
         super.init(ancestor: ancestor, point: point0, number: number)
         update()
-        type=TOOL6PT0
+        type=BELOCHpt0
         index=number
     }
     func update() {
@@ -1240,10 +1240,10 @@ class Tool6Point0: Point {                   // parents: point, point, line, lin
         }
     }
 }
-class Tool6Line0: Line {                                  // parents: point (T6P0)
+class BelochLine0: Line {                                  // parents: point (T6P0)
     override init(ancestor: [Construction], point: CGPoint, number: Int) {
         super.init(ancestor: ancestor, point: point, number: number)
-        if let temp = parent[0] as? Tool6Point0 {
+        if let temp = parent[0] as? BelochPoint0 {
             isReal=temp.reals[0]
             coordinates=temp.points[0]
             slope=temp.slopes[0]
@@ -1251,11 +1251,11 @@ class Tool6Line0: Line {                                  // parents: point (T6P
         } else {
             isReal=false
         }
-        type=TOOL6LINE0
+        type=BELOCHline0
         index=number
     }
     override func update() {
-        if let temp=parent[0] as? Tool6Point0 {
+        if let temp=parent[0] as? BelochPoint0 {
             coordinates=temp.points[0]
             slope=temp.slopes[0]
             isReal=temp.reals[0]
@@ -1266,22 +1266,22 @@ class Tool6Line0: Line {                                  // parents: point (T6P
         isReal = isReal && parent[0].isReal
     }
 }
-class Tool6Point1: Point {                                  // parents: point (T6P0)
+class BelochPoint1: Point {                                  // parents: point (T6P0)
     override init(ancestor: [Construction], point: CGPoint, number: Int) {
         super.init(ancestor: ancestor, point: point, number: number)
-        if let temp = parent[0] as? Tool6Point0 {
+        if let temp = parent[0] as? BelochPoint0 {
             isReal=temp.reals[1]
             coordinates=temp.points[1]
             slope=temp.slopes[1]
         } else {
             isReal=false
         }
-        type=TOOL6PT1
+        type=BELOCHpt1
         index=number
     }
     
     func update() {
-        if let temp=parent[0] as? Tool6Point0 {
+        if let temp=parent[0] as? BelochPoint0 {
             isReal=temp.reals[1]
             coordinates=temp.points[1]
             slope=temp.slopes[1]
@@ -1290,10 +1290,10 @@ class Tool6Point1: Point {                                  // parents: point (T
         }
     }
 }
-class Tool6Line1: Line {                                  // parents: T6P1, point T6P0
+class BelochLine1: Line {                                  // parents: T6P1, point T6P0
     override init(ancestor: [Construction], point: CGPoint, number: Int) {
         super.init(ancestor: ancestor, point: point, number: number)
-        if let temp = parent[0] as? Tool6Point1 {
+        if let temp = parent[0] as? BelochPoint1 {
             isReal=temp.isReal
             coordinates=temp.coordinates
             slope=temp.slope
@@ -1301,12 +1301,12 @@ class Tool6Line1: Line {                                  // parents: T6P1, poin
         } else {
             isReal=false
         }
-        type=TOOL6LINE1
+        type=BELOCHline1
         index=number
     }
     
     override func update() {
-        if let temp = parent[0] as? Tool6Point1 {
+        if let temp = parent[0] as? BelochPoint1 {
             isReal=temp.isReal
             coordinates=temp.coordinates
             slope=temp.slope
@@ -1317,22 +1317,22 @@ class Tool6Line1: Line {                                  // parents: T6P1, poin
         isReal = isReal && parent[0].isReal
     }
 }
-class Tool6Point2: Point {                                  // parents: point (T6P0)
+class BelochPoint2: Point {                                  // parents: point (T6P0)
     override init(ancestor: [Construction], point: CGPoint, number: Int) {
         super.init(ancestor: ancestor, point: point, number: number)
-        if let temp = parent[0] as? Tool6Point0 {
+        if let temp = parent[0] as? BelochPoint0 {
             isReal=temp.reals[2]
             coordinates=temp.points[2]
             slope=temp.slopes[2]
         } else {
             isReal=false
         }
-        type=TOOL6PT2
+        type=BELOCHpt2
         index=number
     }
     
     func update() {
-        if let temp=parent[0] as? Tool6Point0 {
+        if let temp=parent[0] as? BelochPoint0 {
             isReal=temp.reals[2]
             coordinates=temp.points[2]
             slope=temp.slopes[2]
@@ -1341,10 +1341,10 @@ class Tool6Point2: Point {                                  // parents: point (T
         }
     }
 }
-class Tool6Line2: Line {                                  // parents: T6P2, point T6P0
+class BelochLine2: Line {                                  // parents: T6P2, point T6P0
     override init(ancestor: [Construction], point: CGPoint, number: Int) {
         super.init(ancestor: ancestor, point: point, number: number)
-        if let temp = parent[0] as? Tool6Point2 {
+        if let temp = parent[0] as? BelochPoint2 {
             isReal=temp.isReal
             coordinates=temp.coordinates
             slope=temp.slope
@@ -1352,12 +1352,12 @@ class Tool6Line2: Line {                                  // parents: T6P2, poin
         } else {
             isReal=false
         }
-        type=TOOL6LINE2
+        type=BELOCHline2
         index=number
     }
     
     override func update() {
-        if let temp=parent[0] as? Tool6Point2 {
+        if let temp=parent[0] as? BelochPoint2 {
             isReal=temp.isReal
             coordinates=temp.coordinates
             slope=temp.slope
@@ -1496,12 +1496,12 @@ class HiddenThing : Construction {
     }
 }
 
-class MovedPoint : Construction {
-    var lastCoordinates = CGPoint.zero
-    override init(ancestor: [Construction], point: CGPoint, number: Int) {
-        super.init(ancestor: ancestor, point: point, number: number)
-        type=MOVedPT
-        index=number
-        lastCoordinates=point
-    }
-}
+//class MovedPoint : Construction {
+//    var lastCoordinates = CGPoint.zero
+//    override init(ancestor: [Construction], point: CGPoint, number: Int) {
+//        super.init(ancestor: ancestor, point: point, number: number)
+//        type=MOVedPT
+//        index=number
+//        lastCoordinates=point
+//    }
+//}

@@ -21,12 +21,12 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
     let LINEintLINE = 5, FOLDedPT = 6, INVERTedPT=7
     let CIRCintCIRC0 = 8,CIRCintCIRC1 = 9, LINEintCIRC0 = 10, LINEintCIRC1 = 11
     let BiPOINT = 12, THREEptCIRCLEcntr=13
-    let TOOL6PT0 = 14, TOOL6PT1 = 15, TOOL6PT2 = 16, HIDDENthing=17, MOVedPT=18
+    let BELOCHpt0 = 14, BELOCHpt1 = 15, BELOCHpt2 = 16, HIDDENthing=17, MOVedPT=18
     let DISTANCE = 20, ANGLE = 21, TriAREA=22, CircAREA=23
     let SUM = 24, DIFFERENCE = 25, PRODUCT = 26, RATIO = 27, SINE=28, COSINE=29
     let CIRCLE = 0
-    let LINE = -1, PERP = -2, PARALLEL = -3, BISECTOR0 = -4, BISECTOR1 = -5, TOOL6LINE0 = -7
-    let TOOL6LINE1 = -8, TOOL6LINE2 = -9, THREEptLINE = -10, SEGMENT = -11, RAY = -12
+    let LINE = -1, PERP = -2, PARALLEL = -3, BISECTOR0 = -4, BISECTOR1 = -5, BELOCHline0 = -7
+    let BELOCHline1 = -8, BELOCHline2 = -9, THREEptLINE = -10, SEGMENT = -11, RAY = -12
     private var whatToDo=7
     var firstTouch: CGPoint?
     var activeConstruct = false
@@ -141,7 +141,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                     linkedList.append(PointOnCircle(ancestor: clickedList, point: location, number: linkedList.count))
                     setActiveConstruct(linkedList.count-1)
                 } else {
-                    linkedList.append(MovedPoint(ancestor: clickedList, point: clickedList[0].coordinates, number: linkedList.count))
+                    //linkedList.append(MovedPoint(ancestor: clickedList, point: clickedList[0].coordinates, number: linkedList.count))
                 }
             }
             break
@@ -606,11 +606,15 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                 if !alreadyExists {
                     linkedList.append(BisectorPoint(ancestor: clickedList, point: location, number: linkedList.count))
                     linkedList[linkedList.count-1].isShown=false
+                    let i=linkedList.count-1
                     clickedList.insert(linkedList[linkedList.count-1], at: 0)
                     linkedList.append(Bisector0(ancestor: clickedList, point: location, number: linkedList.count))
                     linkedList[linkedList.count-1].update(width: canvas.frame.width, height: canvas.frame.height)
                     linkedList.append(Bisector1(ancestor: clickedList, point: location, number: linkedList.count))
                     linkedList[linkedList.count-1].update(width: canvas.frame.width, height: canvas.frame.height)
+                    clickedList.removeAll()
+                    clickedList.append(linkedList[i])
+                    linkedList.append(HiddenThing(ancestor: clickedList, point: location, number: linkedList.count))
                     clearAllPotentials()
                 }
             }
@@ -639,12 +643,16 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                     linkedList[linkedList.count-1].update(width: canvas.frame.width, height: canvas.frame.height)
                     clickedList.append(linkedList[linkedList.count-1])
                     linkedList.append(ThreePointCircleCntr(ancestor: clickedList, point: location, number: linkedList.count))
+                    var i=linkedList.count-1
                     linkedList[linkedList.count-1].isShown=false
                     let temp=clickedList[0]
                     clearAllPotentials()
                     clickedList.append(linkedList[linkedList.count-1])
                     clickedList.append(temp)
                     linkedList.append(Circle(ancestor: clickedList, point: location, number: linkedList.count))
+                    clickedList.removeAll()
+                    clickedList.append(linkedList[i]);
+                    linkedList.append(HiddenThing(ancestor: clickedList, point: location, number: linkedList.count))
                     clearAllPotentials()
                 }
             }
@@ -658,7 +666,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
             if clickedList.count==4 {
                 var alreadyExists=false
                 for i in 0..<linkedList.count {
-                    if let temp=linkedList[i] as? Tool6Point0 {
+                    if let temp=linkedList[i] as? BelochPoint0 {
                         if !alreadyExists {
                             if temp.parent[0].index == clickedList[0].index && temp.parent[1].index == clickedList[1].index && temp.parent[2].index==clickedList[2].index && temp.parent[3].index==clickedList[3].index {
                                 alreadyExists=true
@@ -671,22 +679,22 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                     }
                 }
                 if !alreadyExists {
-                    linkedList.append(Tool6Point0(ancestor: clickedList, point: location, number: linkedList.count))
+                    linkedList.append(BelochPoint0(ancestor: clickedList, point: location, number: linkedList.count))
                     linkedList[linkedList.count-1].isShown=false
                     clickedList.removeAll()
                     clickedList.append(linkedList[linkedList.count-1])
-                    linkedList.append(Tool6Line0(ancestor: clickedList, point: location, number: linkedList.count))
+                    linkedList.append(BelochLine0(ancestor: clickedList, point: location, number: linkedList.count))
                     linkedList[linkedList.count-1].update(width: canvas.frame.width, height: canvas.frame.height)
-                    linkedList.append(Tool6Point1(ancestor: clickedList, point: location, number: linkedList.count))
+                    linkedList.append(BelochPoint1(ancestor: clickedList, point: location, number: linkedList.count))
                     linkedList[linkedList.count-1].isShown=false
                     clickedList.insert(linkedList[linkedList.count-1], at: 0)
-                    linkedList.append(Tool6Line1(ancestor: clickedList, point: location, number: linkedList.count))
+                    linkedList.append(BelochLine1(ancestor: clickedList, point: location, number: linkedList.count))
                     linkedList[linkedList.count-1].update(width: canvas.frame.width, height: canvas.frame.height)
                     clickedList.remove(at: 0)
-                    linkedList.append(Tool6Point2(ancestor: clickedList, point: location, number: linkedList.count))
+                    linkedList.append(BelochPoint2(ancestor: clickedList, point: location, number: linkedList.count))
                     linkedList[linkedList.count-1].isShown=false
                     clickedList.insert(linkedList[linkedList.count-1], at: 0)
-                    linkedList.append(Tool6Line2(ancestor: clickedList, point: location, number: linkedList.count))
+                    linkedList.append(BelochLine2(ancestor: clickedList, point: location, number: linkedList.count))
                     linkedList[linkedList.count-1].update(width: canvas.frame.width, height: canvas.frame.height)
 
                 }
@@ -1254,11 +1262,11 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
             temp.update()
         } else if let temp = object as? BisectorPoint {
             temp.update()
-        } else if let temp = object as? Tool6Point0 {
+        } else if let temp = object as? BelochPoint0 {
             temp.update()
-        } else if let temp = object as? Tool6Point1 {
+        } else if let temp = object as? BelochPoint1 {
             temp.update()
-        } else if let temp = object as? Tool6Point2 {
+        } else if let temp = object as? BelochPoint2 {
             temp.update()
         } else if let temp = object as? Point {
             temp.update(point: point)
@@ -1272,11 +1280,11 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
             temp.update()
         } else if let temp = object as? Bisector1 {
             temp.update()
-        } else if let temp = object as? Tool6Line0 {
+        } else if let temp = object as? BelochLine0 {
             temp.update()
-        } else if let temp = object as? Tool6Line1 {
+        } else if let temp = object as? BelochLine1 {
             temp.update()
-        } else if let temp = object as? Tool6Line2 {
+        } else if let temp = object as? BelochLine2 {
             temp.update()
         } else if let temp = object as? Line {
             temp.update()
@@ -1336,15 +1344,15 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
             if linkedList[linkedList.count-1].type==HIDDENthing {
                 linkedList[linkedList.count-1].parent[0].isShown=true
             }
-            if linkedList[linkedList.count-1].type==MOVedPT {
-                if let temp = linkedList[linkedList.count-1] as? MovedPoint {
-                    update(object: linkedList[linkedList.count-1].parent[0], point: temp.lastCoordinates)
-                }
-                for object in linkedList {
-                    update(object: object, point: object.coordinates)
-                }
-                
-            }
+//            if linkedList[linkedList.count-1].type==MOVedPT {
+//                if let temp = linkedList[linkedList.count-1] as? MovedPoint {
+//                    update(object: linkedList[linkedList.count-1].parent[0], point: temp.lastCoordinates)
+//                }
+//                for object in linkedList {
+//                    update(object: object, point: object.coordinates)
+//                }
+//                
+//            }
             if linkedList.count>1 {
                 if linkedList[linkedList.count-2].type==THREEptCIRCLEcntr || linkedList[linkedList.count-1].type==BISECTOR1 {
                     linkedList.removeLast()
@@ -1353,7 +1361,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                 if linkedList[linkedList.count-1].type==CIRCintCIRC1 || linkedList[linkedList.count-1].type==LINEintCIRC1 {
                     linkedList.removeLast()         // since there were two created at once
                 }
-                if linkedList[linkedList.count-1].type==TOOL6LINE2 {
+                if linkedList[linkedList.count-1].type==BELOCHline2 {
                     linkedList.removeLast()
                     linkedList.removeLast()         // since there were six created at once
                     linkedList.removeLast()
