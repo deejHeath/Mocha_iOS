@@ -10,13 +10,14 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
     var clickedList: [Construction] = []
     var clickedIndex: [Int] = []
     let actionText=["Create or move POINTS", "Swipe between POINTS to create midpoint","Select 2 OBJECTS to create their intersection","Swipe from LINE to POINT to reflect","Swipe from CIRCLE to POINT to invert", "Swipe between POINTS to create segment", "Swipe between POINTS to create ray","Swipe between POINTS to create line","Swipe from LINE to POINT to create ⊥ line","Swipe from LINE to POINT to create || line","Select 2 LINES to create bisector","Select 2 POINTS, 2 LINES to create Beloch fold","Swipe between POINTS to create circle","Select 3 POINTs to create circle"]
-    let measureText=["Select 2 POINTS to measure distance","Select 3 POINTS to measure angle","Select 3 POINTS to measure area of triangle","Measure area of CIRCLE", "Measure sum of 2 MEASURES","Measure difference of 2 MEASURES","Measure product of 2 MEASURES","Measure ratio of 2 MEASURES","FIND sine of MEASURE","Find cosine of MEASURE.","Hide OBJECT","Show/hide label of OBJECT","Double swipe or pinch to move/scale"]
+    let measureText=["Select 2 POINTS to measure distance","Select 3 POINTS to measure angle","Select 3 POINTS to measure area of triangle","Measure area of CIRCLE", "Measure sum of 2 MEASURES","Measure difference of 2 MEASURES","Measure product of 2 MEASURES","Measure ratio of 2 MEASURES","FIND sine of MEASURE","Find cosine of MEASURE.","Hide OBJECT","Show/hide label of OBJECT","Double swipe or pinch to move/scale","Start over with unit circle"]
     let makePoints=0, makeMidpoint=1, makeIntersections=2, foldPoints=3, invertPoints=4
     let makeSegments=5, makeRays=6, makeLines=7, makePerps=8, makeParallels=9
-    let makeBisectors=10, useOrigamiSix=11, makeCircles=12, make3PTCircle=13
+    let makeBisectors=10, makeBelochFolds=11, makeCircles=12, make3PTCircle=13
     let measureDistance=20, measureAngle=21, measureTriArea=22, measureCircArea=23
     let measureSum=24, measureDifference=25, measureProduct=26, measureRatio=27
     let measureSine=28, measureCosine=29, hideObject=30, toggleLabel=31, scaleEverything=32
+    let unitCircle=33
     let POINT = 1, PTonLINE = 2, PTonCIRCLE = 3, MIDPOINT = 4
     let LINEintLINE = 5, FOLDedPT = 6, INVERTedPT=7
     let CIRCintCIRC0 = 8,CIRCintCIRC1 = 9, LINEintCIRC0 = 10, LINEintCIRC1 = 11
@@ -191,7 +192,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                 potentialClick=nil
             }
             break
-        case useOrigamiSix:
+        case makeBelochFolds:
             if clickedList.count==0 || clickedList.count==1 {
                 getPoint(location)
             } else if clickedList.count==2 || clickedList.count==3 {
@@ -369,7 +370,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                 setActiveConstruct(linkedList.count-1)
             }
             break
-        case useOrigamiSix:
+        case makeBelochFolds:
             getRidOfActivesThatAreTooFar(location)
             if clickedList.count==0 || clickedList.count==1 {
                 getPoint(location)
@@ -657,7 +658,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                 }
             }
             break
-        case useOrigamiSix:
+        case makeBelochFolds:
             getRidOfActivesThatAreTooFar(location)
             if !activeConstruct {
                 potentialClick=nil
@@ -1318,6 +1319,42 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
             self.whatToDo=tag
             self.infoLabel.text = self.measureText[self.whatToDo-20]
             self.infoXLabel.text = self.measureText[self.whatToDo-20]
+            if self.whatToDo==self.unitCircle {
+                self.whatToDo=self.makePoints
+                self.numberOfMeasures=1
+                self.unitChosen=false
+                self.totalScaleFactor=1.0
+                self.linkedList.removeAll()
+                self.infoLabel.text = self.actionText[self.whatToDo]
+                self.infoXLabel.text = self.actionText[self.whatToDo]
+                self.clearAllPotentials()
+                var location = CGPoint(x: 7.0*self.canvas.frame.width/12.0,y: self.canvas.frame.height-min(self.canvas.frame.width,self.canvas.frame.height)/2.0)
+                self.linkedList.append(FixedPoint(ancestor: [], point: location, number: 0))
+                location = CGPoint(x: 7.0*self.canvas.frame.width/12.0+min(self.canvas.frame.width,self.canvas.frame.height)/3.0,y: self.canvas.frame.height-min(self.canvas.frame.width,self.canvas.frame.height)/2.0)
+                self.linkedList.append(FixedPoint(ancestor: [], point: location, number: 1))
+                self.linkedList.append(Line(ancestor: [self.linkedList[0],self.linkedList[1]], point: location, number: 2))
+                self.linkedList.append(PerpLine(ancestor:[self.linkedList[0],self.linkedList[2]],point: location, number: 3))
+                self.linkedList.append(Circle(ancestor: [self.linkedList[0],self.linkedList[1]],point: location, number: 4))
+                location = CGPoint(x: 7.0*self.canvas.frame.width/12.0+min(self.canvas.frame.width,self.canvas.frame.height)/3.0*0.8,y: self.canvas.frame.height/2.0-min(self.canvas.frame.width,self.canvas.frame.height)/3.0*0.6)
+                self.linkedList.append(PointOnCircle(ancestor: [self.linkedList[4]],point: location,number: 5))
+                self.linkedList.append(Distance(ancestor: [self.linkedList[0],self.linkedList[1]],point: CGPoint(x: 12,y: 20*self.numberOfMeasures),number: 6))
+                self.update(object: self.linkedList[self.linkedList.count-1], point: CGPoint(x: 12,y: 20*self.numberOfMeasures))
+                self.numberOfMeasures+=1
+                self.linkedList.append(Angle(ancestor: [self.linkedList[1],self.linkedList[0],self.linkedList[5]],point: location, number: 7))
+                self.update(object: self.linkedList[self.linkedList.count-1], point: CGPoint(x: 12,y: 20*self.numberOfMeasures))
+                self.numberOfMeasures+=1
+                self.linkedList.append(PerpLine(ancestor: [self.linkedList[5],self.linkedList[2]],point: location, number: 8))
+                self.linkedList[8].isShown=false
+                self.linkedList.append(LineIntLine(ancestor: [self.linkedList[2],self.linkedList[8]],point: location, number: 9))
+                self.linkedList.append(PerpLine(ancestor: [self.linkedList[5],self.linkedList[3]],point: location, number: 10))
+                self.linkedList[10].isShown=false
+                self.linkedList.append(LineIntLine(ancestor: [self.linkedList[3],self.linkedList[10]],point: location, number: 11))
+                self.linkedList.append(Segment(ancestor: [self.linkedList[0],self.linkedList[5]],point: location, number: 12))
+                self.linkedList.append(Segment(ancestor: [self.linkedList[5],self.linkedList[9]],point: location, number: 13))
+                self.linkedList.append(Segment(ancestor: [self.linkedList[5],self.linkedList[11]],point: location, number: 14))
+                self.canvas.update(constructions: self.linkedList, indices: self.clickedIndex)
+                self.canvas.setNeedsDisplay()
+            }
         }
         self.present(measureController, animated: false, completion: nil)
         clearAllPotentials()
@@ -1398,5 +1435,9 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         clearAllPotentials()
         canvas.update(constructions: linkedList, indices: clickedIndex)
         canvas.setNeedsDisplay()
+    }
+    @IBAction func infoButtonPressed(_ sender: Any) {
+        // bring up information screen
+        print("Made it here")
     }
 }

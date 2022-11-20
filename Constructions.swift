@@ -21,8 +21,8 @@ class Construction {
     let POINT = 1, PTonLINE = 2, PTonCIRCLE = 3, MIDPOINT = 4
     let LINEintLINE = 5, FOLDedPT = 6, INVERTedPT=7
     let CIRCintCIRC0 = 8,CIRCintCIRC1 = 9, LINEintCIRC0 = 10, LINEintCIRC1 = 11
-    let BiPOINT = 12, THREEptCIRCLEcntr=13
-    let BELOCHpt0 = 14, BELOCHpt1 = 15, BELOCHpt2 = 16, HIDDENthing = 17, MOVedPT = 18
+    let BiPOINT = 12, THREEptCIRCLEcntr=13, BELOCHpt0 = 14, BELOCHpt1 = 15
+    let BELOCHpt2 = 16, HIDDENthing = 17, MOVedPT = 18, FIXedPT = 19
     let DISTANCE = 20, ANGLE = 21, TriAREA=22, CircAREA=23
     let SUM = 24, DIFFERENCE = 25, PRODUCT = 26, RATIO = 27, SINE=28, COSINE=29
     let CIRCLE = 0
@@ -62,6 +62,17 @@ class Construction {
     }
     func distance(_ point1: CGPoint,_ point2: CGPoint) -> Double {
         return sqrt(pow(point1.x-point2.x,2)+pow(point1.y-point2.y,2))
+    }
+}
+
+class FixedPoint: Point {
+    override init(ancestor: [Construction], point: CGPoint, number: Int) {        // generally without parents
+        super.init(point: point, number: number)
+        type = FIXedPT
+        index=number
+    }
+    override func update(point: CGPoint) {
+        
     }
 }
 

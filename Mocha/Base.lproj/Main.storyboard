@@ -52,11 +52,11 @@
                                     </button>
                                 </subviews>
                             </stackView>
-                            <stackView opaque="NO" contentMode="scaleToFill" spacing="119" translatesAutoresizingMaskIntoConstraints="NO" id="iIz-77-95N">
+                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iIz-77-95N">
                                 <rect key="frame" x="0.0" y="625.5" width="375" height="31.5"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pon-f3-5ie">
-                                        <rect key="frame" x="0.0" y="0.0" width="128" height="31.5"/>
+                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pon-f3-5ie">
+                                        <rect key="frame" x="0.0" y="0.0" width="125" height="31.5"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Clear">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
@@ -65,8 +65,18 @@
                                             <action selector="clearAllButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="a3X-MW-ZfJ"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="o4e-ut-YBt">
-                                        <rect key="frame" x="247" y="0.0" width="128" height="31.5"/>
+                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BPO-Kq-Vr8">
+                                        <rect key="frame" x="125" y="0.0" width="125" height="31.5"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Info">
+                                            <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                        </buttonConfiguration>
+                                        <connections>
+                                            <action selector="infoButtonPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="oII-Xa-7d2"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="o4e-ut-YBt">
+                                        <rect key="frame" x="250" y="0.0" width="125" height="31.5"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="Undo">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
@@ -343,39 +353,39 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HeL-Su-8RG" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" id="Eed-ZQ-Cjg">
-                    <rect key="frame" x="0.0" y="0.0" width="390" height="158.5"/>
+                    <rect key="frame" x="0.0" y="0.0" width="390" height="158.66666666666666"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YyV-UF-pJY">
-                            <rect key="frame" x="0.0" y="0.0" width="390" height="32.5"/>
+                            <rect key="frame" x="0.0" y="0.0" width="390" height="32"/>
                             <state key="normal" title="Button"/>
                             <buttonConfiguration key="configuration" style="plain" title="Button">
                                 <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                             </buttonConfiguration>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dTf-gw-IaW">
-                            <rect key="frame" x="0.0" y="32.5" width="390" height="31.5"/>
+                            <rect key="frame" x="0.0" y="32" width="390" height="31.666666666666671"/>
                             <state key="normal" title="Button"/>
                             <buttonConfiguration key="configuration" style="plain" title="Button">
                                 <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                             </buttonConfiguration>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XjI-5C-nmG">
-                            <rect key="frame" x="0.0" y="64" width="390" height="31.5"/>
+                            <rect key="frame" x="0.0" y="63.666666666666664" width="390" height="31.666666666666664"/>
                             <state key="normal" title="Button"/>
                             <buttonConfiguration key="configuration" style="plain" title="Button">
                                 <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                             </buttonConfiguration>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bHv-mu-XTd">
-                            <rect key="frame" x="0.0" y="95.5" width="390" height="31.5"/>
+                            <rect key="frame" x="0.0" y="95.333333333333329" width="390" height="31.666666666666671"/>
                             <state key="normal" title="Button"/>
                             <buttonConfiguration key="configuration" style="plain" title="Button">
                                 <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                             </buttonConfiguration>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eEG-1Q-j2O">
-                            <rect key="frame" x="0.0" y="127" width="390" height="31.5"/>
+                            <rect key="frame" x="0.0" y="127.00000000000001" width="390" height="31.666666666666671"/>
                             <state key="normal" title="Button"/>
                             <buttonConfiguration key="configuration" style="plain" title="Button">
                                 <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
@@ -413,7 +423,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="16G-Yu-f1c">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="405"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="433"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-Measure-" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vIa-5T-UhZ">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="20.5"/>
@@ -557,6 +567,16 @@
                                             <action selector="settingsButtonPressed:" destination="mZU-iz-2BW" eventType="touchUpInside" id="hlC-g3-htm"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" tag="33" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="d3k-G1-tmm">
+                                        <rect key="frame" x="0.0" y="405" width="375" height="28"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="plain" title="Start over with unit circle">
+                                            <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
+                                        </buttonConfiguration>
+                                        <connections>
+                                            <action selector="settingsButtonPressed:" destination="mZU-iz-2BW" eventType="touchUpInside" id="DC0-Tb-fUk"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="3SN-jE-3gh" secondAttribute="trailing" id="3U7-Qc-c5u"/>
@@ -570,6 +590,7 @@
                                     <constraint firstAttribute="trailing" secondItem="alP-0J-kXe" secondAttribute="trailing" id="Bel-cr-03o"/>
                                     <constraint firstItem="3SN-jE-3gh" firstAttribute="leading" secondItem="16G-Yu-f1c" secondAttribute="leading" id="Fif-K1-JA7"/>
                                     <constraint firstItem="1ei-Yo-98g" firstAttribute="leading" secondItem="16G-Yu-f1c" secondAttribute="leading" id="GMf-Zn-16U"/>
+                                    <constraint firstAttribute="trailing" secondItem="d3k-G1-tmm" secondAttribute="trailing" id="Ia5-IW-Isa"/>
                                     <constraint firstItem="alP-0J-kXe" firstAttribute="leading" secondItem="16G-Yu-f1c" secondAttribute="leading" id="PK3-XX-CtM"/>
                                     <constraint firstItem="fB1-OG-Epf" firstAttribute="leading" secondItem="16G-Yu-f1c" secondAttribute="leading" id="RqX-xu-IkE"/>
                                     <constraint firstItem="Yox-5K-Vo9" firstAttribute="leading" secondItem="16G-Yu-f1c" secondAttribute="leading" id="SDc-oq-Zj1"/>
