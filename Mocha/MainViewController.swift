@@ -1297,7 +1297,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBAction func actionButtonPressed(_ sender: UIButton) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let creationController = storyboard.instantiateViewController(withIdentifier: "creation_VC") as! CreationViewController
-        creationController.view.backgroundColor = .white.withAlphaComponent(0.875)
+        creationController.view.backgroundColor = .white//.withAlphaComponent(0.875)
         //creationController.modalPresentationStyle = .fullScreen
         creationController.completionHandler = {tag in
             self.whatToDo=tag
@@ -1305,7 +1305,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
             self.infoXLabel.text = self.actionText[self.whatToDo]
             
         }
-        self.present(creationController, animated: false, completion: nil)
+        self.present(creationController, animated: true, completion: nil)
         clearAllPotentials()
         canvas.update(constructions: linkedList, indices: clickedIndex)
         canvas.setNeedsDisplay()
@@ -1313,7 +1313,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
     @IBAction func measureButtonPressed() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let measureController = storyboard.instantiateViewController(withIdentifier: "measure_VC") as! MeasureViewController
-        measureController.view.backgroundColor = .white.withAlphaComponent(0.875)
+        measureController.view.backgroundColor = .white//.withAlphaComponent(0.875)
         //measureController.modalPresentationStyle = .fullScreen
         measureController.completionHandler = {tag in
             self.whatToDo=tag
@@ -1358,7 +1358,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                 self.canvas.setNeedsDisplay()
             }
         }
-        self.present(measureController, animated: false, completion: nil)
+        self.present(measureController, animated: true, completion: nil)
         clearAllPotentials()
         canvas.update(constructions: linkedList, indices: clickedIndex)
         canvas.setNeedsDisplay()
@@ -1439,7 +1439,14 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         canvas.setNeedsDisplay()
     }
     @IBAction func infoButtonPressed(_ sender: Any) {
-        // bring up information screen
-        print("Made it here")
+        print("infoButtonPressed")
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let infoController = storyboard.instantiateViewController(withIdentifier: "info_vc") as! InfoViewController
+        infoController.view.backgroundColor = .white
+        //creationController.modalPresentationStyle = .fullScreen
+        self.present(infoController, animated: true, completion: nil)
+        clearAllPotentials()
+        canvas.update(constructions: linkedList, indices: clickedIndex)
+        canvas.setNeedsDisplay()
     }
 }
