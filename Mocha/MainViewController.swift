@@ -1439,7 +1439,6 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         canvas.setNeedsDisplay()
     }
     @IBAction func infoButtonPressed(_ sender: Any) {
-        print("infoButtonPressed")
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let infoController = storyboard.instantiateViewController(withIdentifier: "info_vc") as! InfoViewController
         infoController.view.backgroundColor = .white
