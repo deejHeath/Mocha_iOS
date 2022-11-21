@@ -10,7 +10,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
     var clickedList: [Construction] = []
     var clickedIndex: [Int] = []
     let actionText=["Create or move POINTS", "Swipe between POINTS to create midpoint","Select 2 OBJECTS to create their intersection","Swipe from LINE to POINT to reflect","Swipe from CIRCLE to POINT to invert", "Swipe between POINTS to create segment", "Swipe between POINTS to create ray","Swipe between POINTS to create line","Swipe from LINE to POINT to create ⊥ line","Swipe from LINE to POINT to create || line","Select 2 LINES to create bisector","Select 2 POINTS, 2 LINES to create Beloch fold","Swipe between POINTS to create circle","Select 3 POINTs to create circle"]
-    let measureText=["Select 2 POINTS to measure distance","Select 3 POINTS to measure angle","Select 3 POINTS to measure area of triangle","Measure area of CIRCLE", "Measure sum of 2 MEASURES","Measure difference of 2 MEASURES","Measure product of 2 MEASURES","Measure ratio of 2 MEASURES","FIND sine of MEASURE","Find cosine of MEASURE.","Hide OBJECT","Show/hide label of OBJECT","Double swipe or pinch to move/scale","Start over with unit circle"]
+    let measureText=["Select 2 POINTS to measure distance","Select 3 POINTS to measure angle","Select 3 POINTS to measure area of triangle","Measure area of CIRCLE", "Measure sum of 2 MEASURES","Measure difference of 2 MEASURES","Measure product of 2 MEASURES","Measure ratio of 2 MEASURES","FIND sine of MEASURE","Find cosine of MEASURE.","Hide OBJECT","Show/hide label of OBJECT","Double swipe or pinch to move/scale","Restart with unit circle"]
     let makePoints=0, makeMidpoint=1, makeIntersections=2, foldPoints=3, invertPoints=4
     let makeSegments=5, makeRays=6, makeLines=7, makePerps=8, makeParallels=9
     let makeBisectors=10, makeBelochFolds=11, makeCircles=12, make3PTCircle=13
@@ -1340,6 +1340,8 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                 self.linkedList.append(Distance(ancestor: [self.linkedList[0],self.linkedList[1]],point: CGPoint(x: 12,y: 20*self.numberOfMeasures),number: 6))
                 self.update(object: self.linkedList[self.linkedList.count-1], point: CGPoint(x: 12,y: 20*self.numberOfMeasures))
                 self.numberOfMeasures+=1
+                self.unitChosen=true
+                self.unitIndex=6
                 self.linkedList.append(Angle(ancestor: [self.linkedList[1],self.linkedList[0],self.linkedList[5]],point: location, number: 7))
                 self.update(object: self.linkedList[self.linkedList.count-1], point: CGPoint(x: 12,y: 20*self.numberOfMeasures))
                 self.numberOfMeasures+=1

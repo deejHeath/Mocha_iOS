@@ -570,7 +570,7 @@
                                     <button opaque="NO" tag="33" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="d3k-G1-tmm">
                                         <rect key="frame" x="0.0" y="405" width="375" height="28"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" title="Start over with unit circle">
+                                        <buttonConfiguration key="configuration" style="plain" title="Restart with unit circle">
                                             <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                         </buttonConfiguration>
                                         <connections>
