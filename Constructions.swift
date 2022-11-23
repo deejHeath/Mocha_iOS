@@ -53,8 +53,6 @@ class Construction {
     }
     func update(point: CGPoint, unitValue: Double) {
     }
-    func update(ancestor: [Construction]) {
-    }
     func draw(_ context: CGContext, _ isRed: Bool) {
     }
     func distance(_ point: CGPoint) -> Double {
@@ -251,11 +249,11 @@ class PointOnCircle: Point {                                                // p
 class MidPoint: Point {                                                     // parents: point, point
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  // this is usually
         super.init(ancestor: ancestor, point: point,number:number)          // invisible
-        update()
+        update(point: point)
         type=MIDPOINT
         index=number
     }
-    func update() {
+    override func update(point: CGPoint) {
         if !parent[0].isReal || !parent[1].isReal {
             isReal=false
         } else {
@@ -277,11 +275,11 @@ class MidPoint: Point {                                                     // p
 class LineIntLine: Point {                                                  // parents: line, line
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  // this is the intersection
         super.init(ancestor: ancestor, point: point, number: number)        // point of two lines
-        update()
+        update(point: point)
         type=LINEintLINE
         index=number
     }
-    func update() {
+    override func update(point: CGPoint) {
         if !parent[0].isReal || !parent[1].isReal {
             isReal=false
         } else {
@@ -332,13 +330,13 @@ class CircIntCirc0: Point {                                 // parent: circle, c
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  //
         let point0=ancestor[0].coordinates                                  //
         super.init(ancestor: ancestor, point: point0, number: number)
-        update()
+        update(point: point)
         slope=coordinates
         alternateSlope=alternateCoordinates
         type=CIRCintCIRC0
         index=number
     }
-    func update() {
+    override func update(point: CGPoint) {
         if parent[0].isReal && parent[1].isReal {
             let x0=parent[0].coordinates.x, y0=parent[0].coordinates.y  // coordinates of center of circle0
             let sx0=parent[0].slope.x, sy0=parent[0].slope.y            // coordinates of point on circle0
@@ -380,11 +378,11 @@ class CircIntCirc1: Point {                                       // parent: cir
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  //
         let point0=ancestor[0].coordinates                                  //
         super.init(ancestor: ancestor, point: point0, number: number)
-        update()
+        update(point: point)
         type=CIRCintCIRC1
         index=number
     }
-    func update() {
+    override func update(point: CGPoint) {
         if parent[0].isReal && parent[1].isReal && parent[2].isReal {
             if let temp = parent[2] as? CircIntCirc0 {
                 isReal=temp.isReal
@@ -404,13 +402,13 @@ class LineIntCirc0: Point {                                 // parent: circle, c
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  //
         let point0=ancestor[0].coordinates                                  //
         super.init(ancestor: ancestor, point: point0, number: number)
-        update()
+        update(point: point)
         slope=coordinates
         alternateSlope=alternateCoordinates
         type=LINEintCIRC0
         index=number
     }
-    func update() {
+    override func update(point: CGPoint) {
         if parent[0].isReal && parent[1].isReal {
             let x0=parent[0].coordinates.x, y0=parent[0].coordinates.y  // coordinates of point on line
             let sx0=parent[0].slope.x, sy0=parent[0].slope.y            // slope of line
@@ -459,11 +457,11 @@ class LineIntCirc1: Point {                                       // parent: lin
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  //
         let point0=ancestor[0].coordinates                                  //
         super.init(ancestor: ancestor, point: point0, number: number)
-        update()
+        update(point: point)
         type=LINEintCIRC1
         index=number
     }
-    func update() {
+    override func update(point: CGPoint) {
         if parent[0].isReal && parent[1].isReal {
             if let temp = parent[2] as? LineIntCirc0 {
                 let x0=parent[0].coordinates.x, y0=parent[0].coordinates.y  // coordinates of point on line
@@ -491,11 +489,11 @@ class LineIntCirc1: Point {                                       // parent: lin
 class FoldedPoint: Point {                                                  // parents: point, line
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  // fold point with crease
         super.init(ancestor: ancestor, point: point, number: number)        // the line
-        update()
+        update(point: point)
         type=FOLDedPT
         index=number
     }
-    func update() {
+    override func update(point: CGPoint) {
         if !parent[0].isReal || !parent[1].isReal {
             isReal=false
         } else {
@@ -513,11 +511,11 @@ class FoldedPoint: Point {                                                  // p
 class InvertedPoint: Point {                                // parent: point, circle
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  // invert point in circle
         super.init(ancestor: ancestor, point: point, number: number)        //
-        update()
+        update(point: point)
         type=INVERTedPT
         index=number
     }
-    func update() {
+    override func update(point: CGPoint) {
         if !parent[0].isReal || !parent[1].isReal {
             isReal=false
         } else {
@@ -538,11 +536,11 @@ class InvertedPoint: Point {                                // parent: point, ci
 class BisectorPoint: Point {                                                // parents: line, line
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  // two cases: If the lines
         super.init(ancestor: ancestor, point: point, number: number)   // intersect, then this is an
-        update()         // IntPT. If not, then this pt needsto be any midpoint between the lines.
+        update(point: point)         // IntPT. If not, then this pt needsto be any midpoint between the lines.
         type=BiPOINT     // We find it by using the PT0 on L0, find the PerpLine using it & L1,
         index=number     // intersect PL with L1, then the midpoint of PT0 and temp1.
     }
-    func update() {
+    override func update(point: CGPoint) {
         if !parent[0].isReal || !parent[1].isReal {
             isReal=false
         } else {
@@ -573,11 +571,11 @@ class BisectorPoint: Point {                                                // p
 class ThreePointCircleCntr: Point { // parent: point, point, point, ThreePointLine
     override init(ancestor: [Construction], point: CGPoint, number: Int) {
         super.init(ancestor: ancestor, point: CGPoint.zero, number: number)
-        update()
+        update(point: point)
         type=THREEptCIRCLEcntr
         index=number
     }
-    func update() {
+    override func update(point: CGPoint) {
         isReal = !parent[3].isReal && parent[0].isReal && parent[1].isReal && parent[2].isReal
         if isReal {
             coordinates=parent[3].coordinates
@@ -823,7 +821,7 @@ class Line: Construction {                                                  // p
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  // (usually)
         let point0=ancestor[0].coordinates                                  // the first must be a
         super.init(ancestor: ancestor, point: point0, number: number)       // point
-        update()
+        update(point: point)
         type=LINE
         index=number
     }
@@ -856,7 +854,7 @@ class Line: Construction {                                                  // p
             return 1024
         }
     }
-    func update(){
+    override func update(point: CGPoint){
         if !parent[0].isReal || !parent[1].isReal {
             isReal=false
         } else {
@@ -915,7 +913,7 @@ class Segment: Line {                                                  // parent
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  // (usually)
         let point0=ancestor[0].coordinates                                  // the first must be a
         super.init(ancestor: ancestor, point: point0, number: number)       // point
-        update()
+        update(point: point)
         type=SEGMENT
         index=number
     }
@@ -948,7 +946,7 @@ class Ray: Line {                                                  // parents: p
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  // (usually)
         let point0=ancestor[0].coordinates                                  // the first must be a
         super.init(ancestor: ancestor, point: point0, number: number)       // point
-        update()
+        update(point: point)
         type=RAY
         index=number
     }
@@ -981,11 +979,11 @@ class PerpLine: Line {                   // parents: point, line
     override init(ancestor: [Construction], point: CGPoint, number: Int) {
         let point0=ancestor[0].coordinates
         super.init(ancestor: ancestor, point: point0, number: number)
-        update()
+        update(point: point)
         type=PERP
         index=number
     }
-    override func update() {
+    override func update(point: CGPoint) {
         if !parent[0].isReal || !parent[1].isReal {
             isReal=false
         } else {
@@ -1001,11 +999,11 @@ class ParallelLine: Line {                         // parents: point, line
     override init(ancestor: [Construction], point: CGPoint, number: Int) {
         let point0=ancestor[0].coordinates
         super.init(ancestor: ancestor, point: point0, number: number)
-        update()
+        update(point: point)
         type=PARALLEL
         index=number
     }
-    override func update() {
+    override func update(point: CGPoint) {
         if !parent[0].isReal || !parent[1].isReal {
             isReal=false
         } else {
@@ -1021,11 +1019,11 @@ class Circle: Construction {                        // parent: point, point
     override init(ancestor: [Construction], point: CGPoint, number: Int) {
         let point0=ancestor[0].coordinates               // first: center, second: point on
         super.init(ancestor: ancestor, point: point0, number: number)
-        update()
+        update(point: point)
         type=CIRCLE
         index=number
     }
-    func update() {
+    override func update(point: CGPoint) {
         if !parent[0].isReal || !parent[1].isReal {
             isReal=false
         } else {
@@ -1067,16 +1065,16 @@ class Circle: Construction {                        // parent: point, point
 class ThreePointLine: Line {     // parent: point, point, point.
     override init(ancestor: [Construction], point: CGPoint, number: Int) {
         super.init(ancestor: ancestor, point: CGPoint.zero, number: number)
-        update()
+        update(point: point)
         type=THREEptLINE
         index=number
     }
-    override func update() {
+    override func update(point: CGPoint) {
         if parent[0].isReal && parent[1].isReal && parent[2].isReal {
             let temp0=Line(ancestor:[parent[0],parent[1]],point:parent[0].coordinates,number: 0)
             if temp0.distance(parent[2].coordinates)<epsilon {
                 isReal=true
-                temp0.update()
+                temp0.update(point: point)
                 slope=temp0.slope
                 coordinates=parent[0].coordinates
             } else {
@@ -1102,12 +1100,12 @@ class Bisector0: Line {                            // parents: point, line, line
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  //
         let point0=ancestor[0].coordinates                                  //
         super.init(ancestor: ancestor, point: point0, number: number)       //
-        update()
+        update(point: point)
         type=BISECTOR0
         index=number
     }
     
-    override func update() {                                                //
+    override func update(point: CGPoint) {                                                //
         coordinates=parent[0].coordinates                                   //
         if !parent[0].isReal || !parent[1].isReal || !parent[2].isReal {    //
             isReal=false                                                    //
@@ -1143,11 +1141,11 @@ class Bisector1: Line {                                                // parent
     override init(ancestor: [Construction], point: CGPoint, number: Int) {  //
         let point0=ancestor[0].coordinates                                  //
         super.init(ancestor: ancestor, point: point0, number: number)       //
-        update()
+        update(point: point)
         type=BISECTOR1
         index=number
     }
-    override func update() {                                                //
+    override func update(point: CGPoint) {                                                //
         coordinates=parent[0].coordinates                                   //
         let c0=parent[1].slope.x, c1=parent[2].slope.x                      //
         let s0=parent[1].slope.y, s1=parent[2].slope.y                      //
@@ -1183,11 +1181,11 @@ class BelochPoint0: Point {                   // parents: point, point, line, li
     override init(ancestor: [Construction], point: CGPoint, number: Int) {
         let point0=ancestor[0].coordinates
         super.init(ancestor: ancestor, point: point0, number: number)
-        update()
+        update(point: point)
         type=BELOCHpt0
         index=number
     }
-    func update() {
+    override func update(point: CGPoint) {
         if parent[0].isReal && parent[1].isReal && parent[2].isReal && parent[3].isReal {
             let point0=parent[0].coordinates, point1=parent[1].coordinates
             let point2=parent[2].parent[0].coordinates, line2=parent[2].slope
@@ -1265,7 +1263,7 @@ class BelochLine0: Line {                                  // parents: point (T6
         type=BELOCHline0
         index=number
     }
-    override func update() {
+    override func update(point: CGPoint) {
         if let temp=parent[0] as? BelochPoint0 {
             coordinates=temp.points[0]
             slope=temp.slopes[0]
@@ -1291,7 +1289,7 @@ class BelochPoint1: Point {                                  // parents: point (
         index=number
     }
     
-    func update() {
+    override func update(point: CGPoint) {
         if let temp=parent[0] as? BelochPoint0 {
             isReal=temp.reals[1]
             coordinates=temp.points[1]
@@ -1316,7 +1314,7 @@ class BelochLine1: Line {                                  // parents: T6P1, poi
         index=number
     }
     
-    override func update() {
+    override func update(point: CGPoint) {
         if let temp = parent[0] as? BelochPoint1 {
             isReal=temp.isReal
             coordinates=temp.coordinates
@@ -1342,7 +1340,7 @@ class BelochPoint2: Point {                                  // parents: point (
         index=number
     }
     
-    func update() {
+    override func update(point: CGPoint) {
         if let temp=parent[0] as? BelochPoint0 {
             isReal=temp.reals[2]
             coordinates=temp.points[2]
@@ -1367,7 +1365,7 @@ class BelochLine2: Line {                                  // parents: T6P2, poi
         index=number
     }
     
-    override func update() {
+    override func update(point: CGPoint) {
         if let temp=parent[0] as? BelochPoint2 {
             isReal=temp.isReal
             coordinates=temp.coordinates

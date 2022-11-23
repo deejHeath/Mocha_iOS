@@ -70,9 +70,11 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
             let translation = recognizer.translation(in: self.view)
             for i in 0..<linkedList.count {
                 if linkedList[i].type>0 && linkedList[i].type<=PTonCIRCLE {
-                    update(object: linkedList[i], point: CGPoint(x: linkedList[i].coordinates.x+translation.x ,y: linkedList[i].coordinates.y+translation.y))
+                    linkedList[i].update(point: CGPoint(x: linkedList[i].coordinates.x+translation.x ,y: linkedList[i].coordinates.y+translation.y))
+//                    update(object: linkedList[i], point: CGPoint(x: linkedList[i].coordinates.x+translation.x ,y: linkedList[i].coordinates.y+translation.y))
                 } else if linkedList[i].type<DISTANCE {
-                    update(object: linkedList[i], point: linkedList[i].coordinates)
+                    linkedList[i].update(point: linkedList[i].coordinates)
+//                    update(object: linkedList[i], point: linkedList[i].coordinates)
                 }
             }
             canvas.update(constructions: linkedList, indices: clickedIndex)
@@ -87,9 +89,11 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                 if linkedList[i].type>0 && linkedList[i].type<=PTonCIRCLE {
                     let X=linkedList[i].coordinates.x-canvas.frame.width/2.0
                     let Y=linkedList[i].coordinates.y-canvas.frame.height/2.0
-                    update(object: linkedList[i], point: CGPoint(x: C*X-S*Y+canvas.frame.width/2.0 ,y: S*X+C*Y+canvas.frame.height/2.0))
+                    linkedList[i].update(point: CGPoint(x: C*X-S*Y+canvas.frame.width/2.0 ,y: S*X+C*Y+canvas.frame.height/2.0))
+//                    update(object: linkedList[i], point: CGPoint(x: C*X-S*Y+canvas.frame.width/2.0 ,y: S*X+C*Y+canvas.frame.height/2.0))
                 } else if linkedList[i].type<DISTANCE {
-                    update(object: linkedList[i], point: linkedList[i].coordinates)
+                    linkedList[i].update(point: linkedList[i].coordinates)
+//                    update(object: linkedList[i], point: linkedList[i].coordinates)
                 }
             }
             canvas.update(constructions: linkedList, indices: clickedIndex)
@@ -104,9 +108,11 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
             if (totalScaleFactor<32.0 && pinchScale>1.0) || (totalScaleFactor>0.03125 && pinchScale<1.0) {
                 for i in 0..<linkedList.count {
                     if linkedList[i].type>0 && linkedList[i].type<=PTonCIRCLE {
-                        update(object: linkedList[i], point: CGPoint(x: pinchScale*(linkedList[i].coordinates.x-canvas.frame.width/2.0)+canvas.frame.width/2.0,y: pinchScale*(linkedList[i].coordinates.y-canvas.frame.height/2.0)+canvas.frame.height/2.0))
+                        linkedList[i].update(point: CGPoint(x: pinchScale*(linkedList[i].coordinates.x-canvas.frame.width/2.0)+canvas.frame.width/2.0,y: pinchScale*(linkedList[i].coordinates.y-canvas.frame.height/2.0)+canvas.frame.height/2.0))
+//                        update(object: linkedList[i], point: CGPoint(x: pinchScale*(linkedList[i].coordinates.x-canvas.frame.width/2.0)+canvas.frame.width/2.0,y: pinchScale*(linkedList[i].coordinates.y-canvas.frame.height/2.0)+canvas.frame.height/2.0))
                     } else if linkedList[i].type<DISTANCE {
-                        update(object: linkedList[i], point: linkedList[i].coordinates)
+                        linkedList[i].update(point: linkedList[i].coordinates)
+//                        update(object: linkedList[i], point: linkedList[i].coordinates)
                     }
                 }
                 totalScaleFactor*=pinchScale
@@ -193,9 +199,9 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
             }
             break
         case makeBelochFolds:
-            if clickedList.count==0 || clickedList.count==1 {
+            if clickedList.count<2 {
                 getPoint(location)
-            } else if clickedList.count==2 || clickedList.count==3 {
+            } else {
                 getLine(location)
             }
             break
@@ -224,7 +230,8 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         switch whatToDo {
         case makePoints:
             if !newPoint {
-                update(object: clickedList[0], point: location)
+                clickedList[0].update(point: location)
+//                update(object: clickedList[0], point: location)
             } else { // otherwise the point is new, and we can do what we like with it.
                 clearAllPotentials()
                 getLineOrCircle(location)
@@ -245,7 +252,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                 }
             }
             for object in linkedList {
-                update(object: object, point: object.coordinates)
+                object.update(point: object.coordinates)
             }
             break
         case makeSegments, makeRays, makeCircles, makeMidpoint, makeLines:
@@ -414,16 +421,16 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         case makePoints:
             if activeConstruct {
                 if clickedList[0].type>0 {
-                    update(object: clickedList[0], point: location)
+                    clickedList[0].update(point: location)
                 } else if clickedList[0].type<0 {
                     linkedList.removeLast()
                     linkedList.append(PointOnLine(ancestor: clickedList, point: location, number: linkedList.count))
-                    update(object: linkedList[linkedList.count-1],point: location)
+                    linkedList[linkedList.count-1].update(point: location)
                 } else if clickedList[0].type==0 {
                     linkedList.removeLast()
                     
                     linkedList.append(PointOnCircle(ancestor: clickedList, point: location, number: linkedList.count))
-                    update(object: linkedList[linkedList.count-1],point: location)
+                    linkedList[linkedList.count-1].update(point: location)
                 }
             } else {
                 linkedList.append(Point(point: location, number: linkedList.count))
@@ -644,7 +651,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                     linkedList[linkedList.count-1].update(width: canvas.frame.width, height: canvas.frame.height)
                     clickedList.append(linkedList[linkedList.count-1])
                     linkedList.append(ThreePointCircleCntr(ancestor: clickedList, point: location, number: linkedList.count))
-                    var i=linkedList.count-1
+                    let i=linkedList.count-1
                     linkedList[linkedList.count-1].isShown=false
                     let temp=clickedList[0]
                     clearAllPotentials()
@@ -723,7 +730,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                 if !alreadyExists {
                     if clickedList[0].type<0 && clickedList[1].type<0 {             // both lines
                         linkedList.append(LineIntLine(ancestor: clickedList, point: location, number: linkedList.count))
-                        linkedList[linkedList.count-1].update(ancestor: linkedList[linkedList.count-1].parent)
+                        linkedList[linkedList.count-1].update(point: location)
                         clearAllPotentials()
                     } else if clickedList[0].type==0 && clickedList[1].type==0 {    // both circles
                         linkedList.append(CircIntCirc0(ancestor: clickedList, point: location, number: linkedList.count))
@@ -771,7 +778,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                         unitIndex=linkedList.count
                     }
                     linkedList.append(Distance(ancestor: clickedList, point: location, number: linkedList.count))
-                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 20*numberOfMeasures))
+                    linkedList[linkedList.count-1].update(point: CGPoint(x: 12,y: 20*numberOfMeasures))
                     numberOfMeasures+=1
                     clearAllPotentials()
                 }
@@ -802,7 +809,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                 }
                 if !alreadyExists {
                     linkedList.append(Angle(ancestor: clickedList, point: location, number: linkedList.count))
-                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 20*numberOfMeasures))
+                    linkedList[linkedList.count-1].update(point: CGPoint(x: 12,y: 20*numberOfMeasures))
                     numberOfMeasures+=1
                     clearAllPotentials()
                 }
@@ -828,7 +835,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                 }
                 if !alreadyExists {
                     linkedList.append(Sum(ancestor: clickedList, point: location, number: linkedList.count))
-                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 20*numberOfMeasures))
+                    linkedList[linkedList.count-1].update(point: CGPoint(x: 12,y: 20*numberOfMeasures))
                     numberOfMeasures+=1
                     clearAllPotentials()
                 }
@@ -854,7 +861,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                 }
                 if !alreadyExists {
                     linkedList.append(Product(ancestor: clickedList, point: location, number: linkedList.count))
-                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 20*numberOfMeasures))
+                    linkedList[linkedList.count-1].update(point: CGPoint(x: 12,y: 20*numberOfMeasures))
                     numberOfMeasures+=1
                     clearAllPotentials()
                 }
@@ -879,7 +886,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                 }
                 if !alreadyExists {
                     linkedList.append(Difference(ancestor: clickedList, point: location, number: linkedList.count))
-                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 20*numberOfMeasures))
+                    linkedList[linkedList.count-1].update(point: CGPoint(x: 12,y: 20*numberOfMeasures))
                     numberOfMeasures+=1
                     clearAllPotentials()
                 }
@@ -904,7 +911,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                 }
                 if !alreadyExists {
                     linkedList.append(Ratio(ancestor: clickedList, point: location, number: linkedList.count))
-                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 20*numberOfMeasures))
+                    linkedList[linkedList.count-1].update(point: CGPoint(x: 12,y: 20*numberOfMeasures))
                     numberOfMeasures+=1
                     clearAllPotentials()
                 }
@@ -938,7 +945,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                     default:
                         break
                     }
-                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 20*numberOfMeasures))
+                    linkedList[linkedList.count-1].update(point: CGPoint(x: 12,y: 20*numberOfMeasures))
                     numberOfMeasures+=1
                     clearAllPotentials()
                 }
@@ -967,12 +974,12 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                         unitChosen=true
                         unitIndex=linkedList.count
                         linkedList.append(Distance(ancestor: [clickedList[0],clickedList[1]], point: location, number: linkedList.count))
-                        update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 20*numberOfMeasures))
+                        linkedList[linkedList.count-1].update(point: CGPoint(x: 12,y: 20*numberOfMeasures))
                         numberOfMeasures+=1
                     }
                     clickedList.append(linkedList[unitIndex])
                     linkedList.append(Triangle(ancestor: clickedList, point: location, number: linkedList.count))
-                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 20*numberOfMeasures))
+                    linkedList[linkedList.count-1].update(point: CGPoint(x: 12,y: 20*numberOfMeasures))
                     clearAllPotentials()
                     numberOfMeasures+=1
                 }
@@ -1006,12 +1013,12 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                         }
                         clickedList[0].parent[0].isShown=true
                         clickedList[0].parent[1].isShown=true
-                        update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 20*numberOfMeasures))
+                        linkedList[linkedList.count-1].update(point: CGPoint(x: 12,y: 20*numberOfMeasures))
                         numberOfMeasures+=1
                     }
                     clickedList.append(linkedList[unitIndex])
                     linkedList.append(CircleArea(ancestor: clickedList, point: location, number: linkedList.count))
-                    update(object: linkedList[linkedList.count-1], point: CGPoint(x: 12,y: 20*numberOfMeasures))
+                    linkedList[linkedList.count-1].update(point: CGPoint(x: 12,y: 20*numberOfMeasures))
                     clearAllPotentials()
                     numberOfMeasures+=1
                 }
@@ -1044,7 +1051,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
             break
         }
         for object in linkedList {
-            update(object: object, point: object.coordinates)
+            object.update(point: object.coordinates)
         }
         canvas.update(constructions: linkedList, indices: clickedIndex)
         canvas.setNeedsDisplay()
@@ -1216,83 +1223,6 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         clickedList.append(linkedList[i])
         clickedIndex.append(i)
     }
-    func update(object: Construction, point: CGPoint) {
-        if let temp = object as? Distance {
-            temp.update(point: point)
-        } else if let temp = object as? Angle {
-            temp.update(point: point)
-        } else if let temp = object as? Ratio {
-            temp.update(point: point)
-        } else if let temp = object as? Product {
-            temp.update(point: point)
-        } else if let temp = object as? Sum {
-            temp.update(point: point)
-        } else if let temp = object as? Difference {
-            temp.update(point: point)
-        } else if let temp = object as? Sine {
-            temp.update(point: point)
-        } else if let temp = object as? Cosine {
-            temp.update(point: point)
-        } else if let temp = object as? CircleArea {
-            temp.update(point: point)
-        } else if let temp = object as? Distance {
-            temp.update(point: point)
-        } else if let temp = object as? Triangle {
-            temp.update(point: point)
-        } else if let temp = object as? PointOnLine {
-            temp.update(point: point)
-        } else if let temp = object as? PointOnCircle {
-            temp.update(point: point)
-        } else if let temp = object as? MidPoint {
-            temp.update()
-        } else if let temp = object as? LineIntLine {
-            temp.update()
-        } else if let temp = object as? CircIntCirc0 {
-            temp.update()
-        } else if let temp = object as? CircIntCirc1 {
-            temp.update()
-        } else if let temp = object as? LineIntCirc0 {
-            temp.update()
-        } else if let temp = object as? LineIntCirc1 {
-            temp.update()
-        } else if let temp = object as? FoldedPoint {
-            temp.update()
-        } else if let temp = object as? InvertedPoint {
-            temp.update()
-        } else if let temp = object as? ThreePointCircleCntr {
-            temp.update()
-        } else if let temp = object as? BisectorPoint {
-            temp.update()
-        } else if let temp = object as? BelochPoint0 {
-            temp.update()
-        } else if let temp = object as? BelochPoint1 {
-            temp.update()
-        } else if let temp = object as? BelochPoint2 {
-            temp.update()
-        } else if let temp = object as? Point {
-            temp.update(point: point)
-        } else if let temp = object as? PerpLine {
-            temp.update()
-        } else if let temp = object as? ParallelLine {
-            temp.update()
-        } else if let temp = object as? ThreePointLine {
-            temp.update()
-        } else if let temp = object as? Bisector0 {
-            temp.update()
-        } else if let temp = object as? Bisector1 {
-            temp.update()
-        } else if let temp = object as? BelochLine0 {
-            temp.update()
-        } else if let temp = object as? BelochLine1 {
-            temp.update()
-        } else if let temp = object as? BelochLine2 {
-            temp.update()
-        } else if let temp = object as? Line {
-            temp.update()
-        } else if let temp = object as? Circle {
-            temp.update()
-        }
-    }
     
     @IBAction func actionButtonPressed(_ sender: UIButton) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -1338,12 +1268,12 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                 location = CGPoint(x: 7.0*self.canvas.frame.width/12.0+min(self.canvas.frame.width,self.canvas.frame.height)/3.0*0.8,y: self.canvas.frame.height/2.0-min(self.canvas.frame.width,self.canvas.frame.height)/3.0*0.6)
                 self.linkedList.append(PointOnCircle(ancestor: [self.linkedList[4]],point: location,number: 5))
                 self.linkedList.append(Distance(ancestor: [self.linkedList[0],self.linkedList[1]],point: CGPoint(x: 12,y: 20*self.numberOfMeasures),number: 6))
-                self.update(object: self.linkedList[self.linkedList.count-1], point: CGPoint(x: 12,y: 20*self.numberOfMeasures))
+                self.linkedList[self.linkedList.count-1].update(point: CGPoint(x: 12,y: 20*self.numberOfMeasures))
                 self.numberOfMeasures+=1
                 self.unitChosen=true
                 self.unitIndex=6
                 self.linkedList.append(Angle(ancestor: [self.linkedList[1],self.linkedList[0],self.linkedList[5]],point: location, number: 7))
-                self.update(object: self.linkedList[self.linkedList.count-1], point: CGPoint(x: 12,y: 20*self.numberOfMeasures))
+                self.linkedList[self.linkedList.count-1].update(point: CGPoint(x: 12,y: 20*self.numberOfMeasures))
                 self.numberOfMeasures+=1
                 self.linkedList.append(PerpLine(ancestor: [self.linkedList[5],self.linkedList[2]],point: location, number: 8))
                 self.linkedList[8].isShown=false
@@ -1351,9 +1281,10 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                 self.linkedList.append(PerpLine(ancestor: [self.linkedList[5],self.linkedList[3]],point: location, number: 10))
                 self.linkedList[10].isShown=false
                 self.linkedList.append(LineIntLine(ancestor: [self.linkedList[3],self.linkedList[10]],point: location, number: 11))
-                self.linkedList.append(Segment(ancestor: [self.linkedList[0],self.linkedList[5]],point: location, number: 12))
-                self.linkedList.append(Segment(ancestor: [self.linkedList[5],self.linkedList[9]],point: location, number: 13))
-                self.linkedList.append(Segment(ancestor: [self.linkedList[5],self.linkedList[11]],point: location, number: 14))
+                self.linkedList.append(HiddenThing(ancestor: [self.linkedList[8],self.linkedList[10]], point: location, number: 12))
+                self.linkedList.append(Segment(ancestor: [self.linkedList[0],self.linkedList[5]],point: location, number: 13))
+                self.linkedList.append(Segment(ancestor: [self.linkedList[5],self.linkedList[9]],point: location, number: 14))
+                self.linkedList.append(Segment(ancestor: [self.linkedList[5],self.linkedList[11]],point: location, number: 15))
                 self.canvas.update(constructions: self.linkedList, indices: self.clickedIndex)
                 self.canvas.setNeedsDisplay()
             }
@@ -1381,7 +1312,10 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                 numberOfMeasures-=1
             }
             if linkedList[linkedList.count-1].type==HIDDENthing {
-                linkedList[linkedList.count-1].parent[0].isShown=true
+                //linkedList[linkedList.count-1].parent[0].isShown=true
+                for object in linkedList[linkedList.count-1].parent {
+                    object.isShown=true
+                }
             }
 //            if linkedList[linkedList.count-1].type==MOVedPT {
 //                if let temp = linkedList[linkedList.count-1] as? MovedPoint {
