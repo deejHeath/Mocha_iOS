@@ -71,10 +71,8 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
             for i in 0..<linkedList.count {
                 if linkedList[i].type>0 && linkedList[i].type<=PTonCIRCLE {
                     linkedList[i].update(point: CGPoint(x: linkedList[i].coordinates.x+translation.x ,y: linkedList[i].coordinates.y+translation.y))
-//                    update(object: linkedList[i], point: CGPoint(x: linkedList[i].coordinates.x+translation.x ,y: linkedList[i].coordinates.y+translation.y))
                 } else if linkedList[i].type<DISTANCE {
                     linkedList[i].update(point: linkedList[i].coordinates)
-//                    update(object: linkedList[i], point: linkedList[i].coordinates)
                 }
             }
             canvas.update(constructions: linkedList, indices: clickedIndex)
@@ -90,10 +88,8 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                     let X=linkedList[i].coordinates.x-canvas.frame.width/2.0
                     let Y=linkedList[i].coordinates.y-canvas.frame.height/2.0
                     linkedList[i].update(point: CGPoint(x: C*X-S*Y+canvas.frame.width/2.0 ,y: S*X+C*Y+canvas.frame.height/2.0))
-//                    update(object: linkedList[i], point: CGPoint(x: C*X-S*Y+canvas.frame.width/2.0 ,y: S*X+C*Y+canvas.frame.height/2.0))
                 } else if linkedList[i].type<DISTANCE {
                     linkedList[i].update(point: linkedList[i].coordinates)
-//                    update(object: linkedList[i], point: linkedList[i].coordinates)
                 }
             }
             canvas.update(constructions: linkedList, indices: clickedIndex)
@@ -109,10 +105,8 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                 for i in 0..<linkedList.count {
                     if linkedList[i].type>0 && linkedList[i].type<=PTonCIRCLE {
                         linkedList[i].update(point: CGPoint(x: pinchScale*(linkedList[i].coordinates.x-canvas.frame.width/2.0)+canvas.frame.width/2.0,y: pinchScale*(linkedList[i].coordinates.y-canvas.frame.height/2.0)+canvas.frame.height/2.0))
-//                        update(object: linkedList[i], point: CGPoint(x: pinchScale*(linkedList[i].coordinates.x-canvas.frame.width/2.0)+canvas.frame.width/2.0,y: pinchScale*(linkedList[i].coordinates.y-canvas.frame.height/2.0)+canvas.frame.height/2.0))
                     } else if linkedList[i].type<DISTANCE {
                         linkedList[i].update(point: linkedList[i].coordinates)
-//                        update(object: linkedList[i], point: linkedList[i].coordinates)
                     }
                 }
                 totalScaleFactor*=pinchScale
@@ -231,7 +225,6 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         case makePoints:
             if !newPoint {
                 clickedList[0].update(point: location)
-//                update(object: clickedList[0], point: location)
             } else { // otherwise the point is new, and we can do what we like with it.
                 clearAllPotentials()
                 getLineOrCircle(location)
@@ -595,7 +588,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         case makeBisectors:
             getRidOfActivesThatAreTooFar(location)
             clearActives()
-            getRidOfDuplicates()
+            //getRidOfDuplicates()
             if clickedList.count==2 {
                 arrangeClickedObjectsByIndex()
                 var alreadyExists=false
@@ -630,7 +623,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         case make3PTCircle:
             getRidOfActivesThatAreTooFar(location)
             clearActives()
-            getRidOfDuplicates()
+            //getRidOfDuplicates()
             if clickedList.count==3 {
                 arrangeClickedObjectsByIndex()
                 var alreadyExists=false
@@ -712,7 +705,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         case makeIntersections:
             getRidOfActivesThatAreTooFar(location)
             clearActives()
-            getRidOfDuplicates()
+            //getRidOfDuplicates()
             if clickedList.count==2 {       // need to construct InterPt0 & InterPt1.
                 arrangeClickedObjectsByIndex()
                 var alreadyExists=false
@@ -755,7 +748,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         case measureDistance:
             getRidOfActivesThatAreTooFar(location)
             clearActives()
-            getRidOfDuplicates()
+            //getRidOfDuplicates()
             if clickedList.count==2 {
                 arrangeClickedObjectsByIndex()
                 var alreadyExists=false
@@ -787,7 +780,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         case measureAngle:
             getRidOfActivesThatAreTooFar(location)
             clearActives()
-            getRidOfDuplicates()
+            //getRidOfDuplicates()
             if clickedList.count==3 {                               // 
 //                if clickedList[0].index>clickedList[2].index {    // this code would be used
 //                    clickedList.insert(clickedList[0], at: 2)     // if we measured angles
@@ -818,7 +811,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         case measureSum:
             getRidOfActivesThatAreTooFar(location)
             clearActives()
-            getRidOfDuplicates()
+            //getRidOfDuplicates()
             if clickedList.count==2 {
                 arrangeClickedObjectsByIndex()
                 var alreadyExists=false
@@ -844,7 +837,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         case measureProduct:
             getRidOfActivesThatAreTooFar(location)
             clearActives()
-            getRidOfDuplicates()
+            //xgetRidOfDuplicates()
             if clickedList.count==2 {
                 arrangeClickedObjectsByIndex()
                 var alreadyExists=false
@@ -870,7 +863,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         case measureDifference:
             getRidOfActivesThatAreTooFar(location)
             clearActives()
-            getRidOfDuplicates()
+            //getRidOfDuplicates()
             if clickedList.count==2 {
                 var alreadyExists=false
                 for i in 0..<linkedList.count {
@@ -895,7 +888,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         case measureRatio:
             getRidOfActivesThatAreTooFar(location)
             clearActives()
-            getRidOfDuplicates()
+            //getRidOfDuplicates()
             if clickedList.count==2 {
                 var alreadyExists=false
                 for i in 0..<linkedList.count {
@@ -920,7 +913,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         case measureSine, measureCosine:
             getRidOfActivesThatAreTooFar(location)
             clearActives()
-            getRidOfDuplicates()
+            //getRidOfDuplicates()
             if clickedList.count==1 {
                 var alreadyExists=false
                 for i in 0..<linkedList.count {
@@ -954,7 +947,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         case measureTriArea:
             getRidOfActivesThatAreTooFar(location)
             clearActives()
-            getRidOfDuplicates()
+            //getRidOfDuplicates()
             if clickedList.count==3 {
                 arrangeClickedObjectsByIndex()
                 var alreadyExists=false
@@ -988,7 +981,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         case measureCircArea:
             getRidOfActivesThatAreTooFar(location)
             clearActives()
-            getRidOfDuplicates()
+            //getRidOfDuplicates()
             if clickedList.count==1 {
                 var alreadyExists=false
                 for i in 0..<linkedList.count {
@@ -1032,7 +1025,11 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
             }
             if clickedList.count==1 {
                 linkedList[clickedIndex[0]].isShown=false
-                linkedList.append(HiddenThing(ancestor: clickedList, point: location, number: linkedList.count))
+                if linkedList[linkedList.count-1].type==HIDDENthing {
+                    linkedList[linkedList.count-1].parent.append(clickedList[0])
+                } else {
+                    linkedList.append(HiddenThing(ancestor: clickedList, point: location, number: linkedList.count))
+                }
                 clearAllPotentials()
             }
             break
@@ -1085,7 +1082,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
     }
     func getMeasure(_ location: CGPoint) {
         for i in 0..<linkedList.count {
-            if distance(linkedList[i],location)<touchSense && !clickedIndex.contains(i) && !activeConstruct && linkedList[i].isShown && linkedList[i].isReal {
+            if distance(linkedList[i],location)<touchSense && (whatToDo == measureProduct || whatToDo == measureSum || !clickedIndex.contains(i)) && !activeConstruct && linkedList[i].isShown && linkedList[i].isReal {
                 if linkedList[i].type>=DISTANCE {
                     setActiveConstruct(i)
                 }
@@ -1189,18 +1186,18 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
             }
         }
     }
-    func getRidOfDuplicates() {
-        if clickedList.count>1 {
-            if clickedIndex[0]==clickedIndex[1] {
-                clearLastPotential()
-            }
-            if clickedList.count==3 {
-                if clickedIndex[0]==clickedIndex[2] || clickedIndex[1]==clickedIndex[2] {
-                    clearLastPotential()
-                }
-            }
-        }
-    }
+//    func getRidOfDuplicates() {
+//        if clickedList.count>1 {
+//            if clickedIndex[0]==clickedIndex[1] {
+//                clearLastPotential()
+//            }
+//            if clickedList.count==3 {
+//                if clickedIndex[0]==clickedIndex[2] || clickedIndex[1]==clickedIndex[2] {
+//                    clearLastPotential()
+//                }
+//            }
+//        }
+//    }
     func clearActives() {
         if activeConstruct {
             potentialClick=nil

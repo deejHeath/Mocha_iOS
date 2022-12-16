@@ -70,7 +70,6 @@ class FixedPoint: Point {
         index=number
     }
     override func update(point: CGPoint) {
-        
     }
 }
 
