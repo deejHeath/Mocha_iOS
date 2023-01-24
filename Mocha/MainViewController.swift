@@ -185,6 +185,8 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                     clickedList.removeLast()
                     clickedIndex.removeLast()
                     setActiveConstruct(linkedList.count-1)
+                } else {
+                    newPT[clickedList.count-1]=false
                 }
             } else {
                 newPT[clickedList.count]=true
@@ -228,8 +230,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                         clickedIndex.removeLast()
                         setActiveConstruct(linkedList.count-1)
                     } else {
-                        // the newPoint[count]=false
-                        // no need to appen, remove from clickedList, or set active construct.
+                        newPT[clickedList.count-1]=false
                     }
                 } else {
                     newPT[clickedList.count]=true
@@ -368,6 +369,8 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                     clickedList.removeLast()
                     clickedIndex.removeLast()
                     setActiveConstruct(linkedList.count-1)
+                } else {
+                    newPT[clickedList.count-1]=false
                 }
             } else {
                 newPT[clickedList.count]=true
@@ -461,6 +464,8 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                         clickedList.removeLast()
                         clickedIndex.removeLast()
                         setActiveConstruct(linkedList.count-1)
+                    } else {
+                        newPT[clickedList.count-1]=false
                     }
                 } else {
                     newPT[clickedList.count]=true
