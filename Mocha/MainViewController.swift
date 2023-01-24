@@ -212,7 +212,30 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
             break
         case makeBelochFolds:
             if clickedList.count<2 {
-                getPoint(location)
+                getPointOrLineOrCircle(location)
+                if activeConstruct {
+                    let tempList = [clickedList[clickedList.count-1]]
+                    if clickedList[clickedList.count-1].type==0 {
+                        newPT[clickedList.count-1]=true
+                        linkedList.append(PointOnCircle(ancestor: tempList, point: location, number: linkedList.count))
+                        clickedList.removeLast()
+                        clickedIndex.removeLast()
+                        setActiveConstruct(linkedList.count-1)
+                    } else if clickedList[clickedList.count-1].type<0 {
+                        newPT[clickedList.count-1]=true
+                        linkedList.append(PointOnLine(ancestor: tempList, point: location, number: linkedList.count))
+                        clickedList.removeLast()
+                        clickedIndex.removeLast()
+                        setActiveConstruct(linkedList.count-1)
+                    } else {
+                        // the newPoint[count]=false
+                        // no need to appen, remove from clickedList, or set active construct.
+                    }
+                } else {
+                    newPT[clickedList.count]=true
+                    linkedList.append(Point(ancestor: [], point: location, number: linkedList.count))
+                    setActiveConstruct(linkedList.count-1)
+                }
             } else {
                 getLine(location)
             }
@@ -415,10 +438,36 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
             }
             break
         case makeBelochFolds:
-            getRidOfActivesThatAreTooFar(location)
-            if clickedList.count==0 || clickedList.count==1 {
-                getPoint(location)
-            } else if clickedList.count==2 || clickedList.count==3 {
+            if (clickedList.count<3) {
+                if newPT[clickedList.count-1] {
+                    newPT[clickedList.count-1]=false
+                    linkedList.removeLast()
+                }
+                clickedList.removeLast()
+                clickedIndex.removeLast()
+                activeConstruct=false
+                getPointOrLineOrCircle(location)
+                if activeConstruct {
+                    let tempList = [clickedList[clickedList.count-1]]
+                    if clickedList[clickedList.count-1].type==0 {
+                        newPT[clickedList.count-1]=true
+                        linkedList.append(PointOnCircle(ancestor: tempList, point: location, number: linkedList.count))
+                        clickedList.removeLast()
+                        clickedIndex.removeLast()
+                        setActiveConstruct(linkedList.count-1)
+                    } else if clickedList[clickedList.count-1].type<0 {
+                        newPT[clickedList.count-1]=true
+                        linkedList.append(PointOnLine(ancestor: tempList, point: location, number: linkedList.count))
+                        clickedList.removeLast()
+                        clickedIndex.removeLast()
+                        setActiveConstruct(linkedList.count-1)
+                    }
+                } else {
+                    newPT[clickedList.count]=true
+                    linkedList.append(Point(ancestor: [], point: location, number: linkedList.count))
+                    setActiveConstruct(linkedList.count-1)
+                }
+            } else {
                 getLine(location)
             }
             break
@@ -1373,60 +1422,75 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         present(activity, animated: true)
       }
     @IBAction func clearLastButtonPressed() {
-        if linkedList.count>0 {
-            if linkedList.count-1 == unitIndex {
-                unitChosen=false
-                unitIndex=0
-            }
-            if linkedList[linkedList.count-1].type>=DISTANCE {
-                numberOfMeasures-=1
-            }
-            if linkedList[linkedList.count-1].type==HIDDENthing {
-                //linkedList[linkedList.count-1].parent[0].isShown=true
-                for object in linkedList[linkedList.count-1].parent {
-                    object.isShown=true
-                }
-            }
-//            if linkedList[linkedList.count-1].type==MOVedPT {
-//                if let temp = linkedList[linkedList.count-1] as? MovedPoint {
-//                    update(object: linkedList[linkedList.count-1].parent[0], point: temp.lastCoordinates)
-//                }
-//                for object in linkedList {
-//                    update(object: object, point: object.coordinates)
-//                }
-//                
-//            }
-            if linkedList.count>1 {
-                if linkedList[linkedList.count-2].type==THREEptCIRCLEcntr || linkedList[linkedList.count-1].type==BISECTOR1 {
-                    linkedList.removeLast()
-                    linkedList.removeLast()         // since there were three created at once
-                }
-                if linkedList[linkedList.count-1].type==CIRCintCIRC1 || linkedList[linkedList.count-1].type==LINEintCIRC1 {
-                    linkedList.removeLast()         // since there were two created at once
-                }
-                if linkedList[linkedList.count-1].type==BELOCHline2 {
-                    linkedList.removeLast()
-                    linkedList.removeLast()         // since there were six created at once
-                    linkedList.removeLast()
-                    linkedList.removeLast()
-                    linkedList.removeLast()
-                }
-            }
-                linkedList.removeLast()
+        if (newPT[0] || newPT[1] || newPT[2]) {
             for i in 0..<3 {
-                if newPT[i] {linkedList.removeLast()}
+                if newPT[i] {
+                    linkedList.removeLast()
+                }
             }
-            clearAllPotentials()
-            canvas.update(constructions: linkedList, indices: clickedIndex)
-            canvas.setNeedsDisplay()
+            
+        } else {
+            if linkedList.count>0 {
+                if linkedList.count-1 == unitIndex {
+                    unitChosen=false
+                    unitIndex=0
+                }
+                if linkedList[linkedList.count-1].type>=DISTANCE {
+                    numberOfMeasures-=1
+                }
+                if linkedList[linkedList.count-1].type==HIDDENthing {
+                    //linkedList[linkedList.count-1].parent[0].isShown=true
+                    for object in linkedList[linkedList.count-1].parent {
+                        object.isShown=true
+                    }
+                }
+                if linkedList.count>1 {
+                    if linkedList[linkedList.count-2].type==THREEptCIRCLEcntr || linkedList[linkedList.count-1].type==BISECTOR1 {
+                        linkedList.removeLast()
+                        linkedList.removeLast()         // since there were three created at once
+                    }
+                    if linkedList[linkedList.count-1].type==CIRCintCIRC1 || linkedList[linkedList.count-1].type==LINEintCIRC1 {
+                        linkedList.removeLast()         // since there were two created at once
+                    }
+                    if linkedList[linkedList.count-1].type==BELOCHline2 {
+                        linkedList.removeLast()
+                        linkedList.removeLast()         // since there were six created at once
+                        linkedList.removeLast()
+                        linkedList.removeLast()
+                        linkedList.removeLast()
+                    }
+                }
+                linkedList.removeLast()
+            }
         }
-        if linkedList.count<2 {
-            if self.whatToDo != makePoints && self.whatToDo != makeLines && self.whatToDo != makeSegments && self.whatToDo != makeRays && self.whatToDo != makeCircles && self.whatToDo != makeMidpoint {
-                self.whatToDo=self.makeLines
-            }
+        clearAllPotentials()
+        var line=0,circ=0
+        for object in self.linkedList {
+            if object.type<0 {line+=1}
+            if object.type==0 {circ+=1}
+        }
+        if (self.whatToDo==self.makeIntersections && line+circ<2) || (self.whatToDo==self.foldPoints && line==0) || (self.whatToDo==self.makeBelochFolds && line<2) || (self.whatToDo==self.makeBisectors && line<2) || (self.whatToDo==self.makePerps && line==0) || (self.whatToDo==self.makeParallels && line==0){
+            self.whatToDo=self.makeLines
+        }
+        if ((self.whatToDo==self.invertPoints || self.whatToDo==measureCircArea) && circ==0) {
+            self.whatToDo=self.makeCircles
+        }
+        if (self.whatToDo<14) {
             self.infoLabel.text = self.actionText[self.whatToDo]
             self.infoXLabel.text = self.actionText[self.whatToDo]
+        } else {
+            self.infoLabel.text = self.actionText[self.whatToDo-20]
+            self.infoXLabel.text = self.actionText[self.whatToDo-20]
         }
+        canvas.update(constructions: linkedList, indices: clickedIndex)
+        canvas.setNeedsDisplay()
+//        if linkedList.count<2 {
+//            if self.whatToDo != makePoints && self.whatToDo != makeLines && self.whatToDo != makeSegments && self.whatToDo != makeRays && self.whatToDo != makeCircles && self.whatToDo != makeMidpoint {
+//                self.whatToDo=self.makeLines
+//            }
+//            self.infoLabel.text = self.actionText[self.whatToDo]
+//            self.infoXLabel.text = self.actionText[self.whatToDo]
+//        }
         if linkedList.count==0 {
             totalScaleFactor=1.0
         }
