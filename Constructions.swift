@@ -587,6 +587,25 @@ class Measure: Point {
         super.init(ancestor: ancestor, point: point, number: number)
     }
     override func draw(_ context: CGContext,_ isRed: Bool) {
+//        context.setFillColor(UIColor.clear.cgColor)
+//        if isRed {
+//            context.setStrokeColor(UIColor.red.cgColor)
+//        } else {
+//            context.setStrokeColor(UIColor.white.cgColor)
+//        }
+//        context.setLineWidth(strokeWidth)
+//        let currentRect = CGRect(x: coordinates.x-4.0,y:coordinates.y-4.0,
+//                                 width: 8.0,
+//                                 height: 8.0)
+//        context.addEllipse(in: currentRect)
+//        context.drawPath(using: .fillStroke)
+//        let paragraphStyle = NSMutableParagraphStyle()
+//        paragraphStyle.alignment = .center
+//        let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 16)!, NSAttributedString.Key.foregroundColor: UIColor.white]
+//        let string = textString+" ≈ \(round(10000*(value)+0.3)/10000)"
+//        string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:350, height: 18), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+    }
+    func drawString(_ context: CGContext,_ isRed: Bool) {
         context.setFillColor(UIColor.clear.cgColor)
         if isRed {
             context.setStrokeColor(UIColor.red.cgColor)
@@ -601,8 +620,8 @@ class Measure: Point {
         context.drawPath(using: .fillStroke)
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
-        let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!, NSAttributedString.Key.foregroundColor: UIColor.white]
-        let string = textString+" ≈ \(round(1000000*(value)+0.3)/1000000)"
+        let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 16)!, NSAttributedString.Key.foregroundColor: UIColor.white]
+        let string = textString+" ≈ \(round(10000*(value)+0.3)/10000)"
         string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:350, height: 18), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
     }
 }
@@ -1206,15 +1225,34 @@ class BelochPoint0: Point {                   // parents: point, point, line, li
                         reals[i]=false          //
                     }                           // Otherwise it is
                     let my=mySolutions[i].real
-                    if abs((((y0+y2)*sx2+sy2*(x0-x2))*mx*mx-2*my*(sx2*x0-sy2*y0)*mx-my*my*((y0-y2)*sx2+sy2*(x0+x2)))/(2*mx*(mx*sx2+my*sy2))) < 4096.0 {
+                    if abs(mx*sx2+my*sy2) > epsilon {
                         points[i]=CGPoint(x: 0.0,y: (((y0+y2)*sx2+sy2*(x0-x2))*mx*mx-2*my*(sx2*x0-sy2*y0)*mx-my*my*((y0-y2)*sx2+sy2*(x0+x2)))/(2*mx*(mx*sx2+my*sy2)))
                     } else {
-                        points[i]=CGPoint(x: (((y0-y2)*sx2+sy2*(x0+x2))*my*my+2*mx*(sx2*x0-sy2*y0)*my-((y0+y2)*sx2+sy2*(x0-x2))*mx*mx)/(2*my*(mx*sx2+my*sy2)),y: 0.0)
+                        // This case is fairly specific, and one solution is this.
+                        var tempList=[parent[1],parent[2]]
+                        let temp0 = ParallelLine(ancestor: tempList,point: point,number: 0)
+                        tempList = [parent[3],temp0]
+                        let temp1 = LineIntLine(ancestor: tempList,point: point,number: 1)
+                        tempList = [parent[1],temp1]
+                        let temp2 = MidPoint(ancestor: tempList,point: point,number:  2)
+                        tempList = [temp2,parent[2]]
+                        let temp3 = PerpLine(ancestor: tempList,point: point,number: 3)
+                        points[i]=temp3.coordinates
+                        slopes[i]=temp3.slope
+                        // However, we also need to test whether it is correct.
+                        tempList = [parent[0],temp3]
+                        let temp4 = FoldedPoint(ancestor: tempList,point: point,number: 4)
+                        tempList = [parent[1],temp3]
+                        let temp5 = FoldedPoint(ancestor: tempList,point: point,number: 5)
+                        if parent[2].distance(temp4.coordinates)+parent[3].distance(temp5.coordinates)>epsilon {
+                            reals[i]=false
+                        }
                     }
                     slopes[i]=CGPoint(x: 1.0, y: my)
                 } else {
                     reals[i]=false
                 }
+                // next we should check to make sure the foldedPoints are on the lines...?
             }
             coordinates=points[0]
         }
@@ -1420,7 +1458,8 @@ class Triangle: Measure { // parent: point, point, point, (unit) distance
         context.addLine(to: parent[2].coordinates)
         context.closePath()
         context.fillPath()      // up to here highlighted the triangle
-        
+    }
+    override func drawString(_ context: CGContext, _ isRed: Bool) {
         context.setFillColor(UIColor.clear.cgColor)
         if isRed {
             context.setStrokeColor(UIColor.red.cgColor)
@@ -1435,8 +1474,8 @@ class Triangle: Measure { // parent: point, point, point, (unit) distance
         context.drawPath(using: .fillStroke)
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
-        let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!, NSAttributedString.Key.foregroundColor: UIColor.white]
-        let string = textString+" ≈ \(round(1000000*(value)+0.3)/1000000)"
+        let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 16)!, NSAttributedString.Key.foregroundColor: UIColor.white]
+        let string = textString+" ≈ \(round(10000*(value)+0.3)/10000)"
         string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:350, height: 18), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
     }
 }
@@ -1476,6 +1515,8 @@ class CircleArea: Measure { // parent: circle, (unit) distance
                            y: parent[0].coordinates.y-radius,
                            width: 2*radius, height:2*radius)
         context.fillEllipse(in: rect0)
+    }
+    override func drawString(_ context: CGContext, _ isRed: Bool) {
         context.setFillColor(UIColor.clear.cgColor)
         if isRed {
             context.setStrokeColor(UIColor.red.cgColor)
@@ -1490,8 +1531,8 @@ class CircleArea: Measure { // parent: circle, (unit) distance
         context.drawPath(using: .fillStroke)
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
-        let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 15)!, NSAttributedString.Key.foregroundColor: UIColor.white]
-        let string = textString+" ≈ \(round(1000000*(value)+0.3)/1000000)"
+        let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 16)!, NSAttributedString.Key.foregroundColor: UIColor.white]
+        let string = textString+" ≈ \(round(10000*(value)+0.3)/10000)"
         string.draw(with: CGRect(x: coordinates.x+10, y: coordinates.y-8, width:350, height: 18), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
     }
 }
