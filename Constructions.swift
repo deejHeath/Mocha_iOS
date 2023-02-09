@@ -342,7 +342,8 @@ class CircIntCirc0: Point {                                 // parent: circle, c
             let x1=parent[1].coordinates.x, y1=parent[1].coordinates.y  // coordinates of center of circle1
             let sx1=parent[1].slope.x, sy1=parent[1].slope.y            // coordinates of point on circle1
             let r0=pow(x0-sx0,2)+pow(y0-sy0,2), r1=pow(x1-sx1,2)+pow(y1-sy1,2)
-            let discriminant = -(x1*x1*x1*x1-4*x0*x1*x1*x1+(6*x0*x0+2*y0*y0-4*y0*y1+2*y1*y1-2*r0-2*r1)*x1*x1+4*x0*(-x0*x0-y0*y0+2*y0*y1-y1*y1+r0+r1)*x1+x0*x0*x0*x0+(2*y0*y0-4*y0*y1+2*y1*y1-2*r0-2*r1)*x0*x0+r0*r0+(-2*y0*y0+4*y0*y1-2*y1*y1-2*r1)*r0+(r1-(y0-y1)*(y0-y1))*(r1-(y0-y1)*(y0-y1)))*(y0-y1)*(y0-y1)
+            var discriminant = -(x1*x1*x1*x1-4*x0*x1*x1*x1+(6*x0*x0+2*y0*y0-4*y0*y1+2*y1*y1-2*r0-2*r1)*x1*x1+4*x0*(-x0*x0-y0*y0+2*y0*y1-y1*y1+r0+r1)*x1+x0*x0*x0*x0+(2*y0*y0-4*y0*y1+2*y1*y1-2*r0-2*r1)*x0*x0+r0*r0+(-2*y0*y0+4*y0*y1-2*y1*y1-2*r1)*r0+(r1-(y0-y1)*(y0-y1))*(r1-(y0-y1)*(y0-y1)))*(y0-y1)*(y0-y1)
+            if abs(discriminant)<epsilon { discriminant=0 }
             if discriminant >= 0 {
                 isReal=true
                 let xx = (sqrt(discriminant)+x0*x0*x0-x0*x0*x1+(-x1*x1+y0*y0-2*y0*y1+y1*y1-r0+r1)*x0+x1*x1*x1+(y0*y0-2*y0*y1+y1*y1+r0-r1)*x1)/(2*x0*x0-4*x0*x1+2*x1*x1+2*(y0-y1)*(y0-y1))
@@ -414,7 +415,8 @@ class LineIntCirc0: Point {                                 // parent: circle, c
             let x1=parent[1].coordinates.x, y1=parent[1].coordinates.y  // coordinates of center of circle
             let sx1=parent[1].slope.x, sy1=parent[1].slope.y            // coordinates of point on circle
             let r1=pow(x1-sx1,2)+pow(y1-sy1,2)
-            let discriminant = (-y0*y0+2*y0*y1-y1*y1+r1)*sx0*sx0+2*sy0*(y0-y1)*(x0-x1)*sx0+sy0*sy0*(-x0*x0+2*x0*x1-x1*x1+r1)
+            var discriminant = (-y0*y0+2*y0*y1-y1*y1+r1)*sx0*sx0+2*sy0*(y0-y1)*(x0-x1)*sx0+sy0*sy0*(-x0*x0+2*x0*x1-x1*x1+r1)
+            if abs(discriminant)<epsilon { discriminant=0 }
             if discriminant >= 0 {
                 isReal=true
                 let xx = (sx0*sx0*x1+(-y0+y1)*sy0*sx0+sy0*sy0*x0+sx0*sqrt(discriminant))/(sx0*sx0+sy0*sy0)
