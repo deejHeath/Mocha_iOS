@@ -10,14 +10,15 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
     var clickedList: [Construction] = []
     var clickedIndex: [Int] = []
     let actionText=["Create or move POINTS", "Swipe between POINTS to create midpoint","Select 2 OBJECTS to create their intersection","Swipe from LINE to POINT to reflect","Swipe from CIRCLE to POINT to invert", "Swipe between POINTS to create segment", "Swipe between POINTS to create ray","Swipe between POINTS to create line","Swipe from LINE to POINT to create ⊥ line","Swipe from LINE to POINT to create || line","Select 2 LINES to create bisector","Select 2 POINTS, 2 LINES to create Beloch fold","Swipe between POINTS to create circle","Select 3 POINTs to create circle"]
-    let measureText=["Select 2 POINTS to measure distance","Select 3 POINTS to measure angle","Select 3 POINTS to measure area of triangle","Measure area of CIRCLE", "Measure sum of 2 MEASURES","Measure difference of 2 MEASURES","Measure product of 2 MEASURES","Measure ratio of 2 MEASURES","FIND sine of MEASURE","Find cosine of MEASURE.","Hide OBJECT","Show/hide label of OBJECT","Double swipe or pinch to move/scale","Restart with unit circle","Clear all"]
+    let measureText=["Select 2 POINTS to measure distance","Select 3 POINTS to measure angle","Select 3 POINTS to measure area of triangle","Measure area of CIRCLE", "Measure sum of 2 MEASURES","Measure difference of 2 MEASURES","Measure product of 2 MEASURES","Measure ratio of 2 MEASURES","FIND sine of MEASURE","Find cosine of MEASURE."]
+    let displayText=["Hide OBJECT","Show/hide label of OBJECT","Double swipe or pinch to move/scale","Restart with unit circle","Clear all"]
     let makePoints=0, makeMidpoint=1, makeIntersections=2, foldPoints=3, invertPoints=4
     let makeSegments=5, makeRays=6, makeLines=7, makePerps=8, makeParallels=9
     let makeBisectors=10, makeBelochFolds=11, makeCircles=12, make3PTCircle=13
     let measureDistance=20, measureAngle=21, measureTriArea=22, measureCircArea=23
     let measureSum=24, measureDifference=25, measureProduct=26, measureRatio=27
-    let measureSine=28, measureCosine=29, hideObject=30, toggleLabel=31, scaleEverything=32
-    let unitCircle=33,clearAll=34
+    let measureSine=28, measureCosine=29, hideObject=40, toggleLabel=41, scaleEverything=42
+    let unitCircle=43,clearAll=44
     let POINT = 1, PTonLINE = 2, PTonCIRCLE = 3, MIDPOINT = 4
     let LINEintLINE = 5, FOLDedPT = 6, INVERTedPT=7
     let CIRCintCIRC0 = 8,CIRCintCIRC1 = 9, LINEintCIRC0 = 10, LINEintCIRC1 = 11
@@ -1363,7 +1364,6 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let measureController = storyboard.instantiateViewController(withIdentifier: "measure_VC") as! MeasureViewController
         measureController.view.backgroundColor = .white//.withAlphaComponent(0.875)
-        //measureController.modalPresentationStyle = .fullScreen
         measureController.completionHandler = {tag in
             self.whatToDo=tag
             self.infoLabel.text = self.measureText[self.whatToDo-20]
@@ -1384,6 +1384,23 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                 self.infoXLabel.text = self.actionText[self.whatToDo]
 
             }
+        }
+        self.present(measureController, animated: true, completion: nil)
+        for i in 0..<3 {
+            if newPT[i] {linkedList.removeLast()}
+        }
+        clearAllPotentials()
+        canvas.update(constructions: linkedList, indices: clickedIndex)
+        canvas.setNeedsDisplay()
+    }
+    @IBAction func displayButtonPressed() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let displayController = storyboard.instantiateViewController(withIdentifier: "display_VC") as! DisplayViewController
+        displayController.view.backgroundColor = .white//.withAlphaComponent(0.875)
+        displayController.completionHandler = {tag in
+            self.whatToDo=tag
+            self.infoLabel.text = self.displayText[self.whatToDo-40]
+            self.infoXLabel.text = self.displayText[self.whatToDo-40]
             if self.whatToDo==self.clearAll {
                 self.numberOfMeasures=1
                 self.unitChosen=false
@@ -1436,7 +1453,7 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
                 self.canvas.setNeedsDisplay()
             }
         }
-        self.present(measureController, animated: true, completion: nil)
+        self.present(displayController, animated: true, completion: nil)
         for i in 0..<3 {
             if newPT[i] {linkedList.removeLast()}
         }
@@ -1517,12 +1534,15 @@ class MainViewController: UIViewController, UIGestureRecognizerDelegate {
         if ((self.whatToDo==self.invertPoints || self.whatToDo==measureCircArea) && circ==0) {
             self.whatToDo=self.makeCircles
         }
-        if (self.whatToDo<14) {
+        if (self.whatToDo<20) {
             self.infoLabel.text = self.actionText[self.whatToDo]
             self.infoXLabel.text = self.actionText[self.whatToDo]
+        } else if (self.whatToDo<40) {
+            self.infoLabel.text = self.measureText[self.whatToDo-20]
+            self.infoXLabel.text = self.measureText[self.whatToDo-20]
         } else {
-            self.infoLabel.text = self.actionText[self.whatToDo-20]
-            self.infoXLabel.text = self.actionText[self.whatToDo-20]
+            self.infoLabel.text = self.displayText[self.whatToDo-40]
+            self.infoXLabel.text = self.displayText[self.whatToDo-40]
         }
         canvas.update(constructions: linkedList, indices: clickedIndex)
         canvas.setNeedsDisplay()

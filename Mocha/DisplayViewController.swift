@@ -1,13 +1,13 @@
 //
-//  MeasureViewController.swift
+//  DisplayViewController.swift
 //  Mocha
 //
-//  Created by Daniel Heath on 9/22/22.
+//  Created by Daniel Heath on 2/9/23.
 //
 
 import UIKit
 
-class MeasureViewController: UIViewController {
+class DisplayViewController: UIViewController {
 
     @IBOutlet weak var verticalStack: UIStackView!
     var settingsButton = [UIButton]()
@@ -20,7 +20,8 @@ class MeasureViewController: UIViewController {
         }
         
     }
-    @IBAction func settingsButtonPressed(_ sender: UIButton) {
+    
+    @IBAction func seetingsButtonPressed(_ sender: UIButton) {
         completionHandler?(sender.tag)
         dismiss(animated: true, completion: nil)
     }
